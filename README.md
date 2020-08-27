@@ -1,7 +1,7 @@
-# JSLite: PHP Javascript Minifier
+# JSlite: PHP Javascript Minifier
 A simplistic Javascript minifier designed for compressing inline scripts on the fly, written in PHP.
 
-** This is currently alpha grade software - do not deploy into production **
+**This is currently alpha grade software - do not deploy into production**
 
 ## Description
 
@@ -17,7 +17,7 @@ use hexydec\jslite\jslite;
 $doc = new jslite();
 
 // load from a variable
-if ($doc->load($$javascript) {
+if ($doc->load($javascript) {
 
 	// minify the document
 	$doc->minify();
