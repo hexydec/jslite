@@ -1,6 +1,9 @@
 # JSlite: PHP Javascript Minifier
 A simplistic Javascript minifier designed for compressing inline scripts on the fly, written in PHP.
 
+![Licence: MIT](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
+![Status: Alpha](https://img.shields.io/badge/Status-Alpha-red.svg)
+
 **This is currently alpha grade software - do not deploy into production**
 
 ## Description

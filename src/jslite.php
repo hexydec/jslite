@@ -7,7 +7,6 @@ class jslite {
 	protected $js;
 
 	public function __construct() {
-
 	}
 
 	/**
@@ -73,33 +72,40 @@ class jslite {
 	public function minify(array $minify = []) : void {
 
 		$patterns = [
-			'startend' => '(^\\s++|\\s++$)', // whitespace at start|end
-			'commentmulti' => '\\s*+\/\\*(?!\\*\\/)[\\s\\S]*\\*\\/', // multiline comments
-			'commentsingle' => '(?:(?m)\\s*+\\/\\/.*$)', // single line comment
-			'quotes' => '(?:(["\'])(?:(?:\\\\)*\\\\2|(?!\\2).*)\\2)', // anything in unescaped quotes
-			// 'increment' => '(?:++|--)\\s++[+\\/+-]',
+			'startend' => '^\\s++', // whitespace at start
+			'end' => '\\s++$', // whitespace at end
+			'commentmulti' => '\\s*+\\/\\*(?:(?U)[\\s\\S]*)\\*\\/', // multiline comments
+			'commentsingle' => '\\s*+\\/\\/[^\\n]*+', // single line comment
+			'doublequotes' => '"(?:\\\\.|[^\\\\"])*"', // anything in unescaped quotes
+			'singlequotes' => "'(?:\\\\.|[^\\\\'])*'", // anything in unescaped quotes
+			'regexp' => '(?<=return|[^a-z0-9])\\s*+\\/(?:\\\\.|[^\\\\\\/\\n\\r])*\\/[gimsuy]?', // regular expressions
+			'increment' => '(?:\\+\\+|--)\\s++(?=[+\\/+-])',
 			'control' => '\\s*+[=+*\\/;(){}\\[\\],><|:-]\\s*+', // whitespace around control characters
-			'whitespace' => '\\s{2,}' // two or more whitepsace characters
+			'keywords' => '(?<=[a-z0-9"\'])(\\s++)(?=[a-z0-9"\'])',
+			'whitespace' => '\\s++' // two or more whitespace characters
 		];
 
 		// replace captures
-		$compiled = '/^'.implode('|', $patterns).'/i';
-		// echo($compiled."\n".str_repeat(' ', 96).'^');
+		$compiled = '/'.implode('|', $patterns).'/i';
 		$this->js = preg_replace_callback($compiled, function ($match) {
 
 			// skip if quotes
-			if (strpos($match[0], '"') === false) {
+			if (mb_strpos($match[0], '"') !== 0 && mb_strpos($match[0], "'") !== 0) {
 
 				// remove whitespace around capture
 				$match[0] = trim($match[0]);
 
-				// add a single space if captre was only whitespace not at the start or end of the string
-				if (!$match[0] && empty($match[1])) {
-					$match[0] = ' ';
-
 				// strip comments
-				} elseif (strpos($match[0], '/') === 0) {
+				if (mb_strpos($match[0], '//') === 0 || mb_strpos($match[0], '/*') === 0) {
 					$match[0] = '';
+
+				// handle increments and decrements next to other operators
+				} elseif ($match[0] === '++' || $match[0] === '--') {
+					$match[0] .= ' '; // restore space
+
+				// add a single space if capture was only whitespace not at the start or end of the string
+				} elseif ($match[0] === '' && !empty($match[1])) {
+					$match[0] = mb_strpos($match[1], "\n") === false ? ' ' : "\n";
 				}
 			}
 			return $match[0];
