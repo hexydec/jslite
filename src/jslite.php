@@ -25,8 +25,9 @@ class jslite {
 		'commentmulti' => '\\/\\*(?:(?U)[\\s\\S]*)\\*\\/',
 
 		// consume strings in quotes, check for escaped quotes
-		'doublequotes' => '"(?:\\\\.|[^\\\\"])*"',
-		'singlequotes' => "'(?:\\\\.|[^\\\\'])*'",
+		'doublequotes' => '"(?:\\\\.|[^\\\\"])*+"',
+		'singlequotes' => "'(?:\\\\.|[^\\\\'])*+'",
+		'templateliterals' => '`(?:\\\\.|[^\\\\`])*+`',
 
 		// capture single line comments after quotes incase it contains //
 		'commentsingle' => '\\/\\/[^\\n]*+',

@@ -144,6 +144,20 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 								42" ; ',
 				'output' => 'let item="  the answer"+" is
 								42";'
+			],
+		];
+		$this->compareMinify($tests, ['semicolon' => false]);
+	}
+
+	public function testCanProtectTemplateLiterals() {
+		$tests = [
+			[
+				'input' => 'let item = `this
+					is a template literal
+				the answer is ${item2}`; ',
+				'output' => 'let item=`this
+					is a template literal
+				the answer is ${item2}`;'
 			]
 		];
 		$this->compareMinify($tests, ['semicolon' => false]);
