@@ -2,13 +2,13 @@
 A simplistic Javascript minifier designed for compressing inline scripts on the fly, written in PHP.
 
 ![Licence: MIT](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
-![Status: Alpha](https://img.shields.io/badge/Status-Alpha-red.svg)
+![Status: Beta](https://img.shields.io/badge/Status-Beta-Yellow.svg)
 
-**This is currently alpha grade software - do not deploy into production**
+**This project is currently in beta, so you should test your implementation thoroughly before deployment**
 
 ## Description
 
-Designed to compliment [HTMLdoc](http://githubcom/hexydec/htmldoc), this program is capable of performing very simple and fast minification of Javascript, and is aimed at removing whitespace and comments from inline javascripts within an HTML file.
+Designed to compliment [HTMLdoc](http://githubcom/hexydec/htmldoc), this program is capable of performing very simple and fast minification of Javascript, and is aimed at removing whitespace and comments from inline Javascripts within an HTML file.
 
 ## Usage
 
@@ -29,6 +29,19 @@ if ($doc->load($javascript) {
 	echo $doc->save();
 }
 ```
+## Minification
+
+No code is rewritten, only whitespace and comments are removed, plus other minor code optimisations. The following optimisations are performed:
+
+- Whitespace stripped from beginning and end of string
+- Multiline comments removed
+- Single line comments removed
+- Whitespace removed around control characters
+- Whitespace collapsed between expressions
+- Whitespace around increments/decrements are handled correctly
+- Trailing semi-colons removed
+- Quotes are preserved
+- Regular Expressions are preserved
 
 ## Contributing
 

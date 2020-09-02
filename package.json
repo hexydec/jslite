@@ -1,6 +1,6 @@
 {
   "name": "JSLite",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A simplistic Javascript minifier designed for compressing inline scripts on the fly, written in PHP",
   "main": "index.js",
   "directories": {
