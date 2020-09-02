@@ -15,7 +15,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'output' => 'var item=42;'
 			]
 		];
-		$this->compareMinify($tests);
+		$this->compareMinify($tests, ['semicolon' => false]);
 	}
 
 	public function testCanStripEnd() {
@@ -31,7 +31,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'output' => 'var item=42;'
 			]
 		];
-		$this->compareMinify($tests);
+		$this->compareMinify($tests, ['semicolon' => false]);
 	}
 
 	public function testCanStripMultiLineComments() {
@@ -93,7 +93,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'output' => 'item=(item)/42;var item2=item/42;'
 			]
 		];
-		$this->compareMinify($tests);
+		$this->compareMinify($tests, ['semicolon' => false]);
 	}
 
 	public function testCanStripSingleLineComments() {
@@ -110,9 +110,13 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 
 				// remove this',
 				'output' => 'export function(item1,item2){return item1*item2;}'
-			]
+			],
+			[
+				'input' => 'var item = "https://this-is-not-a-comment.com/";',
+				'output' => 'var item="https://this-is-not-a-comment.com/";'
+			],
 		];
-		$this->compareMinify($tests);
+		$this->compareMinify($tests, ['semicolon' => false]);
 	}
 
 	public function testCanProtectQuotedStrings() {
@@ -142,7 +146,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 								42";'
 			]
 		];
-		$this->compareMinify($tests);
+		$this->compareMinify($tests, ['semicolon' => false]);
 	}
 
 	public function testCanProtectRegexpPatterns() {
@@ -160,6 +164,11 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'output' => 'string.replace(/[.*+\-?^${}()|[\]\\]/g,\'\\$&\');'
 			],
 			[
+				'input' => 'var item = 42
+					/[9-0]+/.test( item );',
+				'output' => 'var item=42'."\n".'/[9-0]+/.test(item);'
+			],
+			[
 				'input' => 'item = 26 / 42 / 60;',
 				'output' => 'item=26/42/60;'
 			],
@@ -169,7 +178,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'output' => 'item=(item)/42;var item2=item/42;'
 			]
 		];
-		$this->compareMinify($tests);
+		$this->compareMinify($tests, ['semicolon' => false]);
 	}
 
 	public function testCanStripWhitespaceAroundControlChars() {
@@ -193,9 +202,16 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 					return item1  *  item2;
 				}',
 				'output' => 'export function(item1,item2){return item1*item2;}'
+			],
+			[
+				'input' => 'const item = {
+					[ 1 , 2,  	3	],
+					[	"hi",  " there "]
+				}',
+				'output' => 'const item={[1,2,3],["hi"," there "]}'
 			]
 		];
-		$this->compareMinify($tests);
+		$this->compareMinify($tests, ['semicolon' => false]);
 	}
 
 	public function testCanStripWhitespaceAroundIncrements() {
@@ -210,17 +226,41 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 							if (item++ + 42 === 42) {
 								console.log( "yes" );
 							}',
-				'output' => 'let item=0;if(item++ +42===42){console.log("yes");}'
+				'output' => 'let item=0;if(item+++42===42){console.log("yes");}'
+			],
+			[
+				'input' => 'item + ++item2;',
+				'output' => 'item+ ++item2;'
+			],
+			[
+				'input' => 'item - --item2;',
+				'output' => 'item- --item2;'
+			],
+			[
+				'input' => 'item++ +item2;',
+				'output' => 'item+++item2;'
+			],
+			[
+				'input' => 'item++ + ++item2;',
+				'output' => 'item+++ ++item2;' // could be +++++ but literally not worth fixing
+			],
+			[
+				'input' => 'item-- -item2;',
+				'output' => 'item---item2;'
+			],
+			[
+				'input' => 'item- ++item2;',
+				'output' => 'item-++item2;'
 			],
 			[
 				'input' => 'let item = 0;
 							if (true && ( --item + 42 === 41 || item-- + 42 === 41)) {
 								console.log( "correct" );
 							}',
-				'output' => 'let item=0;if(true&&(--item+42===41||item-- +42===41)){console.log("correct");}'
+				'output' => 'let item=0;if(true&&(--item+42===41||item--+42===41)){console.log("correct");}'
 			]
 		];
-		$this->compareMinify($tests);
+		$this->compareMinify($tests, ['semicolon' => false]);
 	}
 
 	public function testCanCompressWhitespace() {
@@ -235,6 +275,28 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 					return item1  *  item2;
 				}',
 				'output' => 'export function(item1,item2){return item1*item2;}'
+			],
+			[
+				'input' => 'var   item = 42 > 1 ?	test1  :  test2  ;   ',
+				'output' => 'var item=42>1?test1:test2;'
+			],
+		];
+		$this->compareMinify($tests, ['semicolon' => false]);
+	}
+
+	public function testCanRemoveSemicolons() {
+		$tests = [
+			[
+				'input' => 'var item = () => {
+					return "This";
+				});',
+				'output' => 'var item=()=>{return "This"});'
+			],
+			[
+				'input' => 'var item = () => {
+					return "I want " + (val ? "this" : "something else");
+				});',
+				'output' => 'var item=()=>{return "I want "+(val?"this":"something else")});'
 			]
 		];
 		$this->compareMinify($tests);
@@ -247,16 +309,24 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 					var item2 = 42
 					',
 				'output' => 'var item="test  this"'."\n".'var item2=42'
+			],
+			[
+				'input' => 'var   item = "test  this"
+
+				;
+					var item2 = 42
+					',
+				'output' => 'var item="test  this";var item2=42'
 			]
 		];
-		$this->compareMinify($tests);
+		$this->compareMinify($tests, ['semicolon' => false]);
 	}
 
-	protected function compareMinify(array $tests) {
+	protected function compareMinify(array $tests, array $minify = []) {
 		$obj = new jslite();
 		foreach ($tests AS $item) {
 			$obj->load($item['input']);
-			$obj->minify();
+			$obj->minify($minify);
 			$this->assertEquals($item['output'], $obj->save());
 		}
 	}

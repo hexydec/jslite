@@ -5,8 +5,19 @@ namespace hexydec\jslite;
 class jslite {
 
 	protected $js;
+	protected $config = [
+		'minify' => [
+			'commentsingle' => true,
+			'commentmulti' => true,
+			'whitespace' => true,
+			'semicolon' => true
+		]
+	];
 
-	public function __construct() {
+	public function __construct(array $config = []) {
+		if ($config) {
+			$this->config = array_replace_recursive($this->config, $config);
+		}
 	}
 
 	/**
@@ -70,46 +81,91 @@ class jslite {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
+		$minify = array_merge($this->config['minify'], $minify);
 
+		// define capture patterns
 		$patterns = [
-			'startend' => '^\\s++', // whitespace at start
-			'end' => '\\s++$', // whitespace at end
-			'commentmulti' => '\\s*+\\/\\*(?:(?U)[\\s\\S]*)\\*\\/', // multiline comments
-			'commentsingle' => '\\s*+\\/\\/[^\\n]*+', // single line comment
-			'doublequotes' => '"(?:\\\\.|[^\\\\"])*"', // anything in unescaped quotes
-			'singlequotes' => "'(?:\\\\.|[^\\\\'])*'", // anything in unescaped quotes
-			'regexp' => '(?<=return|[^a-z0-9])\\s*+\\/(?:\\\\.|[^\\\\\\/\\n\\r])*\\/[gimsuy]?', // regular expressions
-			'increment' => '(?:\\+\\+|--)\\s++(?=[+\\/+-])',
-			'control' => '\\s*+[=+*\\/;(){}\\[\\],><|:-]\\s*+', // whitespace around control characters
-			'keywords' => '(?<=[a-z0-9"\'])(\\s++)(?=[a-z0-9"\'])',
-			'whitespace' => '\\s++' // two or more whitespace characters
+
+			// remove multiline comments
+			'commentmulti' => '\\/\\*(?:(?U)[\\s\\S]*)\\*\\/',
+
+			// consume strings in quotes, check for escaped quotes
+			'doublequotes' => '"(?:\\\\.|[^\\\\"])*"',
+			'singlequotes' => "'(?:\\\\.|[^\\\\'])*'",
+
+			// capture single line comments after quotes incase it contains //
+			'commentsingle' => '\\/\\/[^\\n]*+',
+
+			// look behind for keyword|value|variable and capture whitespace (replaced with space or linebreak), or just whitespace which will be removed, followed by a single line regular expressionn, optional whitespace (Will be removed), and then must be followed by a control character or linebreak
+			'regexp' => '(?:((?<=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}_$"\'])\\s++)|\\s++)\\/(?:\\\\.|[^\\\\\\/\\n\\r])*\\/[gimsuy]?[ \\t]*+(?=[.,;\\)\\]}]|[\\r\\n]|$)',
+
+			// capture a special case when an increment or decrement is next to a plus or minus
+			'increment' => '(?<=\\+)[ \\t]++\\+\\+',
+			'decrement' => '(?<=-)[ \\t]++--',
+
+			// capture whitespace in between keyword|value|variable|quotes and reduce to single space or linebreak
+			'keywords' => '(?<=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}_$"\'])(\\s++)(?=[\\p{L}\\p{Nl}_$"\'])',
+
+			// must not consume control character incase it is the start of a regexp
+			'precontrol' => '\\s++(?=[.,:;|&?<>%^()\\[\\]{}=+*\\/-])', // whitespace around control characters
+			'postcontrol' => '(?<=[.,:;|&?<>%^()\\[\\]{}=+*\\/-])\\s++',
+
+			// whitespace at start and end of the input
+			'startend' => '^\\s++',
+			'end' => '\\s++$'
 		];
 
-		// replace captures
-		$compiled = '/'.implode('|', $patterns).'/i';
-		$this->js = preg_replace_callback($compiled, function ($match) {
+		// remove comments first as they could be in the middle of something
+		if ($minify['commentmulti']) {
+			$this->js = preg_replace('/'.$patterns['commentmulti'].'/i', '', $this->js);
+			unset($patterns['commentmulti']);
+		}
 
-			// skip if quotes
-			if (mb_strpos($match[0], '"') !== 0 && mb_strpos($match[0], "'") !== 0) {
+		// remove single line comments, but extract out quotes so we don't capture the wrong thing
+		if ($minify['commentsingle']) {
+			$this->js = preg_replace_callback('/'.implode('|', array_intersect_key($patterns, [
+				'singlequotes' => true,
+				'doublequotes' => true,
+				'commentsingle' => true
+			])).'/i', function ($match) {
+				return mb_strpos($match[0], '//') === 0 ? '' : $match[0];
+			}, $this->js);
+			unset($patterns['commentsingle']);
+		}
+
+		// remove whitespace
+		if ($minify['whitespace']) {
+			// preg_match_all('/'.$patterns['increment'].'/i', $this->js, $match);
+			// var_dump($match);
+
+			// replace captures
+			$compiled = '/'.implode('|', $patterns).'/i';
+			$this->js = preg_replace_callback($compiled, function ($match) {
+				// var_dump($match);
 
 				// remove whitespace around capture
 				$match[0] = trim($match[0]);
 
-				// strip comments
-				if (mb_strpos($match[0], '//') === 0 || mb_strpos($match[0], '/*') === 0) {
-					$match[0] = '';
+				// add a single space or linebreak to separate keywords
+				if (!empty($match[1]) || !empty($match[2])) {
+					$match[0] = (mb_strpos($match[1].($match[2] ?? ''), "\n") === false ? ' ' : "\n").$match[0];
 
 				// handle increments and decrements next to other operators
 				} elseif ($match[0] === '++' || $match[0] === '--') {
-					$match[0] .= ' '; // restore space
+					$match[0] = ' '.$match[0]; // restore space
 
-				// add a single space if capture was only whitespace not at the start or end of the string
-				} elseif ($match[0] === '' && !empty($match[1])) {
-					$match[0] = mb_strpos($match[1], "\n") === false ? ' ' : "\n";
+				// add line break where comments are allowed
+				} elseif (mb_strpos($match[0], '//') === 0) {
+					$match[0] .= "\n";
 				}
-			}
-			return $match[0];
-		}, $this->js);
+				return $match[0];
+			}, $this->js);
+		}
+
+		// remove trailing semi-colons
+		if ($minify['semicolon']) {
+			$this->js = str_replace([';)', ';}'], [')', '}'], $this->js);
+		}
 	}
 
 	/**
