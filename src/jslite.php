@@ -21,19 +21,22 @@ class jslite {
 
 	protected $tokens = [
 
-		// remove multiline comments
-		'commentmulti' => '\\/\\*(?:(?U)[\\s\\S]*)\\*\\/',
-
 		// consume strings in quotes, check for escaped quotes
-		'doublequotes' => '"(?:\\\\.|[^\\\\"])*+"',
-		'singlequotes' => "'(?:\\\\.|[^\\\\'])*+'",
+		'doublequotes' => '"(?:\\\\[^\\n\\r]|[^\\\\"\\n\\r])*+"',
+		'singlequotes' => "'(?:\\\\[^\\n\\r]|[^\\\\'\\n\\r])*+'",
 		'templateliterals' => '`(?:\\\\.|[^\\\\`])*+`',
+
+		// look behind for keyword|value|variable and capture whitespace (replaced with space or linebreak), or just whitespace which will be removed, followed by a single line regular expressionn, optional whitespace (Will be removed), and then must be followed by a control character or linebreak
+		'regexp' => '(?:((?<=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}_$"\'])\\s++)|\\s*+)\\/(?!\\*)(?:\\\\.|[^\\\\\\/\\n\\r])*\\/[gimsuy]?[ \\t]*+(?=[.,;\\)\\]}]|[\\r\\n]|$)',
 
 		// capture single line comments after quotes incase it contains //
 		'commentsingle' => '\\/\\/[^\\n]*+',
 
-		// look behind for keyword|value|variable and capture whitespace (replaced with space or linebreak), or just whitespace which will be removed, followed by a single line regular expressionn, optional whitespace (Will be removed), and then must be followed by a control character or linebreak
-		'regexp' => '(?:((?<=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}_$"\'])\\s++)|\\s++)\\/(?:\\\\.|[^\\\\\\/\\n\\r])*\\/[gimsuy]?[ \\t]*+(?=[.,;\\)\\]}]|[\\r\\n]|$)',
+		// remove multiline comments
+		'commentmulti' => '\\/\\*(?:(?U)[\\s\\S]*)\\*\\/',
+
+		// optimise trailing semi-colons
+		'semicolon' => ';\\s*+(?=[)}]|$)',
 
 		// capture a special case when an increment or decrement is next to a plus or minus
 		'increment' => '(?<=\\+)[ \\t]++\\+\\+',
@@ -97,25 +100,27 @@ class jslite {
 		// get capture patterns
 		$patterns = $this->tokens;
 
-		// remove comments first as they could be in the middle of something
-		if ($minify['commentmulti']) {
-			$this->js = preg_replace('/'.$patterns['commentmulti'].'/i', '', $this->js);
-			unset($patterns['commentmulti']);
-		}
-
-		// remove single line comments, but extract out quotes so we don't capture the wrong thing
-		if ($minify['commentsingle']) {
+		// remove comments in first pass, extract quotes so we don't capture the wrong thing
+		if ($minify['commentsingle'] || $minify['commentmulti']) {
 			$this->js = preg_replace_callback('/'.implode('|', array_intersect_key($patterns, [
 				'singlequotes' => true,
 				'doublequotes' => true,
-				'commentsingle' => true
+				'templateliterals' => true,
+				'regexp' => true,
+				'commentmulti' => $minify['commentmulti'],
+				'commentsingle' => $minify['commentsingle'],
 			])).'/i', function ($match) {
-				return mb_strpos($match[0], '//') === 0 ? '' : $match[0];
+				return mb_strpos($match[0], '//') === 0 || mb_strpos($match[0], '/*') === 0 ? '' : $match[0];
 			}, $this->js);
-			unset($patterns['commentsingle']);
+			unset($patterns['commentsingle'], $patterns['commentmulti']);
 		}
 
-		// remove whitespace
+		// remove semi-colon pattern if switched off
+		if (!$minify['semicolon']) {
+			unset($patterns['semicolon']);
+		}
+
+		// remove whitespace in second pass
 		if ($minify['whitespace']) {
 
 			// replace captures
@@ -133,17 +138,13 @@ class jslite {
 				} elseif ($match[0] === '++' || $match[0] === '--') {
 					$match[0] = ' '.$match[0]; // restore space
 
-				// add line break where comments are allowed
-				} elseif (mb_strpos($match[0], '//') === 0) {
-					$match[0] .= "\n";
+				// remove semicolon
+				} elseif (mb_strpos($match[0], ';') === 0) {
+					$match[0] = '';
 				}
+
 				return $match[0];
 			}, $this->js);
-		}
-
-		// remove trailing semi-colons
-		if ($minify['semicolon']) {
-			$this->js = str_replace([';)', ';}'], [')', '}'], $this->js);
 		}
 	}
 

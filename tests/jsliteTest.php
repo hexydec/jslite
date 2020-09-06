@@ -190,6 +190,10 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'input' => 'item = (item)/ 42;
 					var item2 = item / 42;',
 				'output' => 'item=(item)/42;var item2=item/42;'
+			],
+			[
+				'input' => 'e.replace(/\'/g,"%27"); item = "\'";',
+				'output' => 'e.replace(/\'/g,"%27");item="\'";'
 			]
 		];
 		$this->compareMinify($tests, ['semicolon' => false]);
@@ -304,13 +308,19 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'input' => 'var item = () => {
 					return "This";
 				});',
-				'output' => 'var item=()=>{return "This"});'
+				'output' => 'var item=()=>{return "This"})'
 			],
 			[
 				'input' => 'var item = () => {
 					return "I want " + (val ? "this" : "something else");
-				});',
-				'output' => 'var item=()=>{return "I want "+(val?"this":"something else")});'
+				});
+
+				',
+				'output' => 'var item=()=>{return "I want "+(val?"this":"something else")})'
+			],
+			[
+				'input' => 'var item = " ;) ";',
+				'output' => 'var item=" ;) "'
 			]
 		];
 		$this->compareMinify($tests);
@@ -331,6 +341,10 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 					var item2 = 42
 					',
 				'output' => 'var item="test  this";var item2=42'
+			],
+			[
+				'input' => 'var item = "/*" + "*/";',
+				'output' => 'var item="/*"+"*/";'
 			]
 		];
 		$this->compareMinify($tests, ['semicolon' => false]);
