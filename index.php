@@ -35,8 +35,8 @@ if (!empty($_POST['action'])) {
 		trigger_error('No URL or Javascript source was posted', E_USER_WARNING);
 
 	// load the source code
-	} elseif (!$obj->load($_POST['source'])) {
-		trigger_error('Could not parse Javascript', E_USER_WARNING);
+} elseif (!$obj->load($_POST['source'], $error)) {
+		trigger_error('Could not parse Javascript: '.$error, E_USER_WARNING);
 
 	// record the HTML
 	} else {
@@ -54,7 +54,7 @@ if (!empty($_POST['action'])) {
 		// record timings
 		$timing['minify'] = microtime(true);
 		$mem['minify'] = memory_get_peak_usage();
-		$output = $obj->save();
+		$output = $obj->output();
 		$timing['output'] = microtime(true);
 		$mem['output'] = memory_get_peak_usage();
 	}

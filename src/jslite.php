@@ -43,7 +43,7 @@ class jslite {
 		'decrement' => '(?<=-)[ \\t]++--',
 
 		// capture whitespace in between keyword|value|variable|quotes and reduce to single space or linebreak
-		'keywords' => '(?<=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}_$"\'])(\\s++)(?=[\\p{L}\\p{Nl}_$"\'])',
+		'keywords' => '(?<=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}_$"\')]|\\+\\+|--)(\\s++)(?=[\\p{L}\\p{Nl}_$"\']|\\+\\+|--)',
 
 		// must not consume control character incase it is the start of a regexp
 		'precontrol' => '\\s++(?=[.,:;|&?<>%^()\\[\\]{}=+*\\/-])', // whitespace around control characters
