@@ -32,6 +32,16 @@ class keyword {
 	}
 
 	/**
+	 * Minifies the internal representation of the document
+	 *
+	 * @param array $minify An array indicating which minification operations to perform, this is merged with htmldoc::$config['minify']
+	 * @return void
+	 */
+	public function minify(array $minify = []) : void {
+		
+	}
+
+	/**
 	 * Compile as Javascript
 	 *
 	 * @param array $options An array indicating output options

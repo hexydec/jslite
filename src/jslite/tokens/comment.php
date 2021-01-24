@@ -18,7 +18,9 @@ class comment {
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
 			$this->content = mb_substr($token['value'], 2, $token['type'] == 'commentmulti' ? -2 : 0);
+			return true;
 		}
+		return false;
 	}
 
 	/**

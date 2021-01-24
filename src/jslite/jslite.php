@@ -23,18 +23,17 @@ class jslite {
 		// remove multiline comments
 		'commentmulti' => '\\/\\*(?:(?U)[\\s\\S]*)\\*\\/',
 
-		'increment' => '\\+\\+|--',
+		// 'increment' => '\\+\\+|--',
 
-		'keyword' => '\\b(?:let|break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield)\\b',
+		'keyword' => '\\b(?:let|break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield|null)\\b',
 		'variable' => '[\\p{L}\\p{Nl}][\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}_]*+',
 		'number' => '(?:0[bB][01_]++n?|0[oO][0-7_]++n?|0[xX][a-f0-9_]|[0-9][0-9_]*+(?:\\.[0-9_]++)?(?:e[+-]?[1-9][0-9]*+)?)',
 
 		'eol' => ';',
-		'spread' => '\\.\\.\\.',
 		'dot' => '\\.',
 		'comma' => ',',
-		'control' => '[:|&?<>^]',
-		'operator' => '[+-\\/*=!]',
+		'control' => '[:|&?^]+',
+		'operator' => '[+\\/*=!<>-]+|\\.\\.\\.',
 		'opensquare' => '\\[',
 		'closesquare' => '\\]',
 		'openbracket' => '\\(',
@@ -120,6 +119,11 @@ class jslite {
 
 		// merge config
 		// $minify = array_replace_recursive($this->config['minify'], $minify);
+
+		// minify expressions
+		foreach ($this->expressions AS $item) {
+			$item->minify($minify);
+		}
 	}
 
 	/**

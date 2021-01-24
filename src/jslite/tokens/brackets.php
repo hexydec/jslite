@@ -5,6 +5,7 @@ namespace hexydec\jslite;
 class brackets {
 
 	protected $expressions = [];
+	protected $type = 'bracket'; // square or bracket
 
 	/**
 	 * Constructs the comment object
@@ -24,18 +25,35 @@ class brackets {
 	 * @return void
 	 */
 	public function parse(tokenise $tokens) : bool {
-		while (($token = $tokens->next()) !== null) {
-			if ($token['type'] != 'comma') {
-				$obj = new expression();
-				if ($obj->parse($tokens)) {
-					$this->expressions[] = $obj;
-				}
-				if (($token = $tokens->current()) !== null && $token['type'] == 'closebracket') {
-					return true;
+		if (($token = $tokens->current()) !== false) {
+			$this->type = mb_substr($token['type'], 4);
+			while (($token = $tokens->next()) !== null) {
+				if ($token['type'] != 'comma') {
+					$obj = new expression();
+					if ($obj->parse($tokens)) {
+						$this->expressions[] = $obj;
+					}
+					if (($token = $tokens->current()) !== null && $token['type'] == 'close'.$this->type) {
+						return true;
+					}
 				}
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Minifies the internal representation of the document
+	 *
+	 * @param array $minify An array indicating which minification operations to perform, this is merged with htmldoc::$config['minify']
+	 * @return void
+	 */
+	public function minify(array $minify = []) : void {
+
+		// minify expressions
+		foreach ($this->expressions AS $item) {
+			$item->minify($minify);
+		}
 	}
 
 	/**
@@ -45,13 +63,16 @@ class brackets {
 	 * @return string The compiled HTML
 	 */
 	public function output(array $options = []) : string {
+		$brackets = [
+			'square' => ['[', ']'],
+			'bracket' => ['(', ')'],
+			'curly' => ['{', '}'],
+		];
+		$bracket = $brackets[$this->type];
 		$js = '';
 		foreach ($this->expressions AS $key => $item) {
-			if ($key) {
-				$js .= ',';
-			}
 			$js .= $item->output($options);
 		}
-		return '('.$js.')';
+		return $bracket[0].$js.$bracket[1];
 	}
 }
