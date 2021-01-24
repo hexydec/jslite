@@ -2,9 +2,10 @@
 declare(strict_types = 1);
 namespace hexydec\jslite;
 
-class number {
+class regexp {
 
-	protected $number;
+	protected $root;
+	protected $pattern;
 
 	/**
 	 * Constructs the comment object
@@ -25,7 +26,7 @@ class number {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
-			$this->number = $token['value'];
+			$this->pattern = $token['value'];
 			return true;
 		}
 		return false;
@@ -38,11 +39,6 @@ class number {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
-		if (mb_strpos($this->number, '.') !== false) {
-			$this->number = floatval($this->number);
-		} else {
-			$this->number = intval($this->number);
-		}
 	}
 
 	/**
@@ -52,6 +48,6 @@ class number {
 	 * @return string The compiled HTML
 	 */
 	public function compile(array $options = []) : string {
-		return (string) $this->number;
+		return $this->pattern;
 	}
 }

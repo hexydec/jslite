@@ -62,7 +62,7 @@ class brackets {
 	 * @param array $options An array indicating output options
 	 * @return string The compiled HTML
 	 */
-	public function output(array $options = []) : string {
+	public function compile(array $options = []) : string {
 		$brackets = [
 			'square' => ['[', ']'],
 			'bracket' => ['(', ')'],
@@ -73,6 +73,7 @@ class brackets {
 		foreach ($this->expressions AS $key => $item) {
 			$js .= $item->output($options);
 		}
+		$item->eol = null;
 		return $bracket[0].$js.$bracket[1];
 	}
 }

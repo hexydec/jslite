@@ -38,7 +38,7 @@ class keyword {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
-		
+
 	}
 
 	/**
@@ -47,7 +47,7 @@ class keyword {
 	 * @param array $options An array indicating output options
 	 * @return string The compiled HTML
 	 */
-	public function output(array $options = []) : string {
+	public function compile(array $options = []) : string {
 		return $this->keyword;
 	}
 }

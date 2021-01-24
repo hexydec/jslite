@@ -140,10 +140,8 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			],
 			[
 				'input' => 'let item = "  the answer"
-								+ " is
-								42" ; ',
-				'output' => 'let item="  the answer"+" is
-								42";'
+								+ " is 42" ; ',
+				'output' => 'let item="  the answer"+" is 42;'
 			],
 		];
 		$this->compareMinify($tests, ['semicolon' => false]);
@@ -355,7 +353,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 		foreach ($tests AS $item) {
 			$obj->load($item['input']);
 			$obj->minify($minify);
-			$this->assertEquals($item['output'], $obj->save());
+			$this->assertEquals($item['output'], $obj->compile());
 		}
 	}
 }

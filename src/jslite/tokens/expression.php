@@ -50,7 +50,14 @@ class expression {
 						break;
 					case 'doublequotes':
 					case 'singlequotes':
+					case 'templateliterals':
 						$obj = new jsstring($this);
+						if ($obj->parse($tokens)) {
+							$commands[] = $obj;
+						}
+						break;
+					case 'regexp':
+						$obj = new regexp($this);
 						if ($obj->parse($tokens)) {
 							$commands[] = $obj;
 						}
@@ -95,6 +102,7 @@ class expression {
 		foreach ($this->commands AS $item) {
 			$item->minify($minify);
 		}
+		$item->eol = null;
 	}
 
 	/**
@@ -103,10 +111,10 @@ class expression {
 	 * @param array $options An array indicating output options
 	 * @return string The compiled HTML
 	 */
-	public function output(array $options = []) : string {
+	public function compile(array $options = []) : string {
 		$js = '';
 		foreach ($this->commands AS $item) {
-			$js .= $item->output($options);
+			$js .= $item->compile($options);
 		}
 		return $js.$this->eol;
 	}

@@ -15,7 +15,7 @@ class jslite {
 		'templateliterals' => '`(?:\\\\.|[^\\\\`])*+`',
 
 		// look behind for keyword|value|variable and capture whitespace (replaced with space or linebreak), or just whitespace which will be removed, followed by a single line regular expressionn, optional whitespace (Will be removed), and then must be followed by a control character or linebreak
-		'regexp' => '(?:(?<=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}_$"\'])\\s++|\\s*+)\\/(?!\\*)(?:\\\\.|[^\\\\\\/\\n\\r])*\\/[gimsuy]?[ \\t]*+(?=[.,;\\)\\]}]|[\\r\\n]|$)',
+		'regexp' => '\\/(?!\\*)(?:\\\\.|[^\\\\\\/\\n\\r])*\\/[gimsuy]?[ \\t]*+(?=[.,;\\)\\]}]|[\\r\\n]|$)', // (?:(?<=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}_$"\'])\\s++|\s*+)
 
 		// capture single line comments after quotes incase it contains //
 		'commentsingle' => '\\/\\/[^\\n]*+',
@@ -26,14 +26,14 @@ class jslite {
 		// 'increment' => '\\+\\+|--',
 
 		'keyword' => '\\b(?:let|break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield|null)\\b',
-		'variable' => '[\\p{L}\\p{Nl}][\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}_]*+',
+		'variable' => '[\\p{L}\\p{Nl}$_][\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}$_]*+',
 		'number' => '(?:0[bB][01_]++n?|0[oO][0-7_]++n?|0[xX][a-f0-9_]|[0-9][0-9_]*+(?:\\.[0-9_]++)?(?:e[+-]?[1-9][0-9]*+)?)',
 
 		'eol' => ';',
-		'dot' => '\\.',
+		// 'dot' => '\\.',
 		'comma' => ',',
 		'control' => '[:|&?^]+',
-		'operator' => '[+\\/*=!<>-]+|\\.\\.\\.',
+		'operator' => '[\\.+\\/*=!<>-]+',
 		'opensquare' => '\\[',
 		'closesquare' => '\\]',
 		'openbracket' => '\\(',
@@ -132,10 +132,10 @@ class jslite {
 	 * @param array $options An array indicating output options, this is merged with htmldoc::$output
 	 * @return string The compiled Javascript
 	 */
-	public function output(array $options = []) : string {
+	public function compile(array $options = []) : string {
 		$js = '';
 		foreach ($this->expressions AS $item) {
-			$js .= $item->output($options);
+			$js .= $item->compile($options);
 		}
 		return $js;
 	}

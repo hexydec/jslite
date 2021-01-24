@@ -12,6 +12,7 @@ spl_autoload_register(function (string $class) : bool {
 		'hexydec\\jslite\\number' => $dir.'/tokens/number.php',
 		'hexydec\\jslite\\jsstring' => $dir.'/tokens/string.php',
 		'hexydec\\jslite\\variable' => $dir.'/tokens/variable.php',
+		'hexydec\\jslite\\regexp' => $dir.'/tokens/regexp.php',
 		'hexydec\\jslite\\expression' => $dir.'/tokens/expression.php',
 		'hexydec\\jslite\\brackets' => $dir.'/tokens/brackets.php',
 		// 'hexydec\\html\\token' => $dir.'/tokens/interfaces/token.php',

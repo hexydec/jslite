@@ -30,9 +30,7 @@ class comment {
 	 * @return void
 	 */
 	public function minify(array $minify) : void {
-		if (!empty($minify['comments']['remove'])) {
-			$this->content = null;
-		}
+		$this->content = null;
 	}
 
 	/**
@@ -41,13 +39,13 @@ class comment {
 	 * @param array $options An array indicating output options
 	 * @return string The compiled Javascript
 	 */
-	public function output(array $options = []) : string {
+	public function compile(array $options = []) : string {
 		if ($this->content === null) {
 			return '';
 		} elseif (mb_strpos($this->content, "\n") !== false) {
 			return '/*'.$this->content.'*/';
 		} else {
-			return '//'.$this->content;
+			return '//'.$this->content."\n";
 		}
 	}
 }

@@ -6,7 +6,7 @@ class variable {
 
 	protected $root;
 	protected $scopes = [];
-	protected $name = [];
+	protected $name;
 
 	/**
 	 * Constructs the comment object
@@ -27,25 +27,7 @@ class variable {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
-			$var = true;
-			do {
-				if ($var) {
-					if ($token['type'] == 'variable') {
-						$this->name[] = $token['value'];
-						$var = false;
-					} else {
-						break;
-					}
-				} elseif ($token['type'] == 'dot') {
-					$var = true;
-				} elseif ($token['type'] !== 'whitespace') {
-					break;
-				}
-			} while (($token = $tokens->next()) !== null);
-			$token = $tokens->prev();
-			if ($token['type'] == 'whitespace') {
-				$tokens->prev();
-			}
+			$this->name = $token['value'];
 			return true;
 		}
 		return false;
@@ -66,7 +48,7 @@ class variable {
 	 * @param array $options An array indicating output options
 	 * @return string The compiled HTML
 	 */
-	public function output(array $options = []) : string {
-		return implode('.', $this->name);
+	public function compile(array $options = []) : string {
+		return $this->name;
 	}
 }

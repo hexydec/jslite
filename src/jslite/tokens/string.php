@@ -39,7 +39,9 @@ class jsstring {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
-		$this->quote = '"';
+		if ($this->quote == "'") {
+			$this->quote = '"';
+		}
 	}
 
 	/**
@@ -48,7 +50,7 @@ class jsstring {
 	 * @param array $options An array indicating output options
 	 * @return string The compiled HTML
 	 */
-	public function output(array $options = []) : string {
+	public function compile(array $options = []) : string {
 		return $this->quote.str_replace($this->quote, '\\'.$this->quote, $this->string).$this->quote;
 	}
 }

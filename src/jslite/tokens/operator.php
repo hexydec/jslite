@@ -38,7 +38,7 @@ class operator {
 	 * @param array $options An array indicating output options
 	 * @return string The compiled Javascript
 	 */
-	public function output(array $options = []) : string {
+	public function compile(array $options = []) : string {
 		return $this->operator;
 	}
 }
