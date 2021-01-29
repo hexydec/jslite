@@ -70,10 +70,12 @@ class brackets {
 		];
 		$bracket = $brackets[$this->type];
 		$js = '';
-		foreach ($this->expressions AS $key => $item) {
-			$js .= $item->output($options);
+		if ($this->expressions) {
+			foreach ($this->expressions AS $key => $item) {
+				$js .= $item->compile($options);
+			}
+			$item->eol = null;
 		}
-		$item->eol = null;
 		return $bracket[0].$js.$bracket[1];
 	}
 }

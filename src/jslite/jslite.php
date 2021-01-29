@@ -23,7 +23,7 @@ class jslite {
 		// remove multiline comments
 		'commentmulti' => '\\/\\*(?:(?U)[\\s\\S]*)\\*\\/',
 
-		// 'increment' => '\\+\\+|--',
+		'increment' => '\\+\\+|--',
 
 		'keyword' => '\\b(?:let|break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield|null)\\b',
 		'variable' => '[\\p{L}\\p{Nl}$_][\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}$_]*+',
@@ -32,8 +32,7 @@ class jslite {
 		'eol' => ';',
 		// 'dot' => '\\.',
 		'comma' => ',',
-		'control' => '[:|&?^]+',
-		'operator' => '[\\.+\\/*=!<>-]+',
+		'operator' => '[\\.+\\/*=!<>:|&?^-]+',
 		'opensquare' => '\\[',
 		'closesquare' => '\\]',
 		'openbracket' => '\\(',

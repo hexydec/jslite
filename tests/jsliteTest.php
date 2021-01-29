@@ -141,7 +141,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			[
 				'input' => 'let item = "  the answer"
 								+ " is 42" ; ',
-				'output' => 'let item="  the answer"+" is 42;'
+				'output' => 'let item="  the answer"+" is 42";'
 			],
 		];
 		$this->compareMinify($tests, ['semicolon' => false]);
@@ -173,12 +173,12 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			],
 			[
 				'input' => 'string.replace(/[.*+\-?^${}()|[\]\\]/g, \'\\$&\');',
-				'output' => 'string.replace(/[.*+\-?^${}()|[\]\\]/g,\'\\$&\');'
+				'output' => 'string.replace(/[.*+\-?^${}()|[\]\\]/g,"\\$&");'
 			],
 			[
 				'input' => 'var item = 42
 					/[9-0]+/.test( item );',
-				'output' => 'var item=42'."\n".'/[9-0]+/.test(item);'
+				'output' => 'var item=42;/[9-0]+/.test(item);'
 			],
 			[
 				'input' => 'item = 26 / 42 / 60;',
@@ -225,6 +225,10 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 					[	"hi",  " there "]
 				}',
 				'output' => 'const item={[1,2,3],["hi"," there "]}'
+			],
+			[
+				'input' => 'const item = test ? "yes" : "no";',
+				'output' => 'const item=test?"yes":"no";'
 			]
 		];
 		$this->compareMinify($tests, ['semicolon' => false]);
@@ -305,8 +309,8 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			[
 				'input' => 'var item = () => {
 					return "This";
-				});',
-				'output' => 'var item=()=>{return "This"})'
+				};',
+				'output' => 'var item=()=>{return "This"}'
 			],
 			[
 				'input' => 'var item = () => {
@@ -330,7 +334,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'input' => 'var   item = "test  this"
 					var item2 = 42
 					',
-				'output' => 'var item="test  this"'."\n".'var item2=42'
+				'output' => 'var item="test  this";var item2=42'
 			],
 			[
 				'input' => 'var   item = "test  this"

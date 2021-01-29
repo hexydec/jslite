@@ -13,7 +13,7 @@ class MatthiasMullieTest extends \PHPUnit\Framework\TestCase {
 			foreach ($tests AS $item) {
 				$obj->load($item[0]);
 				$obj->minify();
-				$this->assertEquals($item[1], $obj->save());
+				$this->assertEquals($item[1], $obj->compile());
 			}
 		}
 	}
@@ -108,7 +108,7 @@ class MatthiasMullieTest extends \PHPUnit\Framework\TestCase {
         );
         $tests[] = array(
             '/abc"def/.test(\'\')',
-            '/abc"def/.test(\'\')',
+            '/abc"def/.test("")',
         );
 
         $tests[] = array(

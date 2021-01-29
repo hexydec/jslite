@@ -14,7 +14,6 @@ class whitespace {
 	 */
 	public function __construct(expression $root) {
 		$this->root = $root;
-		// $this->scopes = $scopes;
 	}
 
 	/**
@@ -38,12 +37,31 @@ class whitespace {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
-		$key = __NAMESPACE__.'\\keyword';
-		$not = __NAMESPACE__.'\\brackets';
 		$commands = $this->root->commands;
 		foreach ($commands AS $i => $item) {
 			if ($item === $this) {
-				$this->whitespace = $i && get_class($commands[$i -1]) == $key && (!isset($commands[$i + 1]) || get_class($commands[$i + 1]) != $not) ? ' ' : '';
+
+				// first item
+				if (!$i || !isset($commands[$i + 1])) {
+					$this->whitespace = '';
+
+				} else {
+					$prev = get_class($commands[$i - 1]);
+					$next = get_class($commands[$i + 1]);
+
+					// handle operators next to an increment
+					if ($next == __NAMESPACE__.'\\increment' && $prev == __NAMESPACE__.'\\operator' && mb_strpos($commands[$i + 1]->compile(), $commands[$i - 1]->compile()) !== false) {
+						$this->whitespace = ' ';
+
+					// keyword not followed by bracket
+					} elseif ($prev == __NAMESPACE__.'\\keyword' && $next != __NAMESPACE__.'\\brackets') {
+						$this->whitespace = ' ';
+
+					// remove whitespace
+					} else {
+						$this->whitespace = '';
+					}
+				}
 				break;
 			}
 		}

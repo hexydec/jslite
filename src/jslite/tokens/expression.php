@@ -15,6 +15,7 @@ class expression {
 	public function parse(tokenise $tokens) : bool {
 		$commands = [];
 		if (($token = $tokens->current()) !== null) {
+			$last = null;
 			do {
 				switch ($token['type']) {
 					case 'commentsingle':
@@ -26,6 +27,12 @@ class expression {
 						break;
 					case 'operator':
 						$obj = new operator($this);
+						if ($obj->parse($tokens)) {
+							$commands[] = $obj;
+						}
+						break;
+					case 'increment':
+						$obj = new increment($this);
 						if ($obj->parse($tokens)) {
 							$commands[] = $obj;
 						}
@@ -63,6 +70,22 @@ class expression {
 						}
 						break;
 					case 'whitespace':
+
+						// catch un-terminated line endings
+						if ($last && mb_strpos($token['value'], "\n") !== false) {
+
+							// check previous token
+							$exclude = ['operator', 'openbracket', 'closebracket', 'opensquare', 'closesquare', 'opencurly', 'closecurly'];
+							if (!in_array($last['type'], $exclude) && ($token = $tokens->next()) !== null) {
+								$tokens->prev();
+								if (!in_array($token['type'], $exclude)) {
+									$this->eol = ';';
+									break 2;
+								}
+							}
+						}
+
+						// create whitespace object
 						$obj = new whitespace($this);
 						if ($obj->parse($tokens)) {
 							$commands[] = $obj;
@@ -83,6 +106,9 @@ class expression {
 					case 'closesquare':
 					case 'closecurly':
 						break 2;
+				}
+				if ($token && !in_array($token['type'], ['whitespace', 'commentmulti', 'commentsingle'])) {
+					$last = $token;
 				}
 			} while (($token = $tokens->next()) !== null);
 		}

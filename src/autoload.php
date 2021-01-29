@@ -9,6 +9,7 @@ spl_autoload_register(function (string $class) : bool {
 		'hexydec\\jslite\\comment' => $dir.'/tokens/comment.php',
 		'hexydec\\jslite\\keyword' => $dir.'/tokens/keyword.php',
 		'hexydec\\jslite\\operator' => $dir.'/tokens/operator.php',
+		'hexydec\\jslite\\increment' => $dir.'/tokens/increment.php',
 		'hexydec\\jslite\\number' => $dir.'/tokens/number.php',
 		'hexydec\\jslite\\jsstring' => $dir.'/tokens/string.php',
 		'hexydec\\jslite\\variable' => $dir.'/tokens/variable.php',
