@@ -51,8 +51,17 @@ class brackets {
 	public function minify(array $minify = []) : void {
 
 		// minify expressions
+		$last = null;
 		foreach ($this->expressions AS $item) {
 			$item->minify($minify);
+
+			// get last expression if it contains more than just $whitespace
+			if (isset($item->commands[1]) || get_class($item->commands[0]) != __NAMESPACE__.'\\whitespace') {
+				$last = $item;
+			}
+		}
+		if ($last) {
+			$last->eol = null;
 		}
 	}
 

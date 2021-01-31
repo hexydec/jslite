@@ -120,8 +120,21 @@ class jslite {
 		// $minify = array_replace_recursive($this->config['minify'], $minify);
 
 		// minify expressions
+		$last = null;
+		$not = [__NAMESPACE__.'\\whitespace', __NAMESPACE__.'\\comment'];
 		foreach ($this->expressions AS $item) {
 			$item->minify($minify);
+
+			// get last expression if it contains more than just $whitespace
+			foreach ($item->commands AS $comm) {
+				if (!in_array(get_class($comm), $not)) {
+					$last = $item;
+					break;
+				}
+			}
+		}
+		if ($last) {
+			$last->eol = null;
 		}
 	}
 

@@ -128,7 +128,6 @@ class expression {
 		foreach ($this->commands AS $item) {
 			$item->minify($minify);
 		}
-		$item->eol = null;
 	}
 
 	/**

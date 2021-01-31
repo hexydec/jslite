@@ -38,6 +38,9 @@ class whitespace {
 	 */
 	public function minify(array $minify = []) : void {
 		$commands = $this->root->commands;
+		$prev = null;
+		$count = count($commands);
+		$not = [__NAMESPACE__.'\\whitespace', __NAMESPACE__.'\\comment'];
 		foreach ($commands AS $i => $item) {
 			if ($item === $this) {
 
@@ -46,15 +49,27 @@ class whitespace {
 					$this->whitespace = '';
 
 				} else {
-					$prev = get_class($commands[$i - 1]);
-					$next = get_class($commands[$i + 1]);
+
+					// get the next command that is not
+					$next = null;
+					for ($n = $i + 1; $n < $count; $n++) {
+						$cls = get_class($commands[$n]);
+						if (!in_array($cls, $not)) {
+							$next = $cls;
+							break;
+						}
+					}
+
+					// remove whitespace if last in the parent exprssion
+					if (!$next) {
+						$this->whitespace = '';
 
 					// handle operators next to an increment
-					if ($next == __NAMESPACE__.'\\increment' && $prev == __NAMESPACE__.'\\operator' && mb_strpos($commands[$i + 1]->compile(), $commands[$i - 1]->compile()) !== false) {
+					} elseif ($next == __NAMESPACE__.'\\increment' && $prev == __NAMESPACE__.'\\operator' && mb_strpos($commands[$i + 1]->compile(), $commands[$i - 1]->compile()) !== false) {
 						$this->whitespace = ' ';
 
 					// keyword not followed by bracket
-					} elseif ($prev == __NAMESPACE__.'\\keyword' && $next != __NAMESPACE__.'\\brackets') {
+					} elseif (in_array(__NAMESPACE__.'\\keyword', [$prev, $next]) && !in_array(__NAMESPACE__.'\\brackets', [$prev, $next])) {
 						$this->whitespace = ' ';
 
 					// remove whitespace
@@ -63,6 +78,11 @@ class whitespace {
 					}
 				}
 				break;
+			} else {
+				$cls = get_class($item);
+				if (!in_array($cls, $not)) {
+					$prev = $cls;
+				}
 			}
 		}
 	}
