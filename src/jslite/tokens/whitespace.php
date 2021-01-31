@@ -45,7 +45,7 @@ class whitespace {
 			if ($item === $this) {
 
 				// first item
-				if (!$i || !isset($commands[$i + 1])) {
+				if (!$i || !$prev || !isset($commands[$i + 1])) {
 					$this->whitespace = '';
 
 				} else {
