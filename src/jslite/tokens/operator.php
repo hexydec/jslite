@@ -4,6 +4,8 @@ namespace hexydec\jslite;
 
 class operator {
 
+	const type = 'operator';
+	const significant = true;
 	/**
 	 * @var string The text content of this object
 	 */

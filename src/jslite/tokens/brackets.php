@@ -4,8 +4,10 @@ namespace hexydec\jslite;
 
 class brackets {
 
+	const type = 'brackets';
+	const significant = true;
 	protected $expressions = [];
-	protected $type = 'bracket'; // square or bracket
+	public $bracket = 'bracket'; // square or bracket or curly
 
 	/**
 	 * Constructs the comment object
@@ -26,14 +28,14 @@ class brackets {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== false) {
-			$this->type = mb_substr($token['type'], 4);
+			$this->bracket = mb_substr($token['type'], 4);
 			while (($token = $tokens->next()) !== null) {
 				if ($token['type'] != 'comma') {
 					$obj = new expression();
 					if ($obj->parse($tokens)) {
 						$this->expressions[] = $obj;
 					}
-					if (($token = $tokens->current()) !== null && $token['type'] == 'close'.$this->type) {
+					if (($token = $tokens->current()) !== null && $token['type'] == 'close'.$this->bracket) {
 						return true;
 					}
 				}
@@ -55,9 +57,12 @@ class brackets {
 		foreach ($this->expressions AS $item) {
 			$item->minify($minify);
 
-			// get last expression if it contains more than just $whitespace
-			if (isset($item->commands[1]) || get_class($item->commands[0]) != __NAMESPACE__.'\\whitespace') {
-				$last = $item;
+			// get last expression if it contains significant code
+			foreach ($item->commands AS $comm) {
+				if ($comm::significant) {
+					$last = $item;
+					break;
+				}
 			}
 		}
 		if ($last) {
@@ -77,7 +82,7 @@ class brackets {
 			'bracket' => ['(', ')'],
 			'curly' => ['{', '}'],
 		];
-		$bracket = $brackets[$this->type];
+		$bracket = $brackets[$this->bracket];
 		$js = '';
 		if ($this->expressions) {
 			foreach ($this->expressions AS $key => $item) {

@@ -4,6 +4,8 @@ namespace hexydec\jslite;
 
 class comment {
 
+	const type = 'comment';
+	const significant = false;
 	/**
 	 * @var string The text content of this object
 	 */

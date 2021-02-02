@@ -3,6 +3,8 @@ namespace hexydec\jslite;
 
 class expression {
 
+	const type = 'expression';
+	const significant = true;
 	public $commands = [];
 	public $eol;
 
@@ -15,6 +17,7 @@ class expression {
 	public function parse(tokenise $tokens) : bool {
 		$commands = [];
 		if (($token = $tokens->current()) !== null) {
+			$beforelast = null;
 			$last = null;
 			do {
 				switch ($token['type']) {
@@ -75,12 +78,26 @@ class expression {
 						if ($last && mb_strpos($token['value'], "\n") !== false) {
 
 							// check previous token
-							$exclude = ['operator', 'openbracket', 'closebracket', 'opensquare', 'closesquare', 'opencurly', 'closecurly'];
-							if (!in_array($last['type'], $exclude) && ($token = $tokens->next()) !== null) {
-								$tokens->prev();
-								if (!in_array($token['type'], $exclude)) {
-									$this->eol = ';';
-									break 2;
+							if (!in_array($last, ['operator', 'keyword']) && ($last != 'brackets' || $beforelast != 'keyword')) {
+								$next = null;
+								$rewind = 0;
+								while (($token = $tokens->next()) !== null) {
+									if (!in_array($token['type'], ['whitespace', 'commentsingle', 'commentmulti'])) {
+										$next = $token;
+										$rewind++;
+										break;
+									}
+								}
+								for ($i = 0; $i < $rewind; $i++) {
+									$tokens->prev();
+								}
+								if ($next) {
+									// var_dump($beforelast, $last, $next['type']);
+
+									// if the next significant token is a new command, then start a new expression
+									if ((!in_array($token['type'], ['operator', 'openbracket', 'opensquare', 'opencurly']) && ($last != 'brackets' || $token['type'] != 'keyword')) || ($token['type'] == 'operator' && mb_strpos($token['value'], '!') === 0)) { // ! is a special case here
+										break 2;
+									}
 								}
 							}
 						}
@@ -107,8 +124,10 @@ class expression {
 					case 'closecurly':
 						break 2;
 				}
-				if ($token && !in_array($token['type'], ['whitespace', 'commentmulti', 'commentsingle'])) {
-					$last = $token;
+				$end = end($commands);
+				if ($end::significant) {
+					$beforelast = $last;
+					$last = $end::type;
 				}
 			} while (($token = $tokens->next()) !== null);
 		}
@@ -123,6 +142,16 @@ class expression {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
+
+		// make sure all expressions are terminated
+		if (!$this->eol) {
+			foreach ($this->commands AS $item) {
+				if ($item::significant) {
+					$this->eol = ';';
+					break;
+				}
+			}
+		}
 
 		// minify expressions
 		foreach ($this->commands AS $item) {

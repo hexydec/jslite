@@ -4,6 +4,8 @@ namespace hexydec\jslite;
 
 class variable {
 
+	const type = 'variable';
+	const significant = true;
 	protected $root;
 	protected $scopes = [];
 	protected $name;

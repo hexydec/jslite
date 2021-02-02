@@ -121,13 +121,14 @@ class jslite {
 
 		// minify expressions
 		$last = null;
-		$not = [__NAMESPACE__.'\\whitespace', __NAMESPACE__.'\\comment'];
+		$not = ['whitespace', 'comment'];
+		// $not = [__NAMESPACE__.'\\whitespace', __NAMESPACE__.'\\comment'];
 		foreach ($this->expressions AS $item) {
 			$item->minify($minify);
 
-			// get last expression if it contains more than just $whitespace
+			// get last expression if it contains significant code
 			foreach ($item->commands AS $comm) {
-				if (!in_array(get_class($comm), $not)) {
+				if ($comm::significant) {
 					$last = $item;
 					break;
 				}

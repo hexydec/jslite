@@ -4,6 +4,8 @@ namespace hexydec\jslite;
 
 class regexp {
 
+	const type = 'regexp';
+	const significant = true;
 	protected $root;
 	protected $pattern;
 

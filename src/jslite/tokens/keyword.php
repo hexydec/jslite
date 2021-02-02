@@ -4,6 +4,8 @@ namespace hexydec\jslite;
 
 class keyword {
 
+	const type = 'keyword';
+	const significant = true;
 	protected $keyword;
 
 	/**

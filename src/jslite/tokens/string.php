@@ -4,6 +4,8 @@ namespace hexydec\jslite;
 
 class jsstring {
 
+	const type = 'string';
+	const significant = true;
 	protected $number;
 
 	/**

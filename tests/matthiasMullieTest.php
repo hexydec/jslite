@@ -164,11 +164,11 @@ class MatthiasMullieTest extends \PHPUnit\Framework\TestCase {
 
         $tests[] = array(
           'for ( i = 0; ; i++ ) statement',
-          'for(i=0;;i++) statement',
+          'for(i=0;;i++)statement',
         );
         $tests[] = array(
             'for (i = 0; (i < 10); i++) statement',
-            'for(i=0;(i<10);i++) statement',
+            'for(i=0;(i<10);i++)statement',
         );
         // $tests[] = array(
         //   'alert("test");;alert("test2")',
@@ -197,34 +197,29 @@ class MatthiasMullieTest extends \PHPUnit\Framework\TestCase {
         $tests[] = array(
             'alert("this is a test")
 alert("this is another test")',
-            'alert("this is a test")
-alert("this is another test")',
+            'alert("this is a test");alert("this is another test")',
         );
         $tests[] = array(
             'a=b+c
              d=e+f',
-            'a=b+c
-d=e+f',
+            'a=b+c;d=e+f',
         );
         $tests[] = array(
             'a++
              ++b',
-            'a++
-++b',
+            'a++;++b',
         );
         $tests[] = array(
             '!a
              !b',
-            '!a
-!b',
+            '!a;!b',
         );
         $tests[] = array(
             // don't confuse with 'if'
             'digestif
             (true)
             statement',
-            'digestif(true)
-statement',
+            'digestif(true);statement',
         );
         $tests[] = array(
             'if
@@ -238,8 +233,7 @@ statement',
                  )
             )
             statement',
-            'if((true)&&(true))
-statement',
+            'if((true)&&(true))statement',
         );
         $tests[] = array(
             'if
@@ -269,10 +263,7 @@ statement',
                  statement
              else
                  statement',
-            'if(true)
-statement
-else
-statement',
+            'if(true)statement;else statement',
         );
 
         // test if whitespace around keywords is properly collapsed
@@ -281,8 +272,7 @@ statement',
              variable
              =
              "value";',
-            'var
-variable="value"',
+            'var variable="value"',
         );
         $tests[] = array(
             'var variable = {
@@ -368,7 +358,7 @@ variable="value"',
                 // already a text element
                 else newElement = currentElement;
 ',
-            'if(currentElement.attr(\'type\')!=\'text\'){currentElement.remove()}else newElement=currentElement',
+            'if(currentElement.attr("type")!="text"){currentElement.remove()}else newElement=currentElement',
         );
         $tests[] = array(
             'var jsBackend =
@@ -386,8 +376,7 @@ variable="value"',
              utils.array =
              {
              }',
-            'var utils={debug:false}
-utils.array={}',
+            'var utils={debug:false};utils.array={}',
         );
         $tests[] = array(
             'rescape = /\'|\\\\/g,
@@ -397,7 +386,7 @@ utils.array={}',
             // taking the opening single quote & looking for a string.
             // So here\'s <-- the closing quote
             runescape = \'blabla\'',
-            'rescape=/\'|\\\\/g,runescape=\'blabla\'',
+            'rescape=/\'|\\\\/g,runescape="blabla"',
         );
         $tests[] = array(
             'var rsingleTag = (/^<(\w+)\s*\/?>(?:<\/\1>|)$/)',
@@ -406,14 +395,12 @@ utils.array={}',
         $tests[] = array(
             'if (this.sliding)       return this.$element.one(\'slid.bs.carousel\', function () { that.to(pos) }) // yes, "slid"
 if (activeIndex == pos) return this.pause().cycle()',
-            'if(this.sliding)return this.$element.one(\'slid.bs.carousel\',function(){that.to(pos)})
-if(activeIndex==pos)return this.pause().cycle()',
+            'if(this.sliding)return this.$element.one("slid.bs.carousel",function(){that.to(pos)})if(activeIndex==pos)return this.pause().cycle()',
         );
         $tests[] = array(
             'if (e.which == 38 && index > 0)                 index--                        // up
 if (e.which == 40 && index < $items.length - 1) index++                        // down',
-            'if(e.which==38&&index>0)index--
-if(e.which==40&&index<$items.length-1)index++',
+            'if(e.which==38&&index>0)index--;if(e.which==40&&index<$items.length-1)index++',
         );
 
         // replace associative array key references by property notation
