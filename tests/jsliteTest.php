@@ -347,6 +347,10 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			[
 				'input' => 'var item = "/*" + "*/";',
 				'output' => 'var item="/*"+"*/"'
+			],
+			[ // keep last semi-colon on for loop
+				'input' => 'for (let i = 10; i--;) {}',
+				'output' => 'for(let i=10;i--;){}'
 			]
 		];
 		$this->compareMinify($tests, ['semicolon' => false]);

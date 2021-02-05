@@ -12,7 +12,7 @@ class expression {
 	 * Parses an array of tokens
 	 *
 	 * @param array &$tokens A tokenise object
-	 * @return void
+	 * @return bool Whether any commands or an EOL was captured
 	 */
 	public function parse(tokenise $tokens) : bool {
 		$commands = [];
@@ -95,7 +95,7 @@ class expression {
 									// var_dump($beforelast, $last, $next['type']);
 
 									// if the next significant token is a new command, then start a new expression
-									if ((!in_array($token['type'], ['operator', 'openbracket', 'opensquare', 'opencurly']) && ($last != 'brackets' || $token['type'] != 'keyword')) || ($token['type'] == 'operator' && mb_strpos($token['value'], '!') === 0)) { // ! is a special case here
+									if ((!in_array($token['type'], ['operator', 'openbracket', 'opensquare', 'opencurly', 'eol']) && ($last != 'brackets' || $token['type'] != 'keyword')) || ($token['type'] == 'operator' && mb_strpos($token['value'], '!') === 0)) { // ! is a special case here
 										break 2;
 									}
 								}
@@ -124,6 +124,8 @@ class expression {
 					case 'closecurly':
 						break 2;
 				}
+
+				// record as previous items
 				$end = end($commands);
 				if ($end::significant) {
 					$beforelast = $last;
@@ -132,7 +134,7 @@ class expression {
 			} while (($token = $tokens->next()) !== null);
 		}
 		$this->commands = $commands;
-		return !!$commands;
+		return $commands || $this->eol;
 	}
 
 	/**

@@ -6,6 +6,7 @@ class brackets {
 
 	const type = 'brackets';
 	const significant = true;
+	protected $root;
 	protected $expressions = [];
 	public $bracket = 'bracket'; // square or bracket or curly
 
@@ -15,9 +16,8 @@ class brackets {
 	 * @param jslite $root The parent jslite object
 	 * @param array $scopes An array of variables that are available in this scope, where the key is the variable name and the value is the scope object
 	 */
-	public function __construct() {
-		// $this->root = $root;
-		// $this->scopes = $scopes;
+	public function __construct(expression $root) {
+		$this->root = $root;
 	}
 
 	/**
@@ -65,6 +65,22 @@ class brackets {
 				}
 			}
 		}
+
+		// must not remove eol if for loop
+		$commands = $this->root->commands;
+		$prev = null;
+		foreach ($commands AS $i => $item) {
+			if ($item === $this) {
+				if ($prev && $prev::type == 'keyword' && $prev->keyword == 'for' && count($this->expressions) != 3) {
+					$last = null;
+				}
+				break;
+			} elseif ($item::significant) {
+				$prev = $item;
+			}
+		}
+
+		// remove last eol
 		if ($last) {
 			$last->eol = null;
 		}

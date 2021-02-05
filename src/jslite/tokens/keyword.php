@@ -6,7 +6,7 @@ class keyword {
 
 	const type = 'keyword';
 	const significant = true;
-	protected $keyword;
+	public $keyword;
 
 	/**
 	 * Constructs the comment object

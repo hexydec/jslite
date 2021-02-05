@@ -32,7 +32,7 @@ class jslite {
 		'eol' => ';',
 		// 'dot' => '\\.',
 		'comma' => ',',
-		'operator' => '[\\.+\\/*=!<>:|&?^-]+',
+		'operator' => '[+*\\/<>-]?=|[\\.+*!<>:|&?^-]+|\\/',
 		'opensquare' => '\\[',
 		'closesquare' => '\\]',
 		'openbracket' => '\\(',
