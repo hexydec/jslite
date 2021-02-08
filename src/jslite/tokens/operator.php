@@ -9,7 +9,7 @@ class operator {
 	/**
 	 * @var string The text content of this object
 	 */
-	protected $operator = null;
+	public $operator = null;
 
 	/**
 	 * Parses an array of tokens

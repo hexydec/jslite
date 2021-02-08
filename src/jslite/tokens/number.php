@@ -40,11 +40,6 @@ class number {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
-		if (mb_strpos($this->number, '.') !== false) {
-			$this->number = floatval($this->number);
-		} else {
-			$this->number = intval($this->number);
-		}
 	}
 
 	/**

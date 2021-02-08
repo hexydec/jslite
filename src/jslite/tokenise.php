@@ -70,9 +70,10 @@ class tokenise {
 	/**
 	 * Retrieves the next token
 	 *
+	 * @param bool $delete Denotes whether to delete previous tokens t save memory
 	 * @return array The next token or null if there are no more tokens to retrieve
 	 */
-	public function next() : ?array {
+	public function next(bool $delete = true) : ?array {
 		$pointer = $this->pointer + 1;
 
 		// get cached token
@@ -95,7 +96,9 @@ class tokenise {
 					];
 
 					// remove previous tokens to lower memory consumption, also makes the program faster with a smaller array to handle
-					unset($this->tokens[$pointer - 3]);
+					if ($delete) {
+						unset($this->tokens[$pointer - 3]);
+					}
 					return $token;
 				}
 			}

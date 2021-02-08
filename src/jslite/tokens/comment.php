@@ -10,6 +10,7 @@ class comment {
 	 * @var string The text content of this object
 	 */
 	protected $content = null;
+	protected $multi = false;
 
 	/**
 	 * Parses an array of tokens
@@ -19,7 +20,8 @@ class comment {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
-			$this->content = mb_substr($token['value'], 2, $token['type'] == 'commentmulti' ? -2 : 0);
+			$this->multi = $token['type'] == 'commentmulti';
+			$this->content = mb_substr($token['value'], 2, $this->multi ? -2 : null);
 			return true;
 		}
 		return false;
@@ -44,10 +46,10 @@ class comment {
 	public function compile(array $options = []) : string {
 		if ($this->content === null) {
 			return '';
-		} elseif (mb_strpos($this->content, "\n") !== false) {
+		} elseif ($this->multi) {
 			return '/*'.$this->content.'*/';
 		} else {
-			return '//'.$this->content."\n";
+			return '//'.$this->content;
 		}
 	}
 }

@@ -73,6 +73,7 @@ class expression {
 						}
 						break;
 					case 'whitespace':
+						$end = false;
 
 						// catch un-terminated line endings
 						if ($last && mb_strpos($token['value'], "\n") !== false) {
@@ -81,10 +82,10 @@ class expression {
 							if (!in_array($last, ['operator', 'keyword']) && ($last != 'brackets' || $beforelast != 'keyword')) {
 								$next = null;
 								$rewind = 0;
-								while (($token = $tokens->next()) !== null) {
+								while (($token = $tokens->next(false)) !== null) {
+									$rewind++;
 									if (!in_array($token['type'], ['whitespace', 'commentsingle', 'commentmulti'])) {
 										$next = $token;
-										$rewind++;
 										break;
 									}
 								}
@@ -95,8 +96,8 @@ class expression {
 									// var_dump($beforelast, $last, $next['type']);
 
 									// if the next significant token is a new command, then start a new expression
-									if ((!in_array($token['type'], ['operator', 'openbracket', 'opensquare', 'opencurly', 'eol']) && ($last != 'brackets' || $token['type'] != 'keyword')) || ($token['type'] == 'operator' && mb_strpos($token['value'], '!') === 0)) { // ! is a special case here
-										break 2;
+									if ((!in_array($token['type'], ['operator', 'openbracket', 'opensquare', 'opencurly', 'closebracket', 'closesquare', 'closecurly', 'eol']) && ($last != 'brackets' || $token['type'] != 'keyword')) || ($token['type'] == 'operator' && mb_strpos($token['value'], '!') === 0)) { // ! is a special case here
+										$end = true;
 									}
 								}
 							}
@@ -107,7 +108,11 @@ class expression {
 						if ($obj->parse($tokens)) {
 							$commands[] = $obj;
 						}
-						break;
+						if ($end) {
+							break 2;
+						} else {
+							break;
+						}
 					case 'openbracket':
 					case 'opensquare':
 					case 'opencurly':

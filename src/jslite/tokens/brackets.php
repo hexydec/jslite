@@ -71,8 +71,18 @@ class brackets {
 		$prev = null;
 		foreach ($commands AS $i => $item) {
 			if ($item === $this) {
-				if ($prev && $prev::type == 'keyword' && $prev->keyword == 'for' && count($this->expressions) != 3) {
-					$last = null;
+				if ($prev && $prev::type == 'keyword' && $prev->keyword == 'for') {
+
+					// count expressions where the EOL is ; (Could be comma)
+					$count = 0;
+					foreach ($this->expressions AS $expr) {
+						if ($expr->eol == ';') {
+							$count++;
+						}
+					}
+					if ($count != 3) {
+						$last = null;
+					}
 				}
 				break;
 			} elseif ($item::significant) {

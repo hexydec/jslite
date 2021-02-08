@@ -56,7 +56,7 @@ class whitespace {
 					$next = null;
 					for ($n = $i + 1; $n < $count; $n++) {
 						if ($commands[$n]::significant) {
-							$next = $commands[$n]::type;
+							$next = $commands[$n];
 							break;
 						}
 					}
@@ -66,11 +66,15 @@ class whitespace {
 						$this->whitespace = '';
 
 					// handle operators next to an increment
-					} elseif ($next == 'increment' && $prev == 'operator' && mb_strpos($commands[$i + 1]->compile(), $commands[$i - 1]->compile()) !== false) {
+					} elseif ($prev::type == 'operator' && $next::type == 'increment' && mb_strpos($commands[$i + 1]->compile(), $commands[$i - 1]->compile()) !== false) {
+						$this->whitespace = ' ';
+
+					// handled + + and - -
+					} elseif ($prev::type == 'operator' && $next::type == 'operator' && $prev->operator == $next->operator) {
 						$this->whitespace = ' ';
 
 					// keyword not followed by bracket
-					} elseif (in_array('keyword', [$prev, $next]) && !in_array('brackets', [$prev, $next]) && !in_array('operator', [$prev, $next])) {
+					} elseif (in_array('keyword', [$prev::type, $next::type]) && !in_array('brackets', [$prev::type, $next::type]) && !in_array('operator', [$prev::type, $next::type])) {
 						$this->whitespace = ' ';
 
 					// remove whitespace
@@ -80,7 +84,7 @@ class whitespace {
 				}
 				break;
 			} elseif ($item::significant) {
-				$prev = $item::type;
+				$prev = $item;
 			}
 		}
 	}
