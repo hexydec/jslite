@@ -6,18 +6,8 @@ class jsstring {
 
 	const type = 'string';
 	const significant = true;
-	protected $number;
-
-	/**
-	 * Constructs the comment object
-	 *
-	 * @param jslite $root The parent jslite object
-	 * @param array $scopes An array of variables that are available in this scope, where the key is the variable name and the value is the scope object
-	 */
-	public function __construct() {
-		// $this->root = $root;
-		// $this->scopes = $scopes;
-	}
+	protected $string;
+	protected $quote = '"';
 
 	/**
 	 * Parses an array of tokens
@@ -41,8 +31,8 @@ class jsstring {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
-		if ($this->quote == "'") {
-			$this->quote = '"';
+		if ($minify['quotestyle'] && $this->quote != $minify['quotestyle']) {
+			$this->quote = $minify['quotestyle'];
 		}
 	}
 

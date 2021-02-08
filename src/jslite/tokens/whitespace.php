@@ -6,6 +6,7 @@ class whitespace {
 
 	const type = 'whitespace';
 	const significant = false;
+	protected $root;
 	protected $whitespace;
 
 	/**
@@ -39,52 +40,59 @@ class whitespace {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
-		$commands = $this->root->commands;
-		$prev = null;
-		$count = count($commands);
-		$not = ['whitespace', 'comment'];
-		foreach ($commands AS $i => $item) {
-			if ($item === $this) {
+		if ($minify['whitespace']) {
+			$commands = $this->root->commands;
+			$prev = null;
+			$count = count($commands);
+			$not = ['whitespace', 'comment'];
+			foreach ($commands AS $i => $item) {
+				if ($item === $this) {
 
-				// first item
-				if (!$i || !$prev || !isset($commands[$i + 1])) {
-					$this->whitespace = '';
+					// first item
+					if (!$i || !$prev) {
+						$this->whitespace = '';
 
-				} else {
+					} else {
 
-					// get the next command that is not
-					$next = null;
-					for ($n = $i + 1; $n < $count; $n++) {
-						if ($commands[$n]::significant) {
-							$next = $commands[$n];
-							break;
+						// get the next command that is not
+						$next = null;
+						for ($n = $i + 1; $n < $count; $n++) {
+							if ($commands[$n]::significant) {
+								$next = $commands[$n];
+								break;
+							}
+						}
+
+						// remove whitespace if last in the parent expression
+						if (!$next) {
+							$this->whitespace = '';
+
+							// terminate any statements that are not terminated
+							if (!$this->root->eol) {
+								$this->root->eol = ';';
+							}
+
+						// handle operators next to an increment
+						} elseif ($prev::type == 'operator' && $next::type == 'increment' && mb_strpos($commands[$i + 1]->compile(), $commands[$i - 1]->compile()) !== false) {
+							$this->whitespace = ' ';
+
+						// handled + + and - -
+						} elseif ($prev::type == 'operator' && $next::type == 'operator' && $prev->operator == $next->operator) {
+							$this->whitespace = ' ';
+
+						// keyword not followed by bracket
+						} elseif (in_array('keyword', [$prev::type, $next::type]) && !in_array('brackets', [$prev::type, $next::type]) && !in_array('operator', [$prev::type, $next::type])) {
+							$this->whitespace = ' ';
+
+						// remove whitespace
+						} else {
+							$this->whitespace = '';
 						}
 					}
-
-					// remove whitespace if last in the parent exprssion
-					if (!$next) {
-						$this->whitespace = '';
-
-					// handle operators next to an increment
-					} elseif ($prev::type == 'operator' && $next::type == 'increment' && mb_strpos($commands[$i + 1]->compile(), $commands[$i - 1]->compile()) !== false) {
-						$this->whitespace = ' ';
-
-					// handled + + and - -
-					} elseif ($prev::type == 'operator' && $next::type == 'operator' && $prev->operator == $next->operator) {
-						$this->whitespace = ' ';
-
-					// keyword not followed by bracket
-					} elseif (in_array('keyword', [$prev::type, $next::type]) && !in_array('brackets', [$prev::type, $next::type]) && !in_array('operator', [$prev::type, $next::type])) {
-						$this->whitespace = ' ';
-
-					// remove whitespace
-					} else {
-						$this->whitespace = '';
-					}
+					break;
+				} elseif ($item::significant) {
+					$prev = $item;
 				}
-				break;
-			} elseif ($item::significant) {
-				$prev = $item;
 			}
 		}
 	}

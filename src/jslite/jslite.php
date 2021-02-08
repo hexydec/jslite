@@ -32,7 +32,7 @@ class jslite {
 		'eol' => ';',
 		// 'dot' => '\\.',
 		'comma' => ',',
-		'operator' => '[+*\\/<>-]?=|[\\.+*!<>:%|&?^-]+|\\/',
+		'operator' => '[+*\\/<>%&-]?=|[\\.+*!<>:%|&?^-]+|\\/',
 		'opensquare' => '\\[',
 		'closesquare' => '\\]',
 		'openbracket' => '\\(',
@@ -43,10 +43,37 @@ class jslite {
 		'other' => '.'
 	];
 
+	protected $config = [
+		'minify' => [
+			'whitespace' => true, // strip whitespace around javascript
+			'comments' => true, // strip comments
+			'eol' => true, // remove end of line semi-colons where possible
+			'quotestyle' => '"' // convert quotes to the specified character, null or false not to convert
+		]
+	];
+
 	public function __construct(array $config = []) {
 		if ($config) {
 			$this->config = array_replace_recursive($this->config, $config);
 		}
+	}
+
+	/**
+	 * Retrieves the requested value of the object configuration
+	 *
+	 * @param string ...$key One or more array keys indicating the configuration value to retrieve
+	 * @return mixed The value requested, or null if the value doesn't exist
+	 */
+	public function getConfig(string ...$keys) {
+		$config = $this->config;
+		foreach ($keys AS $item) {
+			if (isset($config[$item])) {
+				$config = $config[$item];
+			} else {
+				return null;
+			}
+		}
+		return $config;
 	}
 
 	/**
@@ -117,23 +144,26 @@ class jslite {
 	public function minify(array $minify = []) : void {
 
 		// merge config
-		// $minify = array_replace_recursive($this->config['minify'], $minify);
+		$minify = array_replace_recursive($this->config['minify'], $minify);
 
 		// minify expressions
 		$last = null;
 		$not = ['whitespace', 'comment'];
-		// $not = [__NAMESPACE__.'\\whitespace', __NAMESPACE__.'\\comment'];
 		foreach ($this->expressions AS $item) {
 			$item->minify($minify);
 
 			// get last expression if it contains significant code
-			foreach ($item->commands AS $comm) {
-				if ($comm::significant) {
-					$last = $item;
-					break;
+			if ($minify['eol']) {
+				foreach ($item->commands AS $comm) {
+					if ($comm::significant) {
+						$last = $item;
+						break;
+					}
 				}
 			}
 		}
+
+		// remove last EOL
 		if ($last) {
 			$last->eol = null;
 		}

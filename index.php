@@ -9,8 +9,13 @@ $timing = Array(
 $mem = Array(
 	'start' => memory_get_peak_usage()
 );
+
+// create object and retrieve config
+$obj = new \hexydec\jslite\jslite();
+$options = $obj->getConfig('minify');
+
+// process form submmission
 if (!empty($_POST['action'])) {
-	$obj = new \hexydec\jslite\jslite();
 	$timing['fetch'] = microtime(true);
 	$mem['fetch'] = memory_get_peak_usage();
 
@@ -48,8 +53,29 @@ if (!empty($_POST['action'])) {
 		$timing['parse'] = microtime(true);
 		$mem['parse'] = memory_get_peak_usage();
 
+		// retrieve the user posted options
+		$isset = isset($_POST['minify']) && is_array($_POST['minify']);
+		foreach ($options AS $key => $item) {
+			if ($key != 'elements') {
+				$minify[$key] = $isset && in_array($key, $_POST['minify']) ? (is_array($item) ? [] : (is_bool($options[$key]) ? true : $options[$key])) : false;
+				if (is_array($item)) {
+					foreach ($item AS $sub => $value) {
+						if ($minify[$key] !== false && isset($_POST['minify'][$key]) && is_array($_POST['minify'][$key]) && in_array($sub, $_POST['minify'][$key])) {
+							$minify[$key][$sub] = true;
+						} elseif ($minify[$key]) {
+							$minify[$key][$sub] = false;
+						}
+					}
+				}
+			} else {
+				unset($options[$key]);
+			}
+		}
+
 		// minify the input
-		$obj->minify();
+		if ($minify) {
+			$obj->minify($minify);
+		}
 
 		// record timings
 		$timing['minify'] = microtime(true);
@@ -113,6 +139,20 @@ if (!empty($_POST['action'])) {
 			.minify__table td:first-child {
 				text-align: left;
 				font-weight: bold;
+			}
+			.minify__options {
+				flex: 0 0 150px;
+				padding: 10px;
+				background: #003ea4;
+				color: #FFF;
+			}
+			.minify__options-list {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+			}
+			.minify__options-list .minify__options-list {
+				padding-left: 20px;
 			}
 		</style>
 	</head>
@@ -186,6 +226,29 @@ if (!empty($_POST['action'])) {
 						</tbody>
 					</table>
 				<?php } ?>
+			</div>
+			<div class="minify__options">
+				<h3>Options</h3>
+				<ul class="minify__options-list">
+					<?php foreach ($options AS $key => $item) { ?>
+						<li>
+							<label>
+								<input type="checkbox" name="minify[]" value="<?= $key; ?>"<?= !isset($minify[$key]) || $minify[$key] === false ? '' : ' checked="checked"'; ?> /><?= htmlspecialchars(ucfirst($key)); ?>
+							</label>
+							<?php if (is_array($item)) { ?>
+								<ul class="minify__options-list">
+									<?php foreach ($item AS $sub => $value) { ?>
+										<li>
+											<label>
+												<input type="checkbox" name="minify[<?= $key; ?>][]" value="<?= $sub; ?>"<?= !isset($minify[$key][$sub]) || $minify[$key][$sub] === false ? '' : ' checked="checked"'; ?> /><?= htmlspecialchars(ucfirst($sub)); ?>
+											</label>
+										</li>
+									<?php } ?>
+								</ul>
+							<?php } ?>
+						</li>
+					<?php } ?>
+				</ul>
 			</div>
 		</form>
 	</body>

@@ -34,7 +34,9 @@ class comment {
 	 * @return void
 	 */
 	public function minify(array $minify) : void {
-		$this->content = null;
+		if ($minify['comments']) {
+			$this->content = null;
+		}
 	}
 
 	/**

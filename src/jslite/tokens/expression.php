@@ -150,16 +150,6 @@ class expression {
 	 */
 	public function minify(array $minify = []) : void {
 
-		// make sure all expressions are terminated
-		if (!$this->eol) {
-			foreach ($this->commands AS $item) {
-				if ($item::significant) {
-					$this->eol = ';';
-					break;
-				}
-			}
-		}
-
 		// minify expressions
 		foreach ($this->commands AS $item) {
 			$item->minify($minify);

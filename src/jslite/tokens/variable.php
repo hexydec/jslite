@@ -6,20 +6,8 @@ class variable {
 
 	const type = 'variable';
 	const significant = true;
-	protected $root;
 	protected $scopes = [];
 	protected $name;
-
-	/**
-	 * Constructs the comment object
-	 *
-	 * @param jslite $root The parent jslite object
-	 * @param array $scopes An array of variables that are available in this scope, where the key is the variable name and the value is the scope object
-	 */
-	public function __construct() {
-		// $this->root = $root;
-		// $this->scopes = $scopes;
-	}
 
 	/**
 	 * Parses an array of tokens
@@ -42,6 +30,7 @@ class variable {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
+		
 	}
 
 	/**
