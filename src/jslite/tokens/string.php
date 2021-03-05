@@ -8,6 +8,7 @@ class jsstring {
 	const significant = true;
 	protected $string;
 	protected $quote = '"';
+	protected $process = false;
 
 	/**
 	 * Parses an array of tokens
@@ -18,7 +19,8 @@ class jsstring {
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
 			$this->quote = mb_substr($token['value'], 0, 1);
-			$this->string = str_replace('\\'.$this->quote, $this->quote, mb_substr($token['value'], 1, -1));
+			$this->process = in_array($this->quote, ['"', "'"]);
+			$this->string = $this->process ? str_replace('\\'.$this->quote, $this->quote, mb_substr($token['value'], 1, -1)) : $token['value'];
 			return true;
 		}
 		return false;
@@ -43,6 +45,10 @@ class jsstring {
 	 * @return string The compiled HTML
 	 */
 	public function compile(array $options = []) : string {
-		return $this->quote.str_replace($this->quote, '\\'.$this->quote, $this->string).$this->quote;
+		if ($this->process) {
+			return $this->quote.str_replace($this->quote, '\\'.$this->quote, $this->string).$this->quote;
+		} else {
+			return $this->string;
+		}
 	}
 }

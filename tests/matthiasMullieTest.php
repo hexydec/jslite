@@ -404,27 +404,27 @@ if (e.which == 40 && index < $items.length - 1) index++                        /
         );
 
         // replace associative array key references by property notation
-        $tests[] = array(
-            'array["key"][\'key2\']',
-            'array.key.key2',
-        );
-        $tests[] = array(
-            'array[ "key" ][ \'key2\' ]',
-            'array.key.key2',
-        );
+        // $tests[] = array(
+        //     'array["key"][\'key2\']',
+        //     'array.key.key2',
+        // );
+        // $tests[] = array(
+        //     'array[ "key" ][ \'key2\' ]',
+        //     'array.key.key2',
+        // );
         $tests[] = array(
             'array["a","b","c"]',
             'array["a","b","c"]',
         );
 
-        $tests[] = array(
-            "['loader']",
-            "['loader']",
-        );
-        $tests[] = array(
-            'array["dont-replace"][\'key2\']',
-            'array["dont-replace"].key2',
-        );
+        // $tests[] = array(
+        //     "['loader']",
+        //     "['loader']",
+        // );
+        // $tests[] = array(
+        //     'array["dont-replace"][\'key2\']',
+        //     'array["dont-replace"].key2',
+        // );
 
         // shorten bools
         $tests[] = array(
@@ -442,11 +442,11 @@ if (e.which == 40 && index < $items.length - 1) index++                        /
         );
         $tests[] = array(
             "do{break}while(true){alert('test')}",
-            "do{break}while(true){alert('test')}",
+            "do{break}while(true){alert(\"test\")}",
         );
         $tests[] = array(
             "do break\nwhile(true){alert('test')}",
-            "do break\nwhile(true){alert('test')}",
+            "do break\nwhile(true){alert(\"test\")}",
         );
         // nested do-while & while
         $tests[] = array(

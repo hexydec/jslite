@@ -18,7 +18,7 @@ class jslite {
 		'regexp' => '\\/(?!\\*)(?:\\\\.|[^\\\\\\/\\n\\r])*\\/[gimsuy]?[ \\t]*+(?=[.,;\\)\\]}]|[\\r\\n]|$)', // (?:(?<=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}_$"\'])\\s++|\s*+)
 
 		// capture single line comments after quotes incase it contains //
-		'commentsingle' => '\\/\\/[^\\n]*+\\r?(?:\\n|$)',
+		'commentsingle' => '\\/\\/[^\\n]*+',
 
 		// remove multiline comments
 		'commentmulti' => '\\/\\*(?:(?U)[\\s\\S]*)\\*\\/',

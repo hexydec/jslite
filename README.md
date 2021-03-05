@@ -10,6 +10,8 @@ A simplistic Javascript minifier designed for compressing inline scripts on the 
 
 Designed to compliment [HTMLdoc](http://githubcom/hexydec/htmldoc), this program is capable of performing very simple and fast minification of Javascript, and is aimed at removing whitespace and comments from inline Javascripts within an HTML file.
 
+The software is implemented as a compiler to make sure it is reliable, and comes with a full test suite.
+
 ## Usage
 
 To minify Javascript:
@@ -26,7 +28,7 @@ if ($doc->load($javascript) {
 	$doc->minify();
 
 	// retrieve the javascript
-	echo $doc->save();
+	echo $doc->compile();
 }
 ```
 ## Minification
