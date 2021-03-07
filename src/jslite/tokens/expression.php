@@ -77,30 +77,7 @@ class expression {
 
 						// catch un-terminated line endings
 						if ($last && mb_strpos($token['value'], "\n") !== false) {
-
-							// check previous token
-							if (!in_array($last, ['operator', 'keyword']) && ($last != 'brackets' || $beforelast != 'keyword')) {
-								$next = null;
-								$rewind = 0;
-								while (($token = $tokens->next(false)) !== null) {
-									$rewind++;
-									if (!in_array($token['type'], ['whitespace', 'commentsingle', 'commentmulti'])) {
-										$next = $token;
-										break;
-									}
-								}
-								for ($i = 0; $i < $rewind; $i++) {
-									$tokens->prev();
-								}
-								if ($next) {
-									// var_dump($beforelast, $last, $next['type']);
-
-									// if the next significant token is a new command, then start a new expression
-									if ((!in_array($token['type'], ['operator', 'openbracket', 'opensquare', 'opencurly', 'closebracket', 'closesquare', 'closecurly', 'eol']) && ($last != 'brackets' || $token['type'] != 'keyword')) || ($token['type'] == 'operator' && mb_strpos($token['value'], '!') === 0)) { // ! is a special case here
-										$end = true;
-									}
-								}
-							}
+							$end = $this->isEol($tokens, $last, $beforelast, $commands);
 						}
 
 						// create whitespace object
@@ -134,12 +111,92 @@ class expression {
 				$end = end($commands);
 				if ($end::significant) {
 					$beforelast = $last;
-					$last = $end::type;
+					$last = $end;
 				}
 			} while (($token = $tokens->next()) !== null);
 		}
 		$this->commands = $commands;
 		return $commands || $this->eol;
+	}
+
+	/**
+	 * Determines if an expression should be ended when there is a line break between two commands
+	 *
+	 * @param tokenise $tokens A tokenise object to get the next tokens from
+	 * @param mixed $prev The previous command object
+	 * @param mixed $beforeprev The command object before the previous command object
+	 * @return bool Whether the expression should end at the previous command
+	 */
+	protected function isEol(tokenise $tokens, $prev = null, $beforeprev = null) : bool {
+		$prevtype = $prev::type;
+
+		// check for kewords
+		$keywords = ['debugger', 'continue', 'break', 'throw', 'return'];
+		if ($prevtype == 'keyword' && in_array($prev->keyword, $keywords)) {
+			return true;
+
+		// special case for keyword followed by brcket
+		} elseif ($prevtype == 'brackets' && $beforeprev && $beforeprev::type == 'keyword') {
+			return false;
+
+		// if prev is curly then expression will have already ended
+		} elseif ($prevtype == 'brackets' && $prev->bracket == 'curly' && (!$beforeprev || $beforeprev::type != 'operator')) {
+			return false;
+
+		// get next token
+		} elseif (($next = $this->getNextSignificantToken($tokens)) === null) {
+			return false;
+
+		// next expression starts with a semi-colon
+		} elseif ($next['type'] == 'keyword') {
+			return true;
+
+		// next value is a not
+		} elseif ($prevtype != 'operator' && $next['value'] == '!') {
+			return true;
+
+		// see if the statement needs to be terminated
+		} else {
+			$end = [ // previous type => [next types]
+				'brackets' => ['variable', 'number', 'string', 'increment'],
+				'variable' => ['variable', 'string', 'number', 'regexp', 'opencurly', 'increment'],
+				'number' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment'],
+				'string' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment'],
+				'regexp' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment'],
+				'increment' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment']
+			];
+			foreach ($end AS $key => $item) {
+				if ($key == $prevtype && in_array($next['type'], $item)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Retrieve the next significant token, leaving the pointer at the current position
+	 *
+	 * @param tokenise $tokens A tokenise object to get the next tokens from
+	 * @return ?array An array containing the next token or null if there is no next significant token
+	 */
+	protected function getNextSignificantToken(tokenise $tokens) : ?array {
+
+		// get next tokens
+		$rewind = 0;
+		$next = null;
+		$ignore = ['whitespace', 'commentsingle', 'commentmulti'];
+		while (($token = $tokens->next(false)) !== null) {
+			$rewind++;
+			if (!in_array($token['type'], $ignore)) {
+				$next = $token;
+				break;
+			}
+		}
+		for ($i = 0; $i < $rewind; $i++) {
+			$tokens->prev();
+		}
+		return $next;
 	}
 
 	/**

@@ -368,6 +368,101 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 		$this->compareMinify($tests, ['semicolon' => false]);
 	}
 
+	public function testCnaInsertAutomaticSemicolons() {
+		$tests = [
+			[
+				'input' => 'var foo = 1
+					var bar = 2
+					var baz = 3',
+				'output' => 'var foo=1;var bar=2;var baz=3'
+			],
+			[
+				'input' => 'var foo
+				 	= 1',
+				'output' => 'var foo=1'
+			],
+			[
+				'input' => 'var foo =
+					1',
+				'output' => 'var foo=1'
+			],
+			[
+				'input' => 'var foo
+					=
+					1',
+				'output' => 'var foo=1'
+			],
+			[
+				'input' => 'var a
+					a
+					=
+					1',
+				'output' => 'var a;a=1'
+			],
+			[
+				'input' => 'var a
+					;
+					a
+					=
+					1',
+				'output' => 'var a;a=1'
+			],
+			[
+				'input' => 'return
+      				"something";',
+				'output' => 'return;"something"'
+			],
+			[
+				'input' => 'a = b
+    				++c',
+				'output' => 'a=b;++c'
+			],
+			[
+				'input' => 'break
+				var i = 0;',
+				'output' => 'break;var i=0'
+			],
+			[
+				'input' => 'throw
+				var i = 0;',
+				'output' => 'throw;var i=0'
+			],
+			[
+				'input' => 'continue
+				var i = 0;',
+				'output' => 'continue;var i=0'
+			],
+			[
+				'input' => 'const bar = "bar"
+					const foo
+					["foo", "bar"].foreach(item => console.log(item));',
+				'output' => 'const bar="bar";const foo["foo","bar"].foreach(item=>console.log(item))'
+			],
+			[
+				'input' => 'const a = 1
+					const b = 2
+					const c = a + b
+					(a + b).toString()',
+				'output' => 'const a=1;const b=2;const c=a+b(a+b).toString()'
+			],
+			[
+				'input' => '(() => {
+						return
+						{
+							color: "white"
+						}
+					})()',
+				'output' => '(()=>{return;{color:"white"}})()'
+			],
+			[
+				'input' => '1 + 1
+					-1 + 1 === 0 ? alert(0) : alert(2)',
+				'output' => '1+1-1+1===0?alert(0):alert(2)'
+			]
+		];
+		$this->compareMinify($tests);
+	}
+
 	protected function compareMinify(array $tests, array $minify = []) {
 		$obj = new jslite();
 		foreach ($tests AS $item) {

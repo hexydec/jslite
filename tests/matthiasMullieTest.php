@@ -395,7 +395,7 @@ alert("this is another test")',
         $tests[] = array(
             'if (this.sliding)       return this.$element.one(\'slid.bs.carousel\', function () { that.to(pos) }) // yes, "slid"
 if (activeIndex == pos) return this.pause().cycle()',
-            'if(this.sliding)return this.$element.one("slid.bs.carousel",function(){that.to(pos)})if(activeIndex==pos)return this.pause().cycle()',
+            'if(this.sliding)return this.$element.one("slid.bs.carousel",function(){that.to(pos)});if(activeIndex==pos)return this.pause().cycle()',
         );
         $tests[] = array(
             'if (e.which == 38 && index > 0)                 index--                        // up
@@ -438,7 +438,7 @@ if (e.which == 40 && index < $items.length - 1) index++                        /
         );
         $tests[] = array(
             "do break\nwhile(true)",
-            "do break\nwhile(true)",
+            "do break;while(true)",
         );
         $tests[] = array(
             "do{break}while(true){alert('test')}",
@@ -446,20 +446,20 @@ if (e.which == 40 && index < $items.length - 1) index++                        /
         );
         $tests[] = array(
             "do break\nwhile(true){alert('test')}",
-            "do break\nwhile(true){alert(\"test\")}",
+            "do break;while(true){alert(\"test\")}",
         );
         // nested do-while & while
         $tests[] = array(
             "do{while(true){break}break}while(true){alert('test')}",
-            "do{while(true){break}break}while(true){alert('test')}",
+            "do{while(true){break}break}while(true){alert(\"test\")}",
         );
         $tests[] = array(
             "do{while(true){break}break}while(true){alert('test')}while(true){break}",
-            "do{while(true){break}break}while(true){alert('test')}while(true){break}",
+            "do{while(true){break}break}while(true){alert(\"test\")}while(true){break}",
         );
         $tests[] = array(
             "do{while(true){break}break}while(true){alert('test')}while(true){break}do{while(true){break}break}while(true){alert('test')}while(true){break}",
-            "do{while(true){break}break}while(true){alert('test')}while(true){break}do{while(true){break}break}while(true){alert('test')}while(true){break}",
+            "do{while(true){break}break}while(true){alert(\"test\")}while(true){break}do{while(true){break}break}while(true){alert(\"test\")}while(true){break}",
         );
 
         // https://github.com/matthiasmullie/minify/issues/10
@@ -490,8 +490,7 @@ function foo (a, b)
 {
     return a / b;
 }',
-            'function foo(a,b){return a/b}
-function foo(a,b){return a/b}',
+            'function foo(a,b){return a/b}function foo(a,b){return a/b}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/15
@@ -499,14 +498,12 @@ function foo(a,b){return a/b}',
             'if ( !data.success )
     deferred.reject(); else
     deferred.resolve(data);',
-            'if(!data.success)
-deferred.reject();else deferred.resolve(data)',
+            'if(!data.success)deferred.reject();else deferred.resolve(data)',
         );
         $tests[] = array(
             "if ( typeof jQuery === 'undefined' )
     throw new Error('.editManager.js: jQuery is required and must be loaded first');",
-            "if(typeof jQuery==='undefined')
-throw new Error('.editManager.js: jQuery is required and must be loaded first')",
+            "if(typeof jQuery===\"undefined\")throw new Error(\".editManager.js: jQuery is required and must be loaded first\")",
         );
 
         // https://github.com/matthiasmullie/minify/issues/27
@@ -518,36 +515,20 @@ throw new Error('.editManager.js: jQuery is required and must be loaded first')"
         // https://github.com/matthiasmullie/minify/issues/31
         $tests[] = array(
             "$(_this).attr('src',this.src).trigger('adapt',['loader'])",
-            "$(_this).attr('src',this.src).trigger('adapt',['loader'])",
+            "$(_this).attr(\"src\",this.src).trigger(\"adapt\",[\"loader\"])",
         );
 
         // https://github.com/matthiasmullie/minify/issues/33
         $tests[] = array(
             '$.fn.alert             = Plugin
 $.fn.alert.Constructor = Alert',
-            '$.fn.alert=Plugin
-$.fn.alert.Constructor=Alert',
+            '$.fn.alert=Plugin;$.fn.alert.Constructor=Alert',
         );
 
         // https://github.com/matthiasmullie/minify/issues/34
         $tests[] = array(
             'a.replace("\\\\","");hi="This   is   a   string"',
             'a.replace("\\\\","");hi="This   is   a   string"',
-        );
-
-        // https://github.com/matthiasmullie/minify/issues/35
-        $tests[] = array(
-            array(
-                '// script that ends with comment',
-                'var test=1',
-            ),
-            'var test=1',
-        );
-
-        // https://github.com/matthiasmullie/minify/issues/37
-        $tests[] = array(
-            'function () { ;;;;;;;; }',
-            'function(){}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/40
@@ -559,25 +540,25 @@ $.fn.alert.Constructor=Alert',
         // https://github.com/matthiasmullie/minify/issues/41
         $tests[] = array(
             "conf.zoomHoverIcons['default']",
-            "conf.zoomHoverIcons['default']",
+            "conf.zoomHoverIcons[\"default\"]",
         );
 
         // https://github.com/matthiasmullie/minify/issues/42
         $tests[] = array(
             'for(i=1;i<2;i++);',
-            'for(i=1;i<2;i++);',
+            'for(i=1;i<2;i++)',
         );
         $tests[] = array(
             'if(1){for(i=1;i<2;i++);}',
-            'if(1){for(i=1;i<2;i++);}',
+            'if(1){for(i=1;i<2;i++)}',
         );
         $tests[] = array(
             'for(i in list);',
-            'for(i in list);',
+            'for(i in list)',
         );
         $tests[] = array(
             'if(1){for(i in list);}',
-            'if(1){for(i in list);}',
+            'if(1){for(i in list)}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/43
@@ -595,7 +576,7 @@ $.fn.alert.Constructor=Alert',
         // https://github.com/matthiasmullie/minify/issues/50
         $tests[] = array(
             'do{var dim=this._getDaysInMonth(year,month-1);if(day<=dim){break}month++;day-=dim}while(true)}',
-            'do{var dim=this._getDaysInMonth(year,month-1);if(day<=dim){break}month++;day-=dim}while(true)}',
+            'do{var dim=this._getDaysInMonth(year,month-1);if(day<=dim){break}month++;day-=dim}while(true)',
         );
 
         // https://github.com/matthiasmullie/minify/issues/53
@@ -610,11 +591,8 @@ $.fn.alert.Constructor=Alert',
             if (f = c.files[e], !f.type.match(new RegExp(".?(" + g + ")$", "i")))
                 return false;
     return true
-}',
-            'a.validator.addMethod("accept",function(b,c,d){var e,f,g="string"==typeof d?d.replace(/\s/g,"").replace(/,/g,"|"):"image/*",h=this.optional(c);if(h)return h;if("file"===a(c).attr("type")&&(g=g.replace(/\*/g,".*"),c.files&&c.files.length))
-for(e=0;e<c.files.length;e++)
-if(f=c.files[e],!f.type.match(new RegExp(".?("+g+")$","i")))
-returnfalse;returntrue}',
+})',
+            'a.validator.addMethod("accept",function(b,c,d){var e,f,g="string"==typeof d?d.replace(/\s/g,"").replace(/,/g,"|"):"image/*",h=this.optional(c);if(h)return h;if("file"===a(c).attr("type")&&(g=g.replace(/\*/g,".*"),c.files&&c.files.length))for(e=0;e<c.files.length;e++)if(f=c.files[e],!f.type.match(new RegExp(".?("+g+")$","i")))return false;return true})',
         );
 
         // https://github.com/matthiasmullie/minify/issues/54
@@ -625,18 +603,14 @@ returnfalse;returntrue}',
   if (false)
     return
 }',
-            'function a(){if(true)
-return
-if(false)
-return}',
+            'function a(){if(true)return;if(false)return}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/56
         $tests[] = array(
             'var timeRegex = /^([2][0-3]|[01]?[0-9])(:[0-5][0-9])?$/
 if (start_time.match(timeRegex) == null) {}',
-            'var timeRegex=/^([2][0-3]|[01]?[0-9])(:[0-5][0-9])?$/
-if(start_time.match(timeRegex)==null){}',
+            'var timeRegex=/^([2][0-3]|[01]?[0-9])(:[0-5][0-9])?$/;if(start_time.match(timeRegex)==null){}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/58
@@ -652,8 +626,7 @@ function isJSON() {
 BUG
 ,
             <<<'BUG'
-function inspect(){escapedString.replace(/abc/g,'\\\'')}
-function isJSON(){str.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,']')}
+function inspect(){escapedString.replace(/abc/g,"\\'")}function isJSON(){str.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]")}
 BUG
         );
 
