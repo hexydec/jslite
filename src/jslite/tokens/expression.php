@@ -107,9 +107,8 @@ class expression {
 						break 2;
 				}
 
-				// record as previous items
-				$end = end($commands);
-				if ($end::significant) {
+				// record previous items
+				if (($end = end($commands)) !== false && $end::significant) {
 					$beforelast = $last;
 					$last = $end;
 				}
