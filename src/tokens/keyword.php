@@ -1,12 +1,13 @@
 <?php
 declare(strict_types = 1);
 namespace hexydec\jslite;
+use \hexydec\tokens\tokenise;
 
-class number {
+class keyword {
 
-	const type = 'number';
+	const type = 'keyword';
 	const significant = true;
-	protected $number;
+	public $keyword;
 
 	/**
 	 * Parses an array of tokens
@@ -16,7 +17,7 @@ class number {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
-			$this->number = $token['value'];
+			$this->keyword = $token['value'];
 			return true;
 		}
 		return false;
@@ -29,6 +30,7 @@ class number {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
+
 	}
 
 	/**
@@ -38,6 +40,6 @@ class number {
 	 * @return string The compiled HTML
 	 */
 	public function compile(array $options = []) : string {
-		return (string) $this->number;
+		return $this->keyword;
 	}
 }

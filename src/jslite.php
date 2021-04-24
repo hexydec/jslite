@@ -1,6 +1,7 @@
 <?php
 declare(strict_types = 1);
 namespace hexydec\jslite;
+use \hexydec\tokens\tokenise;
 
 class jslite {
 
@@ -126,12 +127,12 @@ class jslite {
 	protected function parse(tokenise $tokens) {
 		$expressions = [];
 		$token = $tokens->current();
-		do {
+		while (($token = $tokens->next()) !== null) {
 			$obj = new expression($this);
 			if ($obj->parse($tokens)) {
 				$expressions[] = $obj;
 			}
-		} while (($token = $tokens->next()) !== null);
+		}
 		return $expressions ? $expressions : false;
 	}
 

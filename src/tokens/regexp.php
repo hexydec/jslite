@@ -1,13 +1,13 @@
 <?php
 declare(strict_types = 1);
 namespace hexydec\jslite;
+use \hexydec\tokens\tokenise;
 
-class variable {
+class regexp {
 
-	const type = 'variable';
+	const type = 'regexp';
 	const significant = true;
-	protected $scopes = [];
-	protected $name;
+	protected $pattern;
 
 	/**
 	 * Parses an array of tokens
@@ -17,7 +17,7 @@ class variable {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
-			$this->name = $token['value'];
+			$this->pattern = $token['value'];
 			return true;
 		}
 		return false;
@@ -30,7 +30,6 @@ class variable {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
-		
 	}
 
 	/**
@@ -40,6 +39,6 @@ class variable {
 	 * @return string The compiled HTML
 	 */
 	public function compile(array $options = []) : string {
-		return $this->name;
+		return $this->pattern;
 	}
 }

@@ -1,6 +1,6 @@
 {
   "name": "JSLite",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A token based Javascript parser/minifier designed for compressing inline scripts on the fly, written in PHP",
   "main": "index.js",
   "directories": {

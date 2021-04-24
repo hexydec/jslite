@@ -1,2 +1,4 @@
 /node_modules
 /tools
+/coverage
+/vendor

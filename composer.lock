@@ -1,0 +1,65 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "a0477ddfd1555f5525f1ba60a8a9d674",
+    "packages": [
+        {
+            "name": "hexydec/tokenise",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hexydec/tokenise.git",
+                "reference": "3ed73b291868599cc8b2ba790794f2aa5a924ec3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hexydec/tokenise/zipball/3ed73b291868599cc8b2ba790794f2aa5a924ec3",
+                "reference": "3ed73b291868599cc8b2ba790794f2aa5a924ec3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.3"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Will Earp",
+                    "email": "will@hexydec.com",
+                    "homepage": "https://github.com/hexydec"
+                }
+            ],
+            "description": "A program for performing lexical analysis, written in PHP. Designed to supply tokens to a parser in order to analyse the syntax of programming languages.",
+            "support": {
+                "issues": "https://github.com/hexydec/tokenise/issues",
+                "source": "https://github.com/hexydec/tokenise/tree/master"
+            },
+            "time": "2021-04-18T20:21:01+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "beta",
+    "stability-flags": {
+        "hexydec/tokenise": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=7.3"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
+}

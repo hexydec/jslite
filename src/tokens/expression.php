@@ -1,10 +1,12 @@
 <?php
+declare(strict_types = 1);
 namespace hexydec\jslite;
+use \hexydec\tokens\tokenise;
 
 class expression {
 
-	const type = 'expression';
-	const significant = true;
+	public const type = 'expression';
+	public const significant = true;
 	public $commands = [];
 	public $eol;
 
@@ -185,7 +187,7 @@ class expression {
 		$rewind = 0;
 		$next = null;
 		$ignore = ['whitespace', 'commentsingle', 'commentmulti'];
-		while (($token = $tokens->next(false)) !== null) {
+		while (($token = $tokens->next(null, false)) !== null) {
 			$rewind++;
 			if (!in_array($token['type'], $ignore)) {
 				$next = $token;
