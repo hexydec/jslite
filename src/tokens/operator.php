@@ -33,6 +33,7 @@ class operator {
 	 * @return void
 	 */
 	public function minify(array $minify) : void {
+		
 	}
 
 	/**

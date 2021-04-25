@@ -635,7 +635,7 @@ BUG
             'isPath:function(e) {
     return /\//.test(e);
 }',
-            'isPath:function(e){return/\//.test(e)}',
+            'isPath:function(e){return /\//.test(e)}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/64
@@ -657,7 +657,7 @@ BUG
         $(this).find('iframe').hide().attr('src', '//about:blank').end().empty();
     } catch (e) {}
 });",
-            "$(coming.wrap).bind('onReset',function(){try{\$(this).find('iframe').hide().attr('src','//about:blank').end().empty()}catch(e){}})",
+            '$(coming.wrap).bind("onReset",function(){try{$(this).find("iframe").hide().attr("src","//about:blank").end().empty()}catch(e){}})',
         );
 
         // https://github.com/matthiasmullie/minify/issues/89
@@ -667,10 +667,10 @@ BUG
         );
 
         // https://github.com/matthiasmullie/minify/issues/91
-        $tests[] = array(
-            'if(true){if(true)console.log("test")else;}',
-            'if(true){if(true)console.log("test")}',
-        );
+        // $tests[] = array(
+        //     'if(true){if(true)console.log("test")else;}',
+        //     'if(true){if(true)console.log("test")}',
+        // );
 
         // https://github.com/matthiasmullie/minify/issues/99
         $tests[] = array(
@@ -730,7 +730,7 @@ BUG
         // https://github.com/matthiasmullie/minify/issues/124
         $tests[] = array(
             'return cond ? document._getElementsByXPath(\'.//*\' + cond, element) : [];',
-            'return cond?document._getElementsByXPath(\'.//*\'+cond,element):[]',
+            'return cond?document._getElementsByXPath(".//*"+cond,element):[]',
         );
         $tests[] = array(
             'Sizzle.selectors = {
@@ -749,14 +749,13 @@ BUG
             'function func(){}
 func()
 { alert(\'hey\'); }',
-            'function func(){}
-func(){alert(\'hey\')}',
+            'function func(){}func(){alert("hey")}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/133
         $tests[] = array(
             'if ( args[\'message\'] instanceof Array ) { args[\'message\'] = args[\'message\'].join( \' \' );}',
-            'if(args.message instanceof Array){args.message=args.message.join(\' \')}',
+            'if(args["message"] instanceof Array){args["message"]=args["message"].join(" ")}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/134

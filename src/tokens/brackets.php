@@ -31,12 +31,12 @@ class brackets {
 		if (($token = $tokens->current()) !== false) {
 			$this->bracket = mb_substr($token['type'], 4);
 			while (($token = $tokens->next()) !== null) {
-				if ($token['type'] != 'comma') {
+				if ($token['type'] !== 'comma') {
 					$obj = new expression();
 					if ($obj->parse($tokens)) {
 						$this->expressions[] = $obj;
 					}
-					if (($token = $tokens->current()) !== null && $token['type'] == 'close'.$this->bracket) {
+					if (($token = $tokens->current()) !== null && $token['type'] === 'close'.$this->bracket) {
 						return true;
 					}
 				}
@@ -52,10 +52,11 @@ class brackets {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
+		$expressions = $this->expressions;
 
 		// minify expressions
 		$last = null;
-		foreach ($this->expressions AS $item) {
+		foreach ($expressions AS $item) {
 			$item->minify($minify);
 
 			// get last expression if it contains significant code
@@ -72,16 +73,16 @@ class brackets {
 		$prev = null;
 		foreach ($commands AS $i => $item) {
 			if ($item === $this) {
-				if ($prev && $prev::type == 'keyword' && $prev->keyword == 'for') {
+				if ($prev && $prev::type === 'keyword' && $prev->keyword === 'for') {
 
 					// count expressions where the EOL is ; (Could be comma)
 					$count = 0;
-					foreach ($this->expressions AS $expr) {
-						if ($expr->eol == ';') {
+					foreach ($expressions AS $expr) {
+						if ($expr->eol === ';') {
 							$count++;
 						}
 					}
-					if ($count != 3) {
+					if ($count !== 3) {
 						$last = null;
 					}
 				}

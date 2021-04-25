@@ -19,9 +19,12 @@ class jsstring {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
-			$this->quote = mb_substr($token['value'], 0, 1);
-			$this->process = in_array($this->quote, ['"', "'"]);
-			$this->string = $this->process ? str_replace('\\'.$this->quote, $this->quote, mb_substr($token['value'], 1, -1)) : $token['value'];
+			$this->quote = $quote = mb_substr($token['value'], 0, 1);
+			if (($this->process = in_array($quote, ['"', "'"]))) {
+				$this->string = str_replace('\\'.$quote, $quote, mb_substr($token['value'], 1, -1));
+			} else {
+				$this->string = $token['value'];
+			}
 			return true;
 		}
 		return false;
@@ -34,7 +37,7 @@ class jsstring {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
-		if ($minify['quotestyle'] && $this->quote != $minify['quotestyle']) {
+		if ($minify['quotestyle'] && $this->quote !== $minify['quotestyle']) {
 			$this->quote = $minify['quotestyle'];
 		}
 	}
@@ -47,7 +50,8 @@ class jsstring {
 	 */
 	public function compile(array $options = []) : string {
 		if ($this->process) {
-			return $this->quote.str_replace($this->quote, '\\'.$this->quote, $this->string).$this->quote;
+			$quote = $this->quote;
+			return $quote.str_replace($quote, '\\'.$quote, $this->string).$quote;
 		} else {
 			return $this->string;
 		}

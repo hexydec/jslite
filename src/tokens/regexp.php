@@ -30,6 +30,7 @@ class regexp {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
+		
 	}
 
 	/**

@@ -1,4 +1,4 @@
-<phpunit bootstrap="src/autoload.php" backupGlobals="false" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true">
+<phpunit bootstrap="vendor/autoload.php" backupGlobals="false" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true">
     <testsuites>
         <testsuite name="JSLite">
             <file>tests/jsliteTest.php</file>

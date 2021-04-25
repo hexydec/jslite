@@ -133,15 +133,15 @@ class expression {
 
 		// check for kewords
 		$keywords = ['debugger', 'continue', 'break', 'throw', 'return'];
-		if ($prevtype == 'keyword' && in_array($prev->keyword, $keywords)) {
+		if ($prevtype === 'keyword' && in_array($prev->keyword, $keywords, true)) {
 			return true;
 
 		// special case for keyword followed by brcket
-		} elseif ($prevtype == 'brackets' && $beforeprev && $beforeprev::type == 'keyword') {
+		} elseif ($prevtype === 'brackets' && $beforeprev && $beforeprev::type === 'keyword') {
 			return false;
 
 		// if prev is curly then expression will have already ended
-		} elseif ($prevtype == 'brackets' && $prev->bracket == 'curly' && (!$beforeprev || $beforeprev::type != 'operator')) {
+		} elseif ($prevtype === 'brackets' && $prev->bracket === 'curly' && (!$beforeprev || $beforeprev::type !== 'operator')) {
 			return false;
 
 		// get next token
@@ -149,11 +149,11 @@ class expression {
 			return false;
 
 		// next expression starts with a semi-colon
-		} elseif ($next['type'] == 'keyword') {
+		} elseif ($next['type'] === 'keyword') {
 			return true;
 
 		// next value is a not
-		} elseif ($prevtype != 'operator' && $next['value'] == '!') {
+		} elseif ($prevtype !== 'operator' && $next['value'] === '!') {
 			return true;
 
 		// see if the statement needs to be terminated
