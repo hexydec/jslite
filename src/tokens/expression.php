@@ -194,8 +194,8 @@ class expression {
 				break;
 			}
 		}
-		for ($i = 0; $i < $rewind; $i++) {
-			$tokens->prev();
+		if ($rewind) {
+			$tokens->prev($rewind);
 		}
 		return $next;
 	}

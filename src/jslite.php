@@ -126,7 +126,6 @@ class jslite {
 
 	protected function parse(tokenise $tokens) {
 		$expressions = [];
-		$token = $tokens->current();
 		while (($token = $tokens->next()) !== null) {
 			$obj = new expression($this);
 			if ($obj->parse($tokens)) {
