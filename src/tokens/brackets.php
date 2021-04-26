@@ -5,8 +5,7 @@ use \hexydec\tokens\tokenise;
 
 class brackets {
 
-	const type = 'brackets';
-	const significant = true;
+	public const significant = true;
 	protected $root;
 	protected $expressions = [];
 	public $bracket = 'bracket'; // square or bracket or curly
@@ -73,7 +72,7 @@ class brackets {
 		$prev = null;
 		foreach ($commands AS $i => $item) {
 			if ($item === $this) {
-				if ($prev && $prev::type === 'keyword' && $prev->keyword === 'for') {
+				if ($prev && get_class($prev) === 'hexydec\\jslite\\keyword' && $prev->keyword === 'for') {
 
 					// count expressions where the EOL is ; (Could be comma)
 					$count = 0;

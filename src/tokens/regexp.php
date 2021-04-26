@@ -5,8 +5,7 @@ use \hexydec\tokens\tokenise;
 
 class regexp {
 
-	const type = 'regexp';
-	const significant = true;
+	public const significant = true;
 	protected $pattern;
 
 	/**
@@ -30,7 +29,7 @@ class regexp {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
-		
+
 	}
 
 	/**

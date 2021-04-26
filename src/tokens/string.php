@@ -5,8 +5,7 @@ use \hexydec\tokens\tokenise;
 
 class jsstring {
 
-	const type = 'string';
-	const significant = true;
+	public const significant = true;
 	protected $string;
 	protected $quote = '"';
 	protected $process = false;

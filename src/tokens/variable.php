@@ -5,8 +5,7 @@ use \hexydec\tokens\tokenise;
 
 class variable {
 
-	const type = 'variable';
-	const significant = true;
+	public const significant = true;
 	protected $scopes = [];
 	protected $name;
 

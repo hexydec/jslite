@@ -5,8 +5,7 @@ use \hexydec\tokens\tokenise;
 
 class operator {
 
-	const type = 'operator';
-	const significant = true;
+	public const significant = true;
 	/**
 	 * @var string The text content of this object
 	 */
@@ -33,7 +32,7 @@ class operator {
 	 * @return void
 	 */
 	public function minify(array $minify) : void {
-		
+
 	}
 
 	/**

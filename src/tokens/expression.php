@@ -5,7 +5,6 @@ use \hexydec\tokens\tokenise;
 
 class expression {
 
-	public const type = 'expression';
 	public const significant = true;
 	public $commands = [];
 	public $eol;
@@ -129,19 +128,20 @@ class expression {
 	 * @return bool Whether the expression should end at the previous command
 	 */
 	protected function isEol(tokenise $tokens, $prev = null, $beforeprev = null) : bool {
-		$prevtype = $prev::type;
+		$prevtype = get_class($prev);
+		$beforeprevtype = $beforeprev ? get_class($beforeprev) : null;
 
 		// check for kewords
 		$keywords = ['debugger', 'continue', 'break', 'throw', 'return'];
-		if ($prevtype === 'keyword' && in_array($prev->keyword, $keywords, true)) {
+		if ($prevtype === 'hexydec\\jslite\\keyword' && in_array($prev->keyword, $keywords, true)) {
 			return true;
 
 		// special case for keyword followed by brcket
-		} elseif ($prevtype === 'brackets' && $beforeprev && $beforeprev::type === 'keyword') {
+		} elseif ($prevtype === 'hexydec\\jslite\\brackets' && $beforeprev && $beforeprevtype === 'hexydec\\jslite\\keyword') {
 			return false;
 
 		// if prev is curly then expression will have already ended
-		} elseif ($prevtype === 'brackets' && $prev->bracket === 'curly' && (!$beforeprev || $beforeprev::type !== 'operator')) {
+		} elseif ($prevtype === 'hexydec\\jslite\\brackets' && $prev->bracket === 'curly' && $beforeprevtype !== 'hexydec\\jslite\\operator') {
 			return false;
 
 		// get next token
@@ -153,7 +153,7 @@ class expression {
 			return true;
 
 		// next value is a not
-		} elseif ($prevtype !== 'operator' && $next['value'] === '!') {
+		} elseif ($prevtype !== 'hexydec\\jslite\\operator' && $next['value'] === '!') {
 			return true;
 
 		// see if the statement needs to be terminated
@@ -167,7 +167,7 @@ class expression {
 				'increment' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment']
 			];
 			foreach ($end AS $key => $item) {
-				if ($key == $prevtype && in_array($next['type'], $item)) {
+				if ('hexydec\\jslite\\'.$key == $prevtype && in_array($next['type'], $item)) {
 					return true;
 				}
 			}

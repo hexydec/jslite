@@ -5,8 +5,7 @@ use \hexydec\tokens\tokenise;
 
 class keyword {
 
-	const type = 'keyword';
-	const significant = true;
+	public const significant = true;
 	public $keyword;
 
 	/**

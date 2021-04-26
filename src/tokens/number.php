@@ -5,8 +5,7 @@ use \hexydec\tokens\tokenise;
 
 class number {
 
-	const type = 'number';
-	const significant = true;
+	public const significant = true;
 	protected $number;
 
 	/**
