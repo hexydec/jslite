@@ -28,7 +28,7 @@ class brackets {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== false) {
-			$this->bracket = mb_substr($token['type'], 4);
+			$this->bracket = \mb_substr($token['type'], 4);
 			while (($token = $tokens->next()) !== null) {
 				if ($token['type'] !== 'comma') {
 					$obj = new expression();
@@ -72,7 +72,7 @@ class brackets {
 		$prev = null;
 		foreach ($commands AS $i => $item) {
 			if ($item === $this) {
-				if ($prev && get_class($prev) === 'hexydec\\jslite\\keyword' && $prev->keyword === 'for') {
+				if ($prev && \get_class($prev) === 'hexydec\\jslite\\keyword' && $prev->keyword === 'for') {
 
 					// count expressions where the EOL is ; (Could be comma)
 					$count = 0;

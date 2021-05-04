@@ -18,9 +18,9 @@ class jsstring {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
-			$this->quote = $quote = mb_substr($token['value'], 0, 1);
-			if (($this->process = in_array($quote, ['"', "'"]))) {
-				$this->string = str_replace('\\'.$quote, $quote, mb_substr($token['value'], 1, -1));
+			$this->quote = $quote = \mb_substr($token['value'], 0, 1);
+			if (($this->process = \in_array($quote, ['"', "'"]))) {
+				$this->string = \str_replace('\\'.$quote, $quote, \mb_substr($token['value'], 1, -1));
 			} else {
 				$this->string = $token['value'];
 			}
@@ -50,7 +50,7 @@ class jsstring {
 	public function compile(array $options = []) : string {
 		if ($this->process) {
 			$quote = $this->quote;
-			return $quote.str_replace($quote, '\\'.$quote, $this->string).$quote;
+			return $quote.\str_replace($quote, '\\'.$quote, $this->string).$quote;
 		} else {
 			return $this->string;
 		}

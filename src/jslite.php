@@ -52,10 +52,11 @@ class jslite {
 			'quotestyle' => '"' // convert quotes to the specified character, null or false not to convert
 		]
 	];
+	protected $expressions = null;
 
 	public function __construct(array $config = []) {
 		if ($config) {
-			$this->config = array_replace_recursive($this->config, $config);
+			$this->config = \array_replace_recursive($this->config, $config);
 		}
 	}
 
@@ -86,7 +87,7 @@ class jslite {
 	 * @return mixed The loaded Javascript, or false on error
 	 */
 	public function open(string $url, $context = null, string &$error = null) {
-		if (($js = file_get_contents($url, $context)) === false) {
+		if (($js = \file_get_contents($url, $context)) === false) {
 			$error = 'Could not open file "'.$url.'"';
 		} elseif ($this->load($js)) {
 			return $js;
@@ -114,7 +115,7 @@ class jslite {
 		// exit();
 
 		// parse the document
-		if (($this->expressions = $this->parse($tokens)) === false) {
+		if (($this->expressions = $this->parse($tokens)) === null) {
 			$error = 'Input is not valid';
 
 		// success
@@ -124,7 +125,7 @@ class jslite {
 		return false;
 	}
 
-	protected function parse(tokenise $tokens) {
+	protected function parse(tokenise $tokens) : array {
 		$expressions = [];
 		while (($token = $tokens->next()) !== null) {
 			$obj = new expression($this);
@@ -132,7 +133,7 @@ class jslite {
 				$expressions[] = $obj;
 			}
 		}
-		return $expressions ? $expressions : false;
+		return $expressions ? $expressions : null;
 	}
 
 	/**
@@ -144,7 +145,7 @@ class jslite {
 	public function minify(array $minify = []) : void {
 
 		// merge config
-		$minify = array_replace_recursive($this->config['minify'], $minify);
+		$minify = \array_replace_recursive($this->config['minify'], $minify);
 
 		// minify expressions
 		$last = null;

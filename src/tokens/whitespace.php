@@ -44,7 +44,7 @@ class whitespace {
 			$commands = $this->root->commands;
 			$eol = $this->root->eol;
 			$prev = null;
-			$count = count($commands);
+			$count = \count($commands);
 			$not = ['whitespace', 'comment'];
 			foreach ($commands AS $i => $item) {
 				if ($item === $this) {
@@ -56,13 +56,13 @@ class whitespace {
 					} else {
 
 						// get the next command that is not
-						$prevtype = get_class($prev);
+						$prevtype = \get_class($prev);
 						$next = null;
 						$nexttype = null;
 						for ($n = $i + 1; $n < $count; $n++) {
 							if ($commands[$n]::significant) {
 								$next = $commands[$n];
-								$nexttype = get_class($next);
+								$nexttype = \get_class($next);
 								break;
 							}
 						}
@@ -77,7 +77,7 @@ class whitespace {
 							}
 
 						// handle operators next to an increment
-						} elseif ($prevtype === 'hexydec\\jslite\\operator' && $nexttype === 'hexydec\\jslite\\increment' && mb_strpos($commands[$i + 1]->compile(), $commands[$i - 1]->compile()) !== false) {
+						} elseif ($prevtype === 'hexydec\\jslite\\operator' && $nexttype === 'hexydec\\jslite\\increment' && \mb_strpos($commands[$i + 1]->compile(), $commands[$i - 1]->compile()) !== false) {
 							$this->whitespace = ' ';
 
 						// handled + + and - -
@@ -85,7 +85,7 @@ class whitespace {
 							$this->whitespace = ' ';
 
 						// keyword not followed by bracket
-						} elseif (in_array('hexydec\\jslite\\keyword', [$prevtype, $nexttype]) && !in_array('hexydec\\jslite\\brackets', [$prevtype, $nexttype]) && !in_array('hexydec\\jslite\\operator', [$prevtype, $nexttype])) {
+						} elseif (\in_array('hexydec\\jslite\\keyword', [$prevtype, $nexttype]) && !\in_array('hexydec\\jslite\\brackets', [$prevtype, $nexttype]) && !\in_array('hexydec\\jslite\\operator', [$prevtype, $nexttype])) {
 							$this->whitespace = ' ';
 
 						// remove whitespace

@@ -77,7 +77,7 @@ class expression {
 						$end = false;
 
 						// catch un-terminated line endings
-						if ($last && mb_strpos($token['value'], "\n") !== false) {
+						if ($last && \mb_strpos($token['value'], "\n") !== false) {
 							$end = $this->isEol($tokens, $last, $beforelast, $commands);
 						}
 
@@ -109,7 +109,7 @@ class expression {
 				}
 
 				// record previous items
-				if (($end = end($commands)) !== false && $end::significant) {
+				if (($end = \end($commands)) !== false && $end::significant) {
 					$beforelast = $last;
 					$last = $end;
 				}
@@ -128,12 +128,12 @@ class expression {
 	 * @return bool Whether the expression should end at the previous command
 	 */
 	protected function isEol(tokenise $tokens, $prev = null, $beforeprev = null) : bool {
-		$prevtype = get_class($prev);
-		$beforeprevtype = $beforeprev ? get_class($beforeprev) : null;
+		$prevtype = \get_class($prev);
+		$beforeprevtype = $beforeprev ? \get_class($beforeprev) : null;
 
 		// check for kewords
 		$keywords = ['debugger', 'continue', 'break', 'throw', 'return'];
-		if ($prevtype === 'hexydec\\jslite\\keyword' && in_array($prev->keyword, $keywords, true)) {
+		if ($prevtype === 'hexydec\\jslite\\keyword' && \in_array($prev->keyword, $keywords, true)) {
 			return true;
 
 		// special case for keyword followed by brcket
@@ -167,7 +167,7 @@ class expression {
 				'increment' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment']
 			];
 			foreach ($end AS $key => $item) {
-				if ('hexydec\\jslite\\'.$key == $prevtype && in_array($next['type'], $item)) {
+				if ('hexydec\\jslite\\'.$key == $prevtype && \in_array($next['type'], $item)) {
 					return true;
 				}
 			}
@@ -189,7 +189,7 @@ class expression {
 		$ignore = ['whitespace', 'commentsingle', 'commentmulti'];
 		while (($token = $tokens->next(null, false)) !== null) {
 			$rewind++;
-			if (!in_array($token['type'], $ignore)) {
+			if (!\in_array($token['type'], $ignore)) {
 				$next = $token;
 				break;
 			}
