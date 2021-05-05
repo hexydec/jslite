@@ -16,7 +16,7 @@ class jslite {
 		'templateliterals' => '`(?:\\\\.|[^\\\\`])*+`',
 
 		// look behind for keyword|value|variable and capture whitespace (replaced with space or linebreak), or just whitespace which will be removed, followed by a single line regular expressionn, optional whitespace (Will be removed), and then must be followed by a control character or linebreak
-		'regexp' => '\\/(?!\\*)(?:\\\\.|[^\\\\\\/\\n\\r])*\\/[gimsuy]?[ \\t]*+(?=[.,;\\)\\]}]|[\\r\\n]|$)', // (?:(?<=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}_$"\'])\\s++|\s*+)
+		'regexp' => '\\/(?!\\*)(?:\\\\.|\\[(?:\\\\]|[^\\]\\n\\r]+)\\]|[^\\\\\\/\\n\\r])*\\/[dgimsuy]*[ \\t]*+(?=[.,;\\)\\]}]|[\\r\\n]|$)', // (?:(?<=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}_$"\'])\\s++|\s*+)
 
 		// capture single line comments after quotes incase it contains //
 		'commentsingle' => '\\/\\/[^\\n]*+',
@@ -125,7 +125,7 @@ class jslite {
 		return false;
 	}
 
-	protected function parse(tokenise $tokens) : array {
+	protected function parse(tokenise $tokens) : ?array {
 		$expressions = [];
 		while (($token = $tokens->next()) !== null) {
 			$obj = new expression($this);

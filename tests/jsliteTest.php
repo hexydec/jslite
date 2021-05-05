@@ -192,6 +192,15 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			[
 				'input' => 'e.replace(/\'/g,"%27"); item = "\'";',
 				'output' => 'e.replace(/\'/g,"%27");item="\'"'
+			],
+			[ // javascrupt regexp can contain a forward slash in a character class
+				'input' => 'var re = /[+/-]*/g;',
+				'output' => 'var re=/[+/-]*/g'
+			],
+			[
+				'input' => 'var re = /[+/-]*/g,
+								foo = "bar";',
+				'output' => 'var re=/[+/-]*/g,foo="bar"'
 			]
 		];
 		$this->compareMinify($tests, ['semicolon' => false]);
