@@ -15,7 +15,7 @@ spl_autoload_register(function (string $class) : bool {
 		'hexydec\\jslite\\brackets' => __DIR__.'/tokens/brackets.php'
 	];
 	if (isset($classes[$class])) {
-		return require($classes[$class]);
+		return (bool) require($classes[$class]);
 	}
 	return false;
 });
