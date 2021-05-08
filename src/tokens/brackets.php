@@ -59,41 +59,45 @@ class brackets {
 			$item->minify($minify);
 
 			// get last expression if it contains significant code
-			foreach ($item->commands AS $comm) {
-				if ($comm::significant) {
-					$last = $item;
-					break;
+			if ($minify['eol']) {
+				foreach ($item->commands AS $comm) {
+					if ($comm::significant) {
+						$last = $item;
+						break;
+					}
 				}
 			}
 		}
 
 		// must not remove eol if for loop
-		$commands = $this->root->commands;
-		$prev = null;
-		foreach ($commands AS $i => $item) {
-			if ($item === $this) {
-				if ($prev && \get_class($prev) === 'hexydec\\jslite\\keyword' && $prev->keyword === 'for') {
+		if ($minify['eol']) {
+			$commands = $this->root->commands;
+			$prev = null;
+			foreach ($commands AS $i => $item) {
+				if ($item === $this) {
+					if ($prev && \get_class($prev) === 'hexydec\\jslite\\keyword' && $prev->keyword === 'for') {
 
-					// count expressions where the EOL is ; (Could be comma)
-					$count = 0;
-					foreach ($expressions AS $expr) {
-						if ($expr->eol === ';') {
-							$count++;
+						// count expressions where the EOL is ; (Could be comma)
+						$count = 0;
+						foreach ($expressions AS $expr) {
+							if ($expr->eol === ';') {
+								$count++;
+							}
+						}
+						if ($count !== 3) {
+							$last = null;
 						}
 					}
-					if ($count !== 3) {
-						$last = null;
-					}
+					break;
+				} elseif ($item::significant) {
+					$prev = $item;
 				}
-				break;
-			} elseif ($item::significant) {
-				$prev = $item;
 			}
-		}
 
-		// remove last eol
-		if ($last) {
-			$last->eol = null;
+			// remove last eol
+			if ($last) {
+				$last->eol = null;
+			}
 		}
 	}
 

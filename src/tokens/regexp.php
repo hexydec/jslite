@@ -6,7 +6,7 @@ use \hexydec\tokens\tokenise;
 class regexp {
 
 	public const significant = true;
-	protected $pattern;
+	protected $content;
 
 	/**
 	 * Parses an array of tokens
@@ -16,7 +16,7 @@ class regexp {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
-			$this->pattern = $token['value'];
+			$this->content = $token['value'];
 			return true;
 		}
 		return false;
@@ -30,6 +30,10 @@ class regexp {
 	 */
 	public function minify(array $minify = []) : void {
 
+		// token captures trailing whitespace to enable it to be captured, trim it when whitespace minification is enabled
+		if ($minify['whitespace']) {
+			$this->content = \rtrim($this->content);
+		}
 	}
 
 	/**
@@ -39,6 +43,6 @@ class regexp {
 	 * @return string The compiled HTML
 	 */
 	public function compile(array $options = []) : string {
-		return $this->pattern;
+		return $this->content;
 	}
 }

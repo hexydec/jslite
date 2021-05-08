@@ -3,6 +3,25 @@ use hexydec\jslite\jslite;
 
 final class jsliteTest extends \PHPUnit\Framework\TestCase {
 
+	public function testCanParseJavascript() {
+		$tests = [
+			'var item = 42;',
+			'if (foo) {
+				var bar = "foo";
+			} else {
+				var bar = "bar";
+			}',
+			'if (test) {
+				context = [document];
+			}'
+		];
+		$obj = new jslite();
+		foreach ($tests AS $item) {
+			$obj->load($item);
+			$this->assertEquals($item, $obj->compile());
+		}
+	}
+
 	public function testCanStripStart() {
 		$tests = [
 			[
@@ -179,6 +198,11 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'input' => 'var item = 42
 					/[9-0]+/.test( item );',
 				'output' => 'var item=42;/[9-0]+/.test(item)'
+			],
+			[
+				'input' => '/[9-0]+/
+					.test( item );',
+				'output' => '/[9-0]+/.test(item)'
 			],
 			[
 				'input' => 'item = 26 / 42 / 60;',
@@ -372,9 +396,25 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			[ // disperate pluses
 				'input' => '"hi" + +new Date();',
 				'output' => '"hi"+ +new Date()'
+			],
+			[ // this did just return 'var A=e=>'
+				'input' => 'var A = e => {
+					    for (; o < r && (s = t(e / a[o]), !(s && (l += n[o], e %= a[o]))); o += 1);
+					};
+		            (
+						isNaN(l[c]) && -1 === l[c].indexOf("px") && (
+							this[c].style[a] = l[c],
+							i.push(a),
+							l[c] = 0
+						),
+						n = getComputedStyle(this[c]),
+						i.forEach(e => l[c] -= parseFloat(n[e]))
+					),
+					this[c].style[a] = l[c] + (isNaN(l[c]) ? "" : "px");',
+				'output' => 'var A=e=>{for(;o<r&&(s=t(e/a[o]),!(s&&(l+=n[o],e%=a[o])));o+=1)};(isNaN(l[c])&&-1===l[c].indexOf("px")&&(this[c].style[a]=l[c],i.push(a),l[c]=0),n=getComputedStyle(this[c]),i.forEach(e=>l[c]-=parseFloat(n[e]))),this[c].style[a]=l[c]+(isNaN(l[c])?"":"px")'
 			]
 		];
-		$this->compareMinify($tests, ['semicolon' => false]);
+		$this->compareMinify($tests);
 	}
 
 	public function testCnaInsertAutomaticSemicolons() {

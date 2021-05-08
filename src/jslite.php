@@ -15,8 +15,8 @@ class jslite {
 		'singlequotes' => "'(?:\\\\[^\\n\\r]|[^\\\\'\\n\\r])*+'",
 		'templateliterals' => '`(?:\\\\.|[^\\\\`])*+`',
 
-		// look behind for keyword|value|variable and capture whitespace (replaced with space or linebreak), or just whitespace which will be removed, followed by a single line regular expressionn, optional whitespace (Will be removed), and then must be followed by a control character or linebreak
-		'regexp' => '\\/(?!\\*)(?:\\\\.|\\[(?:\\\\]|[^\\]\\n\\r]+)\\]|[^\\\\\\/\\n\\r])*\\/[dgimsuy]*[ \\t]*+(?=[.,;\\)\\]}]|[\\r\\n]|$)', // (?:(?<=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}_$"\'])\\s++|\s*+)
+		// check value is preceeded by valid characters, capture / not followed by *, capture escaped characters | character class (including /) | anything but opening sqaure bracket, forward slash or linebreak, then the closing forward slash followed by flags, then any whitespace after, this is important to be able to look ahead for control characters/linebreaks in order to detect this is a regexp and not for example a couple of divides (var i = 40 / 60 / 80;)
+		'regexp' => '(?<=^|[ \\t\\n\\r,;=+({\\[])\\/(?![\\*])(?:\\\\.|\\[(?:\\\\.|[^\\]\\n\\r]+)\\]|[^\\\\\\/\\n\\r\\[])*\\/[dgimsuy]*[ \\t]*+(?=[ .,;)\\]}\\t\\r\\n]|$)',
 
 		// capture single line comments after quotes incase it contains //
 		'commentsingle' => '\\/\\/[^\\n]*+',
@@ -179,7 +179,7 @@ class jslite {
 	public function compile(array $options = []) : string {
 		$js = '';
 		foreach ($this->expressions AS $item) {
-			$js .= $item->compile($options);
+			$js .= $item->compile($options); //."\n\n";
 		}
 		return $js;
 	}
