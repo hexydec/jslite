@@ -477,6 +477,12 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 		foreach ($tests AS $item) {
 			$obj->load($item['input']);
 			$obj->minify($minify);
+			$compiled = $obj->compile();
+			$this->assertEquals($item['output'], $compiled);
+
+			// recycle the output
+			$obj->load($compiled);
+			$obj->minify($minify);
 			$this->assertEquals($item['output'], $obj->compile());
 		}
 	}
