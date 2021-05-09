@@ -6,7 +6,7 @@ use \hexydec\tokens\tokenise;
 class number {
 
 	public const significant = true;
-	protected $number;
+	protected $content;
 
 	/**
 	 * Parses an array of tokens
@@ -16,7 +16,7 @@ class number {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
-			$this->number = $token['value'];
+			$this->content = $token['value'];
 			return true;
 		}
 		return false;
@@ -25,10 +25,10 @@ class number {
 	/**
 	 * Minifies the internal representation of the document
 	 *
-	 * @param array $minify An array indicating which minification operations to perform, this is merged with htmldoc::$config['minify']
 	 * @return void
 	 */
-	public function minify(array $minify = []) : void {
+	public function minify() : void {
+
 	}
 
 	/**
@@ -38,6 +38,6 @@ class number {
 	 * @return string The compiled HTML
 	 */
 	public function compile(array $options = []) : string {
-		return (string) $this->number;
+		return (string) $this->content;
 	}
 }

@@ -75,7 +75,7 @@ class brackets {
 			$prev = null;
 			foreach ($commands AS $i => $item) {
 				if ($item === $this) {
-					if ($prev && \get_class($prev) === 'hexydec\\jslite\\keyword' && $prev->keyword === 'for') {
+					if ($prev && \get_class($prev) === 'hexydec\\jslite\\keyword' && $prev->content === 'for') {
 
 						// count expressions where the EOL is ; (Could be comma)
 						$count = 0;

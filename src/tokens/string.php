@@ -6,7 +6,7 @@ use \hexydec\tokens\tokenise;
 class jsstring {
 
 	public const significant = true;
-	protected $string;
+	protected $content;
 	protected $quote = '"';
 	protected $process = false;
 
@@ -19,10 +19,10 @@ class jsstring {
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
 			$this->quote = $quote = \mb_substr($token['value'], 0, 1);
-			if (($this->process = \in_array($quote, ['"', "'"]))) {
-				$this->string = \str_replace('\\'.$quote, $quote, \mb_substr($token['value'], 1, -1));
+			if (($this->process = \in_array($quote, ['"', "'"], true))) {
+				$this->content = \str_replace('\\'.$quote, $quote, \mb_substr($token['value'], 1, -1));
 			} else {
-				$this->string = $token['value'];
+				$this->content = $token['value'];
 			}
 			return true;
 		}
@@ -50,9 +50,9 @@ class jsstring {
 	public function compile(array $options = []) : string {
 		if ($this->process) {
 			$quote = $this->quote;
-			return $quote.\str_replace($quote, '\\'.$quote, $this->string).$quote;
+			return $quote.\str_replace($quote, '\\'.$quote, $this->content).$quote;
 		} else {
-			return $this->string;
+			return $this->content;
 		}
 	}
 }

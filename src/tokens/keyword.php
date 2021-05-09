@@ -6,7 +6,7 @@ use \hexydec\tokens\tokenise;
 class keyword {
 
 	public const significant = true;
-	public $keyword;
+	public $content;
 
 	/**
 	 * Parses an array of tokens
@@ -16,7 +16,7 @@ class keyword {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
-			$this->keyword = $token['value'];
+			$this->content = $token['value'];
 			return true;
 		}
 		return false;
@@ -25,10 +25,9 @@ class keyword {
 	/**
 	 * Minifies the internal representation of the document
 	 *
-	 * @param array $minify An array indicating which minification operations to perform, this is merged with htmldoc::$config['minify']
 	 * @return void
 	 */
-	public function minify(array $minify = []) : void {
+	public function minify() : void {
 
 	}
 
@@ -39,6 +38,6 @@ class keyword {
 	 * @return string The compiled HTML
 	 */
 	public function compile(array $options = []) : string {
-		return $this->keyword;
+		return $this->content;
 	}
 }

@@ -131,17 +131,22 @@ class expression {
 		$prevtype = \get_class($prev);
 		$beforeprevtype = $beforeprev ? \get_class($beforeprev) : null;
 
+		// class names in vars
+		$key = __NAMESPACE__.'\\keyword';
+		$bra = __NAMESPACE__.'\\brackets';
+		$op = __NAMESPACE__.'\\operator';
+
 		// check for kewords
 		$keywords = ['debugger', 'continue', 'break', 'throw', 'return'];
-		if ($prevtype === 'hexydec\\jslite\\keyword' && \in_array($prev->keyword, $keywords, true)) {
+		if ($prevtype === $key && \in_array($prev->content, $keywords, true)) {
 			return true;
 
 		// special case for keyword followed by brcket
-		} elseif ($prevtype === 'hexydec\\jslite\\brackets' && $beforeprev && $beforeprevtype === 'hexydec\\jslite\\keyword') {
+		} elseif ($prevtype === $bra && $beforeprev && $beforeprevtype === $key) {
 			return false;
 
 		// if prev is curly then expression will have already ended
-		} elseif ($prevtype === 'hexydec\\jslite\\brackets' && $prev->bracket === 'curly' && $beforeprevtype !== 'hexydec\\jslite\\operator') {
+		} elseif ($prevtype === $bra && $prev->bracket === 'curly' && $beforeprevtype !== $op) {
 			return false;
 
 		// get next token
@@ -153,7 +158,7 @@ class expression {
 			return true;
 
 		// next value is a not
-		} elseif ($prevtype !== 'hexydec\\jslite\\operator' && $next['value'] === '!') {
+		} elseif ($prevtype !== $op && $next['value'] === '!') {
 			return true;
 
 		// see if the statement needs to be terminated

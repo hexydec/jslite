@@ -767,13 +767,13 @@ func()
         // https://github.com/matthiasmullie/minify/issues/134
         $tests[] = array(
             'if (\'x\'+a in foo && \'y\'+b[a].z in bar)',
-            'if(\'x\'+a in foo&&\'y\'+b[a].z in bar)',
+            'if("x"+a in foo&&"y"+b[a].z in bar)',
         );
 
         // https://github.com/matthiasmullie/minify/issues/136
         $tests[] = array(
             'XPRSHelper.isManagable = function(presetId){ if (presetId in XPRSHelper.presetTypes){ return (XPRSHelper.presetTypes[presetId]["GROUP"] in {"FEATURES":true,"SLIDESHOWS":true,"GALLERIES":true}); } return false; };',
-            'XPRSHelper.isManagable=function(presetId){if(presetId in XPRSHelper.presetTypes){return(XPRSHelper.presetTypes[presetId].GROUP in{"FEATURES":true,"SLIDESHOWS":true,"GALLERIES":true})}returnfalse}',
+            'XPRSHelper.isManagable=function(presetId){if(presetId in XPRSHelper.presetTypes){return(XPRSHelper.presetTypes[presetId]["GROUP"] in{"FEATURES":true,"SLIDESHOWS":true,"GALLERIES":true})}return false}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/138
@@ -785,20 +785,6 @@ func()
             'matchers.push(/^[0-9]*$/.source);
 String(dateString).match(/^[0-9]*$/);',
             'matchers.push(/^[0-9]*$/.source);String(dateString).match(/^[0-9]*$/)',
-        );
-
-        // https://github.com/matthiasmullie/minify/issues/139
-        $tests[] = array(
-            $dir.'/sample/line_endings/lf/script.js',
-            'var a=1',
-        );
-        $tests[] = array(
-            $dir.'/sample/line_endings/cr/script.js',
-            'var a=1',
-        );
-        $tests[] = array(
-            $dir.'/sample/line_endings/crlf/script.js',
-            'var a=1',
         );
 
         // https://github.com/matthiasmullie/minify/issues/142
@@ -813,13 +799,13 @@ String(dateString).match(/^[0-9]*$/);',
 
         // https://github.com/matthiasmullie/minify/issues/143
         $tests[] = array(
-            "if(nutritionalPortionWeightUnit == 'lbs' && blockUnit == 'oz'){
+            'if(nutritionalPortionWeightUnit == "lbs" && blockUnit == "oz"){
 itemFat = (qty * (fat/nutritionalPortionWeight))/16;
 itemProtein = (qty * (protein/nutritionalPortionWeight))/16;
 itemCarbs = (qty * (carbs/nutritionalPortionWeight))/16;
 itemKcal = (qty * (kcal/nutritionalPortionWeight))/16;
-}",
-            "if(nutritionalPortionWeightUnit=='lbs'&&blockUnit=='oz'){itemFat=(qty*(fat/nutritionalPortionWeight))/16;itemProtein=(qty*(protein/nutritionalPortionWeight))/16;itemCarbs=(qty*(carbs/nutritionalPortionWeight))/16;itemKcal=(qty*(kcal/nutritionalPortionWeight))/16}",
+}',
+            'if(nutritionalPortionWeightUnit=="lbs"&&blockUnit=="oz"){itemFat=(qty*(fat/nutritionalPortionWeight))/16;itemProtein=(qty*(protein/nutritionalPortionWeight))/16;itemCarbs=(qty*(carbs/nutritionalPortionWeight))/16;itemKcal=(qty*(kcal/nutritionalPortionWeight))/16}',
         );
         $tests[] = array(
             'itemFat = (qty * (fat/nutritionalPortionWeight))/16;
@@ -839,8 +825,7 @@ prefilters = {};',
         $tests[] = array(
             'elem.getAttribute("type")!==null)+"/"+elem.type
 var rprotocol=/^\/\//,prefilters={}',
-            'elem.getAttribute("type")!==null)+"/"+elem.type
-var rprotocol=/^\/\//,prefilters={}',
+            'elem.getAttribute("type")!==null+"/"+elem.type;var rprotocol=/^\/\//,prefilters={}',
         );
         $tests[] = array(
             'map: function( elems, callback, arg ) {

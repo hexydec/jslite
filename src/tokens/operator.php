@@ -9,7 +9,7 @@ class operator {
 	/**
 	 * @var string The text content of this object
 	 */
-	public $operator = null;
+	public $content = null;
 
 	/**
 	 * Parses an array of tokens
@@ -19,7 +19,7 @@ class operator {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
-			$this->operator = $token['value'];
+			$this->content = $token['value'];
 			return true;
 		}
 		return false;
@@ -28,10 +28,9 @@ class operator {
 	/**
 	 * Minifies the internal representation of the comment
 	 *
-	 * @param array $minify An array of minification options controlling which operations are performed
 	 * @return void
 	 */
-	public function minify(array $minify) : void {
+	public function minify() : void {
 
 	}
 
@@ -42,6 +41,6 @@ class operator {
 	 * @return string The compiled Javascript
 	 */
 	public function compile(array $options = []) : string {
-		return $this->operator;
+		return $this->content;
 	}
 }

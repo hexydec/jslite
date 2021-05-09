@@ -10,13 +10,26 @@ class jslite {
 	 */
 	protected static $tokens = [
 
+		// capture the easy stuff first
+		'eol' => ';',
+		'comma' => ',',
+		'opensquare' => '\\[',
+		'closesquare' => '\\]',
+		'openbracket' => '\\(',
+		'closebracket' => '\\)',
+		'opencurly' => '\\{',
+		'closecurly' => '\\}',
+		'increment' => '\\+\\+|--',
+
+		// keywords number and variables
+		'keyword' => '\\b(?:let|break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield|null|async|await)\\b',
+		'variable' => '[\\p{L}\\p{Nl}$_][\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}$_]*+',
+		'number' => '(?:0[bB][01_]++n?|0[oO][0-7_]++n?|0[xX][a-f0-9_]|[0-9][0-9_]*+(?:\\.[0-9_]++)?(?:e[+-]?[1-9][0-9]*+)?)',
+
 		// consume strings in quotes, check for escaped quotes
 		'doublequotes' => '"(?:\\\\[^\\n\\r]|[^\\\\"\\n\\r])*+"',
 		'singlequotes' => "'(?:\\\\[^\\n\\r]|[^\\\\'\\n\\r])*+'",
 		'templateliterals' => '`(?:\\\\.|[^\\\\`])*+`',
-
-		// check value is preceeded by valid characters, capture / not followed by *, capture escaped characters | character class (including /) | anything but opening sqaure bracket, forward slash or linebreak, then the closing forward slash followed by flags, then any whitespace after, this is important to be able to look ahead for control characters/linebreaks in order to detect this is a regexp and not for example a couple of divides (var i = 40 / 60 / 80;)
-		'regexp' => '(?<=^|[ \\t\\n\\r,;=+({\\[])\\/(?![\\*])(?:\\\\.|\\[(?:\\\\.|[^\\]\\n\\r]+)\\]|[^\\\\\\/\\n\\r\\[])*\\/[dgimsuy]*[ \\t]*+(?=[ .,;)\\]}\\t\\r\\n]|$)',
 
 		// capture single line comments after quotes incase it contains //
 		'commentsingle' => '\\/\\/[^\\n]*+',
@@ -24,22 +37,15 @@ class jslite {
 		// remove multiline comments
 		'commentmulti' => '\\/\\*(?:(?U)[\\s\\S]*)\\*\\/',
 
-		'increment' => '\\+\\+|--',
+		// capture divide first to make regexp easier to capture
+		// 'divide' => '(?<=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}$_])[\\s]*\\/[\\s]*(?=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}$_=])',
 
-		'keyword' => '\\b(?:let|break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield|null|async|await)\\b',
-		'variable' => '[\\p{L}\\p{Nl}$_][\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}$_]*+',
-		'number' => '(?:0[bB][01_]++n?|0[oO][0-7_]++n?|0[xX][a-f0-9_]|[0-9][0-9_]*+(?:\\.[0-9_]++)?(?:e[+-]?[1-9][0-9]*+)?)',
+		// check value is preceeded by valid characters, capture / not followed by *, capture escaped characters | character class (including /) | anything but opening sqaure bracket, forward slash or linebreak, then the closing forward slash followed by flags, then any whitespace after, this is important to be able to look ahead for control characters/linebreaks in order to detect this is a regexp and not for example a couple of divides (var i = 40 / 60 / 80;)
+		'regexp' => '\\/(?![\\*])(?:\\\\.|\\[(?:\\\\.|[^\\]\\n\\r]+)\\]|[^\\\\\\/\\n\\r\\[])*\\/[dgimsuy]*[ \\t]*+(?=[ .,;)\\]}\\t\\r\\n]|$)',
 
-		'eol' => ';',
-		// 'dot' => '\\.',
-		'comma' => ',',
+		// capture operators after regexp
 		'operator' => '[+*\\/<>%&-]?=|[\\.+*!<>:%|&?^-]+|\\/',
-		'opensquare' => '\\[',
-		'closesquare' => '\\]',
-		'openbracket' => '\\(',
-		'closebracket' => '\\)',
-		'opencurly' => '\\{',
-		'closecurly' => '\\}',
+
 		'whitespace' => '\\s++',
 		'other' => '.'
 	];
