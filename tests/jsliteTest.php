@@ -385,11 +385,11 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'input' => 'for (let i = 10; i--;) {}',
 				'output' => 'for(let i=10;i--;){}'
 			],
-			[ // keep last semi-colon on for loop
+			[ // keep last semi-colon in for loop
 				'input' => 'for (let i = 10,a = 1; i--;) {}',
 				'output' => 'for(let i=10,a=1;i--;){}'
 			],
-			[ // keep last semi-colon on for loop
+			[
 				'input' => 'for (let i = 10, a = 1; i < a; i++) {}',
 				'output' => 'for(let i=10,a=1;i<a;i++){}'
 			],
