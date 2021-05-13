@@ -37,9 +37,6 @@ class jslite {
 		// remove multiline comments
 		'commentmulti' => '\\/\\*(?:(?U)[\\s\\S]*)\\*\\/',
 
-		// capture divide first to make regexp easier to capture
-		// 'divide' => '(?<=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}$_])[\\s]*\\/[\\s]*(?=[\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}$_=])',
-
 		// check value is preceeded by valid characters, capture / not followed by *, capture escaped characters | character class (including /) | anything but opening sqaure bracket, forward slash or linebreak, then the closing forward slash followed by flags, then any whitespace after, this is important to be able to look ahead for control characters/linebreaks in order to detect this is a regexp and not for example a couple of divides (var i = 40 / 60 / 80;)
 		'regexp' => '\\/(?![\\*])(?:\\\\.|\\[(?:\\\\.|[^\\]\\n\\r]+)\\]|[^\\\\\\/\\n\\r\\[])*\\/[dgimsuy]*[ \\t]*+(?=[ .,;)\\]}\\t\\r\\n]|$)',
 
@@ -88,7 +85,7 @@ class jslite {
 	 * Open an Javascript file from a URL
 	 *
 	 * @param string $url The address of the Javascript file to retrieve
-	 * @param resource $context An optional array of context parameters
+	 * @param resource $context A resource object made with stream_context_create()
 	 * @param string &$error A reference to any user error that is generated
 	 * @return mixed The loaded Javascript, or false on error
 	 */
