@@ -157,6 +157,10 @@ class expression {
 		} elseif ($next['type'] === 'keyword') {
 			return true;
 
+		// next value starts with a ~
+		} elseif ($next['value'] === '~') {
+			return true;
+
 		// next value is a not
 		} elseif ($prevtype !== $op && $next['value'] === '!') {
 			return true;

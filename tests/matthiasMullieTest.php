@@ -837,8 +837,7 @@ var rprotocol=/^\/\//,prefilters={}',
                 }
                 return concat.apply( [], ret );
             }',
-            'map:function(elems,callback,arg){for(i in elems){value=callback(elems[i],i,arg);if(value!=null){ret.push(value)}}
-return concat.apply([],ret)}',
+            'map:function(elems,callback,arg){for(i in elems){value=callback(elems[i],i,arg);if(value!=null){ret.push(value)}}return concat.apply([],ret)}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/167
@@ -871,13 +870,11 @@ return concat.apply([],ret)}',
     }
     return el;
 };',
-            'Calendar.createElement=function(type,parent){var el=null;if(document.createElementNS){el=document.createElementNS("http://www.w3.org/1999/xhtml",type)}else{el=document.createElement(type)}
-if(typeof parent!="undefined"){parent.appendChild(el)}
-return el}',
+            'Calendar.createElement=function(type,parent){var el=null;if(document.createElementNS){el=document.createElementNS("http://www.w3.org/1999/xhtml",type)}else{el=document.createElement(type)}if(typeof parent!="undefined"){parent.appendChild(el)}return el}',
         );
         $tests[] = array(
             "$(this).find('iframe').hide().attr('src', '//about:blank').end().empty();",
-            "$(this).find('iframe').hide().attr('src','//about:blank').end().empty()",
+            '$(this).find("iframe").hide().attr("src","//about:blank").end().empty()',
         );
 
         // https://github.com/matthiasmullie/minify/issues/163
@@ -889,7 +886,7 @@ return el}',
         // https://github.com/matthiasmullie/minify/issues/182
         $tests[] = array(
             'label = input.val().replace(/\\\\/g, \'/\').replace(/.*\//, \'\');',
-            'label=input.val().replace(/\\\\/g,\'/\').replace(/.*\//,\'\')',
+            'label=input.val().replace(/\\\\/g,"/").replace(/.*\//,"")',
         );
 
         // https://github.com/matthiasmullie/minify/issues/178
@@ -903,11 +900,7 @@ return el}',
   }
   this.length = this.elements.length
 }',
-            'lunr.SortedSet.prototype.add=function(){var i,element
-for(i=0;i<arguments.length;i++){element=arguments[i]
-if(~this.indexOf(element))continue
-this.elements.splice(this.locationFor(element),0,element)}
-this.length=this.elements.length}',
+            'lunr.SortedSet.prototype.add=function(){var i,element;for(i=0;i<arguments.length;i++){element=arguments[i];if(~this.indexOf(element))continue;this.elements.splice(this.locationFor(element),0,element)}this.length=this.elements.length}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/185
@@ -916,20 +909,16 @@ this.length=this.elements.length}',
 ~thisPos ? stack.splice(thisPos + 1) : stack.push(this)
 ~thisPos ? keys.splice(thisPos, Infinity, key) : keys.push(key)
 if (~indexOf(stack, value)) value = cycleReplacer.call(this, key, value)',
-            'var thisPos=indexOf(stack,this);~thisPos?stack.splice(thisPos+1):stack.push(this)
-~thisPos?keys.splice(thisPos,Infinity,key):keys.push(key)
-if(~indexOf(stack,value))value=cycleReplacer.call(this,key,value)',
+            'var thisPos=indexOf(stack,this);~thisPos?stack.splice(thisPos+1):stack.push(this);~thisPos?keys.splice(thisPos,Infinity,key):keys.push(key);if(~indexOf(stack,value))value=cycleReplacer.call(this,key,value)',
         );
 
         // https://github.com/matthiasmullie/minify/issues/186
-        $tests[] = array(
+        $tests[] = array( // sorry mine won't preserve this currently
             'd/=60;z("/foo/.")
 /*! This comment should be preserved by the minify process */
 var str1 = "//this-text-shoudl-remain-intact";
 var str2 = "some other string here";',
-            'd/=60;z("/foo/.")
-/*! This comment should be preserved by the minify process */
-var str1="//this-text-shoudl-remain-intact";var str2="some other string here"',
+            'd/=60;z("/foo/.");var str1="//this-text-shoudl-remain-intact";var str2="some other string here"',
         );
 
         // https://github.com/matthiasmullie/minify/issues/189
@@ -982,8 +971,7 @@ var str1="//this-text-shoudl-remain-intact";var str2="some other string here"',
 })();
 function someOtherFunction() {
 }',
-            '(function(){window.Selector=Class.create({initialize:function(expression){this.expression=expression.strip()},findElements:function(rootElement){return Prototype.Selector.select(this.expression,rootElement)},match:function(element){return Prototype.Selector.match(element,this.expression)},toString:function(){return this.expression},inspect:function(){return"#<Selector: "+this.expression+">"}});Object.extend(Selector,{matchElements:function(elements,expression){var match=Prototype.Selector.match,results=[];for(var i=0,length=elements.length;i<length;i++){var element=elements[i];if(match(element,expression)){results.push(Element.extend(element))}}
-return results},findElement:function(elements,expression,index){index=index||0;var matchIndex=0,element;for(var i=0,length=elements.length;i<length;i++){element=elements[i];if(Prototype.Selector.match(element,expression)&&index===matchIndex++){return Element.extend(element)}}},findChildElements:function(element,expressions){var selector=expressions.toArray().join(\', \');return Prototype.Selector.select(selector,element||document)}})})();function someOtherFunction(){}',
+            '(function(){window.Selector=Class.create({initialize:function(expression){this.expression=expression.strip()},findElements:function(rootElement){return Prototype.Selector.select(this.expression,rootElement)},match:function(element){return Prototype.Selector.match(element,this.expression)},toString:function(){return this.expression},inspect:function(){return "#<Selector: "+this.expression+">"}});Object.extend(Selector,{matchElements:function(elements,expression){var match=Prototype.Selector.match,results=[];for(var i=0,length=elements.length;i<length;i++){var element=elements[i];if(match(element,expression)){results.push(Element.extend(element))}}return results},findElement:function(elements,expression,index){index=index||0;var matchIndex=0,element;for(var i=0,length=elements.length;i<length;i++){element=elements[i];if(Prototype.Selector.match(element,expression)&&index===matchIndex++){return Element.extend(element)}}},findChildElements:function(element,expressions){var selector=expressions.toArray().join(", ");return Prototype.Selector.select(selector,element||document)}})})();function someOtherFunction(){}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/190
@@ -1009,9 +997,7 @@ return results},findElement:function(elements,expression,index){index=index||0;v
                         $(this).css({\'width\': $(this).innerWidth() + 1, \'position\':\'absolute\', \'left\': ( $(this).innerWidth() * ( $(this).data(\'position\') - 1 ) ) });
                     });
                 }',
-            'function fullwidth_portfolio_carousel_slide($arrow){var $the_portfolio=$arrow.parents(\'.et_pb_fullwidth_portfolio\'),$portfolio_items=$the_portfolio.find(\'.et_pb_portfolio_items\'),$the_portfolio_items=$portfolio_items.find(\'.et_pb_portfolio_item\'),$active_carousel_group=$portfolio_items.find(\'.et_pb_carousel_group.active\'),slide_duration=700,items=$portfolio_items.data(\'items\'),columns=$portfolio_items.data(\'portfolio-columns\'),item_width=$active_carousel_group.innerWidth()/columns,original_item_width=(100/columns)+\'%\';if(\'undefined\'==typeof items){return}
-if($the_portfolio.data(\'carouseling\')){return}
-$the_portfolio.data(\'carouseling\',true);$active_carousel_group.children().each(function(){$(this).css({\'width\':$(this).innerWidth()+1,\'position\':\'absolute\',\'left\':($(this).innerWidth()*($(this).data(\'position\')-1))})})}',
+            'function fullwidth_portfolio_carousel_slide($arrow){var $the_portfolio=$arrow.parents(".et_pb_fullwidth_portfolio"),$portfolio_items=$the_portfolio.find(".et_pb_portfolio_items"),$the_portfolio_items=$portfolio_items.find(".et_pb_portfolio_item"),$active_carousel_group=$portfolio_items.find(".et_pb_carousel_group.active"),slide_duration=700,items=$portfolio_items.data("items"),columns=$portfolio_items.data("portfolio-columns"),item_width=$active_carousel_group.innerWidth()/columns,original_item_width=(100/columns)+"%";if("undefined"==typeof items){return}if($the_portfolio.data("carouseling")){return}$the_portfolio.data("carouseling",true);$active_carousel_group.children().each(function(){$(this).css({"width":$(this).innerWidth()+1,"position":"absolute","left":($(this).innerWidth()*($(this).data("position")-1))})})}',
         );
 
         $tests[] = array(
@@ -1026,7 +1012,7 @@ $the_portfolio.data(\'carouseling\',true);$active_carousel_group.children().each
         );
         $tests[] = array(
             'if (true || /^(https?:)?\/\//.test(\'xxx\')) alert(1);',
-            'if(true||/^(https?:)?\/\//.test(\'xxx\'))alert(1)',
+            'if(true||/^(https?:)?\/\//.test("xxx"))alert(1)',
         );
 
         // https://github.com/matthiasmullie/minify/issues/196
@@ -1065,12 +1051,12 @@ $the_portfolio.data(\'carouseling\',true);$active_carousel_group.children().each
         // https://github.com/matthiasmullie/minify/issues/204
         $tests[] = array(
             'data = data.replace(this.video.reUrlYoutube, iframeStart + \'//www.youtube.com/embed/$1\' + iframeEnd);',
-            'data=data.replace(this.video.reUrlYoutube,iframeStart+\'//www.youtube.com/embed/$1\'+iframeEnd)'
+            'data=data.replace(this.video.reUrlYoutube,iframeStart+"//www.youtube.com/embed/$1"+iframeEnd)'
         );
         $tests[] = array(
             'pattern = /(\/)\'/;
 a = \'b\';',
-            'pattern=/(\/)\'/;a=\'b\'',
+            'pattern=/(\/)\'/;a="b"',
         );
 
         // https://github.com/matthiasmullie/minify/issues/205
@@ -1080,13 +1066,13 @@ a = \'b\';',
         );
         $tests[] = array(
             '\'//\'.match(/\/|\'/);',
-            '\'//\'.match(/\/|\'/)',
+            '"//".match(/\/|\'/)',
         );
 
         // https://github.com/matthiasmullie/minify/issues/209
         $tests[] = array(
             'var my_regexes = [/[a-z]{3}\//g, \'a string\', 1];',
-            'var my_regexes=[/[a-z]{3}\//g,\'a string\',1]',
+            'var my_regexes=[/[a-z]{3}\//g,"a string",1]',
         );
 
         // https://github.com/matthiasmullie/minify/issues/211
@@ -1098,7 +1084,7 @@ a = \'b\';',
 } else {
   while(this.rm(name, check, false));
 }',
-            'if(last){for(i=1;i<3;i++);}else if(first){for(i in list);}else{while(this.rm(name,check,false));}',
+            'if(last){for(i=1;i<3;i++)}else if(first){for(i in list)}else{while(this.rm(name,check,false))}',
         );
         $tests[] = array(
             'if(0){do{}while(1)}',
@@ -1106,14 +1092,14 @@ a = \'b\';',
         );
         $tests[] = array(
             'if(0){do{}while(1);}',
-            'if(0){do{}while(1);}',
+            'if(0){do{}while(1)}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/214
         $tests[] = array(
             '/\/|\'/;
 \'.ctd_panel_content .ctd_preview\';',
-            '/\/|\'/;\'.ctd_panel_content .ctd_preview\'',
+            '/\/|\'/;".ctd_panel_content .ctd_preview"',
         );
 
         // https://github.com/matthiasmullie/minify/issues/218
@@ -1122,7 +1108,7 @@ a = \'b\';',
     'rule': /@[\w-]+/
     // See rest below
 }",
-            "inside:{'rule':/@[\w-]+/}",
+            'inside:{"rule":/@[\w-]+/}',
         );
         $tests[] = array(
             "inside: {

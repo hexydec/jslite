@@ -77,12 +77,12 @@ class whitespace {
 
 						// remove whitespace if last in the parent expression
 						if (!$next) {
-							$this->whitespace = '';
 
 							// terminate any statements that are not terminated
-							if (!$eol) {
+							if (!$eol && mb_strpos($this->whitespace, "\n") !== false) {
 								$this->root->eol = ';';
 							}
+							$this->whitespace = '';
 
 						// handle operators next to an increment
 						} elseif ($prevtype === $op && $nexttype === $inc && \mb_strpos($next->compile(), $prev->compile()) !== false) {

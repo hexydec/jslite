@@ -41,7 +41,7 @@ class jslite {
 		'regexp' => '\\/(?![\\*])(?:\\\\.|\\[(?:\\\\.|[^\\]\\n\\r]+)\\]|[^\\\\\\/\\n\\r\\[])*\\/[dgimsuy]*[ \\t]*+(?=[ .,;)\\]}\\t\\r\\n]|$)',
 
 		// capture operators after regexp
-		'operator' => '[+*\\/<>%&-]?=|[\\.+*!<>:%|&?^-]+|\\/',
+		'operator' => '[+*\\/<>%&-]?=|[\\.+*!<>:~%|&?^-]+|\\/',
 
 		'whitespace' => '\\s++',
 		'other' => '.'
@@ -182,7 +182,7 @@ class jslite {
 	public function compile(array $options = []) : string {
 		$js = '';
 		foreach ($this->expressions AS $item) {
-			$js .= $item->compile($options); //."\n\n";
+			$js .= $item->compile($options);
 		}
 		return $js;
 	}

@@ -119,7 +119,6 @@ class brackets {
 			foreach ($this->expressions AS $key => $item) {
 				$js .= $item->compile($options);
 			}
-			$item->eol = null;
 		}
 		return $bracket[0].$js.$bracket[1];
 	}
