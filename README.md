@@ -3,6 +3,8 @@ A simplistic Javascript minifier designed for compressing inline scripts on the 
 
 ![Licence: MIT](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
 ![Status: Beta](https://img.shields.io/badge/Status-Beta-Yellow.svg)
+[![Tests Status](https://github.com/hexydec/jslite/actions/workflows/tests.yml/badge.svg)](https://github.com/hexydec/jslite/actions/workflows/tests.yml)
+[![Code Coverage](https://codecov.io/gh/hexydec/jslite/branch/master/graph/badge.svg)](https://app.codecov.io/gh/hexydec/jslite)
 
 **This project is currently in beta, so you should test your implementation thoroughly before deployment**
 
