@@ -7,7 +7,7 @@ class whitespace {
 
 	public const significant = false;
 	protected $root;
-	protected $whitespace;
+	protected $content;
 
 	/**
 	 * Constructs the comment object
@@ -27,7 +27,7 @@ class whitespace {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
-			$this->whitespace = $token['value'];
+			$this->content = $token['value'];
 			return true;
 		}
 		return false;
@@ -59,7 +59,7 @@ class whitespace {
 
 					// first item
 					if (!$i || !$prev) {
-						$this->whitespace = '';
+						$this->content = '';
 
 					} else {
 
@@ -79,30 +79,30 @@ class whitespace {
 						if (!$next) {
 
 							// terminate any statements that are not terminated
-							if (!$eol && mb_strpos($this->whitespace, "\n") !== false) {
+							if (!$eol && mb_strpos($this->content, "\n") !== false) {
 								$this->root->eol = ';';
 							}
-							$this->whitespace = '';
+							$this->content = '';
 
 						// handle operators next to an increment
 						} elseif ($prevtype === $op && $nexttype === $inc && \mb_strpos($next->compile(), $prev->compile()) !== false) {
-							$this->whitespace = ' ';
+							$this->content = ' ';
 
 						// handled + + and - -
 						} elseif ($prevtype == $op && $nexttype === $op && $prev->content === $next->content) {
-							$this->whitespace = ' ';
+							$this->content = ' ';
 
 						// keyword not followed by bracket
 						} elseif (\in_array($key, [$prevtype, $nexttype], true) && !\in_array($bra, [$prevtype, $nexttype], true) && !\in_array($op, [$prevtype, $nexttype], true)) {
-							$this->whitespace = ' ';
+							$this->content = ' ';
 
 						// sqaure bracket next to keyword, leave a space
 						} elseif ($prevtype === $bra && $nexttype === $key && $prev->bracket === 'square') {
-							$this->whitespace = ' ';
+							$this->content = ' ';
 
 						// remove whitespace
 						} else {
-							$this->whitespace = '';
+							$this->content = '';
 						}
 					}
 					break;
@@ -120,6 +120,6 @@ class whitespace {
 	 * @return string The compiled HTML
 	 */
 	public function compile(array $options = []) : string {
-		return $this->whitespace;
+		return $this->content;
 	}
 }

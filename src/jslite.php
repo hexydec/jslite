@@ -37,8 +37,8 @@ class jslite {
 		// remove multiline comments
 		'commentmulti' => '\\/\\*(?:(?U)[\\s\\S]*)\\*\\/',
 
-		// check value is preceeded by valid characters, capture / not followed by *, capture escaped characters | character class (including /) | anything but opening sqaure bracket, forward slash or linebreak, then the closing forward slash followed by flags, then any whitespace after, this is important to be able to look ahead for control characters/linebreaks in order to detect this is a regexp and not for example a couple of divides (var i = 40 / 60 / 80;)
-		'regexp' => '\\/(?![\\*])(?:\\\\.|\\[(?:\\\\.|[^\\]\\n\\r]+)\\]|[^\\\\\\/\\n\\r\\[])*\\/[dgimsuy]*[ \\t]*+(?=[ .,;)\\]}\\t\\r\\n]|$)',
+		// capture regular expressions, this won't always get it right as you need to know what comes before, but the parser will sort it out
+		'regexp' => '\\/(?![\\/*])(?:\\\\.|\\[(?:\\\\.|[^\\n\\r\\]])+\\]|[^\\\\\\/\\n\\r\\[])+\\/[dgimsuy]*',
 
 		// capture operators after regexp
 		'operator' => '[+*\\/<>%&-]?=|[\\.+*!<>:~%|&?^-]+|\\/',

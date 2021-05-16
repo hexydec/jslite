@@ -68,9 +68,24 @@ class expression {
 						}
 						break;
 					case 'regexp':
-						$obj = new regexp($this);
-						if ($obj->parse($tokens)) {
+
+						// regexp is extremely awkward to capture, and because we only look ahead in the regexp, sometimes it can get it wrong
+						if (!$last || $this->isRegexpAllowed($last, $beforelast)) {
+
+							// create regexp object
+							$obj = new regexp($this);
+							if ($obj->parse($tokens)) {
+								$commands[] = $obj;
+							}
+
+						// if we have got it wrong then the first character will be a divide
+						} else {
+							$obj = new operator($this);
+							$obj->set('/');
 							$commands[] = $obj;
+
+							// rewind the tokeniser to start the next parse loop from after the divide
+							$tokens->rewind(mb_strlen($token['value'])-1, 'operator');
 						}
 						break;
 					case 'whitespace':
@@ -117,6 +132,19 @@ class expression {
 		}
 		$this->commands = $commands;
 		return $commands || $this->eol;
+	}
+
+	/**
+	 * Works out whether a regular expression is legal in the current context
+	 */
+	protected function isRegexpAllowed($prev, $beforeprev = null) : bool {
+		$key = __NAMESPACE__.'\\keyword';
+		$bra = __NAMESPACE__.'\\brackets';
+		$op = __NAMESPACE__.'\\operator';
+		$prevclass = get_class($prev);
+
+		// previous object is an operator or keyword, or the previous object is brackets and the one before that is keyword
+		return in_array($prevclass, [$op, $key]) || ($beforeprev && $prevclass === $bra && get_class($beforeprev) === $key);
 	}
 
 	/**
