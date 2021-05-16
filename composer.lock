@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ff13c11271414cdeffabb6e29c642797",
+    "content-hash": "2b42858f628dc36e164717586ea2f798",
     "packages": [
         {
             "name": "hexydec/tokenise",
@@ -12,16 +12,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hexydec/tokenise.git",
-                "reference": "c7f9e06199bb51cfcd0159d268d013b18f51efda"
+                "reference": "cefab11002ca074bd3bce2a5c4e3f82fcaa9b407"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hexydec/tokenise/zipball/c7f9e06199bb51cfcd0159d268d013b18f51efda",
-                "reference": "c7f9e06199bb51cfcd0159d268d013b18f51efda",
+                "url": "https://api.github.com/repos/hexydec/tokenise/zipball/cefab11002ca074bd3bce2a5c4e3f82fcaa9b407",
+                "reference": "cefab11002ca074bd3bce2a5c4e3f82fcaa9b407",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "9.5"
             },
             "default-branch": true,
             "type": "library",
@@ -41,12 +44,12 @@
                     "homepage": "https://github.com/hexydec"
                 }
             ],
-            "description": "A program for performing lexical analysis, written in PHP. Designed to supply tokens to a parser in order to analyse the syntax of programming languages.",
+            "description": "A program for performing lexical analysis, written in PHP",
             "support": {
                 "issues": "https://github.com/hexydec/tokenise/issues",
                 "source": "https://github.com/hexydec/tokenise/tree/master"
             },
-            "time": "2021-05-06T10:43:27+00:00"
+            "time": "2021-05-16T21:54:35+00:00"
         }
     ],
     "packages-dev": [
@@ -889,16 +892,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.3.0",
+            "version": "9.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "05c76e25f90e40af2cf2b1b39e6d49c5e74aa84c"
+                "reference": "8e16c225d57c3d6808014df6b1dd7598d0a5bbbe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/05c76e25f90e40af2cf2b1b39e6d49c5e74aa84c",
-                "reference": "05c76e25f90e40af2cf2b1b39e6d49c5e74aa84c",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8e16c225d57c3d6808014df6b1dd7598d0a5bbbe",
+                "reference": "8e16c225d57c3d6808014df6b1dd7598d0a5bbbe",
                 "shasum": ""
             },
             "require": {
@@ -912,23 +915,24 @@
                 "myclabs/deep-copy": "^1.10.1",
                 "phar-io/manifest": "^2.0.1",
                 "phar-io/version": "^3.0.2",
-                "php": "^7.3 || ^8.0",
-                "phpspec/prophecy": "^1.11.1",
-                "phpunit/php-code-coverage": "^9.0",
-                "phpunit/php-file-iterator": "^3.0.4",
-                "phpunit/php-invoker": "^3.1",
-                "phpunit/php-text-template": "^2.0.2",
-                "phpunit/php-timer": "^5.0.1",
-                "sebastian/code-unit": "^1.0.5",
-                "sebastian/comparator": "^4.0.3",
-                "sebastian/diff": "^4.0.2",
-                "sebastian/environment": "^5.1.2",
-                "sebastian/exporter": "^4.0.2",
-                "sebastian/global-state": "^5.0",
-                "sebastian/object-enumerator": "^4.0.2",
-                "sebastian/resource-operations": "^3.0.2",
-                "sebastian/type": "^2.2.1",
-                "sebastian/version": "^3.0.1"
+                "php": ">=7.3",
+                "phpspec/prophecy": "^1.12.1",
+                "phpunit/php-code-coverage": "^9.2.3",
+                "phpunit/php-file-iterator": "^3.0.5",
+                "phpunit/php-invoker": "^3.1.1",
+                "phpunit/php-text-template": "^2.0.3",
+                "phpunit/php-timer": "^5.0.2",
+                "sebastian/cli-parser": "^1.0.1",
+                "sebastian/code-unit": "^1.0.6",
+                "sebastian/comparator": "^4.0.5",
+                "sebastian/diff": "^4.0.3",
+                "sebastian/environment": "^5.1.3",
+                "sebastian/exporter": "^4.0.3",
+                "sebastian/global-state": "^5.0.1",
+                "sebastian/object-enumerator": "^4.0.3",
+                "sebastian/resource-operations": "^3.0.3",
+                "sebastian/type": "^2.3",
+                "sebastian/version": "^3.0.2"
             },
             "require-dev": {
                 "ext-pdo": "*",
@@ -944,7 +948,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "9.3-dev"
+                    "dev-master": "9.5-dev"
                 }
             },
             "autoload": {
@@ -975,7 +979,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.3"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.0"
             },
             "funding": [
                 {
@@ -987,7 +991,63 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-08-07T04:24:24+00:00"
+            "time": "2020-12-04T05:05:53+00:00"
+        },
+        {
+            "name": "sebastian/cli-parser",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/cli-parser.git",
+                "reference": "442e7c7e687e42adc03470c7b668bc4b2402c0b2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/cli-parser/zipball/442e7c7e687e42adc03470c7b668bc4b2402c0b2",
+                "reference": "442e7c7e687e42adc03470c7b668bc4b2402c0b2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "Library for parsing CLI options",
+            "homepage": "https://github.com/sebastianbergmann/cli-parser",
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/cli-parser/issues",
+                "source": "https://github.com/sebastianbergmann/cli-parser/tree/1.0.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sebastianbergmann",
+                    "type": "github"
+                }
+            ],
+            "time": "2020-09-28T06:08:49+00:00"
         },
         {
             "name": "sebastian/code-unit",
