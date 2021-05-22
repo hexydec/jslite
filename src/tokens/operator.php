@@ -26,16 +26,6 @@ class operator {
 	}
 
 	/**
-	 * Directly set the value
-	 *
-	 * @param string $value The value
-	 * @return void
-	 */
-	public function set(string $value) : void {
-		$this->content = $value;
-	}
-
-	/**
 	 * Minifies the internal representation of the comment
 	 *
 	 * @return void

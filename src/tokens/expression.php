@@ -80,12 +80,10 @@ class expression {
 
 						// if we have got it wrong then the first character will be a divide
 						} else {
-							$obj = new operator($this);
-							$obj->set('/');
-							$commands[] = $obj;
 
 							// rewind the tokeniser to start the next parse loop from after the divide
 							$tokens->rewind(mb_strlen($token['value'])-1, 'operator');
+							$tokens->prev(); // move the token pointer back so the operator can be parsed by the normal process
 						}
 						break;
 					case 'whitespace':
