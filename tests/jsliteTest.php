@@ -20,6 +20,12 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			$obj->load($item);
 			$this->assertEquals($item, $obj->compile());
 		}
+
+		// test downloading a file, also compare to itself
+		$url = 'https://github.com/hexydec/dabby/releases/download/0.9.12/dabby.min.js';
+		if (($js = $obj->open($url)) !== false) {
+			$this->assertEquals($js, $obj->compile());
+		}
 	}
 
 	public function testCanStripStart() {

@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hexydec/tokenise.git",
-                "reference": "cefab11002ca074bd3bce2a5c4e3f82fcaa9b407"
+                "reference": "fb449b74e11b9cb15d4977f43dbb941d6a2fe300"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hexydec/tokenise/zipball/cefab11002ca074bd3bce2a5c4e3f82fcaa9b407",
-                "reference": "cefab11002ca074bd3bce2a5c4e3f82fcaa9b407",
+                "url": "https://api.github.com/repos/hexydec/tokenise/zipball/fb449b74e11b9cb15d4977f43dbb941d6a2fe300",
+                "reference": "fb449b74e11b9cb15d4977f43dbb941d6a2fe300",
                 "shasum": ""
             },
             "require": {
@@ -47,9 +47,9 @@
             "description": "A program for performing lexical analysis, written in PHP",
             "support": {
                 "issues": "https://github.com/hexydec/tokenise/issues",
-                "source": "https://github.com/hexydec/tokenise/tree/master"
+                "source": "https://github.com/hexydec/tokenise/tree/0.4.0"
             },
-            "time": "2021-05-16T21:54:35+00:00"
+            "time": "2021-05-22T16:48:33+00:00"
         }
     ],
     "packages-dev": [
