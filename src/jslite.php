@@ -64,6 +64,24 @@ class jslite {
 	}
 
 	/**
+	 * Retrieves the requested value of the object configuration
+	 *
+	 * @param string ...$key One or more array keys indicating the configuration value to retrieve
+	 * @return mixed The value requested, or null if the value doesn't exist
+	 */
+	public function getConfig(string ...$keys) {
+		$config = $this->config;
+		foreach ($keys AS $item) {
+			if (isset($config[$item])) {
+				$config = $config[$item];
+			} else {
+				return null;
+			}
+		}
+		return $config;
+	}
+
+	/**
 	 * Open an Javascript file from a URL
 	 *
 	 * @param string $url The address of the Javascript file to retrieve
