@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2b42858f628dc36e164717586ea2f798",
+    "content-hash": "31672c246022f5e669f6e1ef68b2d113",
     "packages": [
         {
             "name": "hexydec/tokenise",
-            "version": "dev-master",
+            "version": "0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hexydec/tokenise.git",
@@ -26,7 +26,6 @@
             "require-dev": {
                 "phpunit/phpunit": "9.5"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "classmap": [
@@ -2147,9 +2146,7 @@
     ],
     "aliases": [],
     "minimum-stability": "beta",
-    "stability-flags": {
-        "hexydec/tokenise": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
