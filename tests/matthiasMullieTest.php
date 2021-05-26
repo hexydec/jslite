@@ -150,7 +150,7 @@ class MatthiasMullieTest extends \PHPUnit\Framework\TestCase {
         // make sure no ; is added in places it shouldn't
         $tests[] = array(
             'if(true){}else{}',
-            'if(true){}else{}',
+            'if(!0){}else{}',
         );
         $tests[] = array(
             'do{i++}while(i<1)',
@@ -159,7 +159,7 @@ class MatthiasMullieTest extends \PHPUnit\Framework\TestCase {
 
         $tests[] = array(
             'if(true)statement;else statement',
-            'if(true)statement;else statement',
+            'if(!0)statement;else statement',
         );
 
         $tests[] = array(
@@ -219,7 +219,7 @@ alert("this is another test")',
             'digestif
             (true)
             statement',
-            'digestif(true);statement',
+            'digestif(!0);statement',
         );
         $tests[] = array(
             'if
@@ -233,7 +233,7 @@ alert("this is another test")',
                  )
             )
             statement',
-            'if((true)&&(true))statement',
+            'if((!0)&&(!0))statement',
         );
         $tests[] = array(
             'if
@@ -245,7 +245,7 @@ alert("this is another test")',
              else
              {
              }',
-            'if(true){}else{}',
+            'if(!0){}else{}',
         );
         $tests[] = array(
             'do
@@ -263,7 +263,7 @@ alert("this is another test")',
                  statement
              else
                  statement',
-            'if(true)statement;else statement',
+            'if(!0)statement;else statement',
         );
 
         // test if whitespace around keywords is properly collapsed
@@ -286,7 +286,7 @@ alert("this is another test")',
             'if ( true ) {
              } else {
              }',
-            'if(true){}else{}',
+            'if(!0){}else{}',
         );
         $tests[] = array(
             '53  instanceof  String',
@@ -339,7 +339,7 @@ alert("this is another test")',
         // add comment in between whitespace that needs to be stripped
         $tests[] = array(
             'var test=true,test2=false',
-            'var test=true,test2=false',
+            'var test=!0,test2=!1',
         );
         $tests[] = array(
             'var testtrue="testing if true as part of varname is ignored as it should"',
@@ -366,17 +366,17 @@ alert("this is another test")',
                  debug: false,
                  current: {}
              }',
-            'var jsBackend={debug:false,current:{}}',
+            'var jsBackend={debug:!1,current:{}}',
         );
         $tests[] = array(
             'var utils =
              {
-                 debug: false
+                 debug: !1
              }
              utils.array =
              {
              }',
-            'var utils={debug:false};utils.array={}',
+            'var utils={debug:!1};utils.array={}',
         );
         $tests[] = array(
             'rescape = /\'|\\\\/g,
@@ -429,37 +429,37 @@ if (e.which == 40 && index < $items.length - 1) index++                        /
         // shorten bools
         $tests[] = array(
             'while(true){break}',
-            'while(true){break}',
+            'while(!0){break}',
         );
         // make sure we don't get "missing while after do-loop body"
         $tests[] = array(
             'do{break}while(true)',
-            'do{break}while(true)',
+            'do{break}while(!0)',
         );
         $tests[] = array(
             "do break\nwhile(true)",
-            "do break;while(true)",
+            "do break;while(!0)",
         );
         $tests[] = array(
             "do{break}while(true){alert('test')}",
-            "do{break}while(true){alert(\"test\")}",
+            "do{break}while(!0){alert(\"test\")}",
         );
         $tests[] = array(
             "do break\nwhile(true){alert('test')}",
-            "do break;while(true){alert(\"test\")}",
+            "do break;while(!0){alert(\"test\")}",
         );
         // nested do-while & while
         $tests[] = array(
             "do{while(true){break}break}while(true){alert('test')}",
-            "do{while(true){break}break}while(true){alert(\"test\")}",
+            "do{while(!0){break}break}while(!0){alert(\"test\")}",
         );
         $tests[] = array(
             "do{while(true){break}break}while(true){alert('test')}while(true){break}",
-            "do{while(true){break}break}while(true){alert(\"test\")}while(true){break}",
+            "do{while(!0){break}break}while(!0){alert(\"test\")}while(!0){break}",
         );
         $tests[] = array(
             "do{while(true){break}break}while(true){alert('test')}while(true){break}do{while(true){break}break}while(true){alert('test')}while(true){break}",
-            "do{while(true){break}break}while(true){alert(\"test\")}while(true){break}do{while(true){break}break}while(true){alert(\"test\")}while(true){break}",
+            "do{while(!0){break}break}while(!0){alert(\"test\")}while(!0){break}do{while(!0){break}break}while(!0){alert(\"test\")}while(!0){break}",
         );
 
         // https://github.com/matthiasmullie/minify/issues/10
@@ -576,7 +576,7 @@ $.fn.alert.Constructor = Alert',
         // https://github.com/matthiasmullie/minify/issues/50
         $tests[] = array(
             'do{var dim=this._getDaysInMonth(year,month-1);if(day<=dim){break}month++;day-=dim}while(true)}',
-            'do{var dim=this._getDaysInMonth(year,month-1);if(day<=dim){break}month++;day-=dim}while(true)',
+            'do{var dim=this._getDaysInMonth(year,month-1);if(day<=dim){break}month++;day-=dim}while(!0)',
         );
 
         // https://github.com/matthiasmullie/minify/issues/53
@@ -592,7 +592,7 @@ $.fn.alert.Constructor = Alert',
                 return false;
     return true
 })',
-            'a.validator.addMethod("accept",function(b,c,d){var e,f,g="string"==typeof d?d.replace(/\s/g,"").replace(/,/g,"|"):"image/*",h=this.optional(c);if(h)return h;if("file"===a(c).attr("type")&&(g=g.replace(/\*/g,".*"),c.files&&c.files.length))for(e=0;e<c.files.length;e++)if(f=c.files[e],!f.type.match(new RegExp(".?("+g+")$","i")))return false;return true})',
+            'a.validator.addMethod("accept",function(b,c,d){var e,f,g="string"==typeof d?d.replace(/\s/g,"").replace(/,/g,"|"):"image/*",h=this.optional(c);if(h)return h;if("file"===a(c).attr("type")&&(g=g.replace(/\*/g,".*"),c.files&&c.files.length))for(e=0;e<c.files.length;e++)if(f=c.files[e],!f.type.match(new RegExp(".?("+g+")$","i")))return !1;return !0})',
         );
 
         // https://github.com/matthiasmullie/minify/issues/54
@@ -603,7 +603,7 @@ $.fn.alert.Constructor = Alert',
   if (false)
     return
 }',
-            'function a(){if(true)return;if(false)return}',
+            'function a(){if(!0)return;if(!1)return}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/56
@@ -663,13 +663,13 @@ BUG
         // https://github.com/matthiasmullie/minify/issues/89
         $tests[] = array(
             'for(;;ja||(ja=true)){}',
-            'for(;;ja||(ja=true)){}',
+            'for(;;ja||(ja=!0)){}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/91
         // $tests[] = array(
         //     'if(true){if(true)console.log("test")else;}',
-        //     'if(true){if(true)console.log("test")}',
+        //     'if(!0){if(!0)console.log("test")}',
         // );
 
         // https://github.com/matthiasmullie/minify/issues/99
@@ -761,7 +761,7 @@ func()
         // https://github.com/matthiasmullie/minify/issues/134
         $tests[] = array(
             'e={true:true,false:false}',
-            'e={true:true,false:false}',
+            'e={true:!0,false:!1}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/134
@@ -773,7 +773,7 @@ func()
         // https://github.com/matthiasmullie/minify/issues/136
         $tests[] = array(
             'XPRSHelper.isManagable = function(presetId){ if (presetId in XPRSHelper.presetTypes){ return (XPRSHelper.presetTypes[presetId]["GROUP"] in {"FEATURES":true,"SLIDESHOWS":true,"GALLERIES":true}); } return false; };',
-            'XPRSHelper.isManagable=function(presetId){if(presetId in XPRSHelper.presetTypes){return(XPRSHelper.presetTypes[presetId]["GROUP"] in{"FEATURES":true,"SLIDESHOWS":true,"GALLERIES":true})}return false}',
+            'XPRSHelper.isManagable=function(presetId){if(presetId in XPRSHelper.presetTypes){return(XPRSHelper.presetTypes[presetId]["GROUP"] in{"FEATURES":!0,"SLIDESHOWS":!0,"GALLERIES":!0})}return !1}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/138
@@ -851,7 +851,7 @@ var rprotocol=/^\/\//,prefilters={}',
         );
         $tests[] = array(
             'false!==true',
-            'false!==true',
+            '!1!==!0',
         );
 
         // https://github.com/matthiasmullie/minify/issues/164
@@ -997,7 +997,7 @@ function someOtherFunction() {
                         $(this).css({\'width\': $(this).innerWidth() + 1, \'position\':\'absolute\', \'left\': ( $(this).innerWidth() * ( $(this).data(\'position\') - 1 ) ) });
                     });
                 }',
-            'function fullwidth_portfolio_carousel_slide($arrow){var $the_portfolio=$arrow.parents(".et_pb_fullwidth_portfolio"),$portfolio_items=$the_portfolio.find(".et_pb_portfolio_items"),$the_portfolio_items=$portfolio_items.find(".et_pb_portfolio_item"),$active_carousel_group=$portfolio_items.find(".et_pb_carousel_group.active"),slide_duration=700,items=$portfolio_items.data("items"),columns=$portfolio_items.data("portfolio-columns"),item_width=$active_carousel_group.innerWidth()/columns,original_item_width=(100/columns)+"%";if("undefined"==typeof items){return}if($the_portfolio.data("carouseling")){return}$the_portfolio.data("carouseling",true);$active_carousel_group.children().each(function(){$(this).css({"width":$(this).innerWidth()+1,"position":"absolute","left":($(this).innerWidth()*($(this).data("position")-1))})})}',
+            'function fullwidth_portfolio_carousel_slide($arrow){var $the_portfolio=$arrow.parents(".et_pb_fullwidth_portfolio"),$portfolio_items=$the_portfolio.find(".et_pb_portfolio_items"),$the_portfolio_items=$portfolio_items.find(".et_pb_portfolio_item"),$active_carousel_group=$portfolio_items.find(".et_pb_carousel_group.active"),slide_duration=700,items=$portfolio_items.data("items"),columns=$portfolio_items.data("portfolio-columns"),item_width=$active_carousel_group.innerWidth()/columns,original_item_width=(100/columns)+"%";if("undefined"==typeof items){return}if($the_portfolio.data("carouseling")){return}$the_portfolio.data("carouseling",!0);$active_carousel_group.children().each(function(){$(this).css({"width":$(this).innerWidth()+1,"position":"absolute","left":($(this).innerWidth()*($(this).data("position")-1))})})}',
         );
 
         $tests[] = array(
@@ -1012,7 +1012,7 @@ function someOtherFunction() {
         );
         $tests[] = array(
             'if (true || /^(https?:)?\/\//.test(\'xxx\')) alert(1);',
-            'if(true||/^(https?:)?\/\//.test("xxx"))alert(1)',
+            'if(!0||/^(https?:)?\/\//.test("xxx"))alert(1)',
         );
 
         // https://github.com/matthiasmullie/minify/issues/196
@@ -1023,7 +1023,7 @@ function someOtherFunction() {
 } else {
     console.log(false);
 }',
-            'if(true){console.log(true)}else{console.log(false)}',
+            'if(!0){console.log(!0)}else{console.log(!1)}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/197
@@ -1084,7 +1084,7 @@ a = \'b\';',
 } else {
   while(this.rm(name, check, false));
 }',
-            'if(last){for(i=1;i<3;i++)}else if(first){for(i in list)}else{while(this.rm(name,check,false))}',
+            'if(last){for(i=1;i<3;i++)}else if(first){for(i in list)}else{while(this.rm(name,check,!1))}',
         );
         $tests[] = array(
             'if(0){do{}while(1)}',

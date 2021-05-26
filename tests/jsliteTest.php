@@ -270,7 +270,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'output' => 'const item=test?"yes":"no"'
 			]
 		];
-		$this->compareMinify($tests, ['semicolon' => false]);
+		$this->compareMinify($tests, ['booleans' => false]);
 	}
 
 	public function testCanStripWhitespaceAroundIncrements() {
@@ -319,7 +319,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'output' => 'let item=0;if(true&&(--item+42===41||item--+42===41)){console.log("correct")}'
 			]
 		];
-		$this->compareMinify($tests, ['semicolon' => false]);
+		$this->compareMinify($tests, ['booleans' => false]);
 	}
 
 	public function testCanCompressWhitespace() {
@@ -363,6 +363,50 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'input' => 'var item = " ;) ";',
 				'output' => 'var item=" ;) "'
 			]
+		];
+		$this->compareMinify($tests);
+	}
+
+	public function testCanLowercaseKeywords() {
+		$tests = [
+			[
+				'input' => 'VAR item = TRUE;',
+				'output' => 'var item=!0'
+			],
+			[
+				'input' => 'FOR (VAR i = 0; i < TEST; i++) {
+					IF (i) {
+						LET foo = "bar";
+					}
+				}',
+				'output' => 'for(var i=0;i<TEST;i++){if(i){let foo="bar"}}'
+			],
+			[
+				'input' => 'dO {
+					something++;
+				} wHiLe (foo);',
+				'output' => 'do{something++}while(foo)'
+			],
+		];
+		$this->compareMinify($tests);
+	}
+
+	public function testCanConvertBooleans() {
+		$tests = [
+			[
+				'input' => 'var item = true;',
+				'output' => 'var item=!0'
+			],
+			[
+				'input' => 'var item = false;',
+				'output' => 'var item=!1'
+			],
+			[
+				'input' => 'if ((item = func()) !== false) {
+					const test = true;
+				}',
+				'output' => 'if((item=func())!==!1){const test=!0}'
+			],
 		];
 		$this->compareMinify($tests);
 	}
@@ -418,12 +462,26 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 					),
 					this[c].style[a] = l[c] + (isNaN(l[c]) ? "" : "px");',
 				'output' => 'var A=e=>{for(;o<r&&(s=t(e/a[o]),!(s&&(l+=n[o],e%=a[o])));o+=1)};(isNaN(l[c])&&-1===l[c].indexOf("px")&&(this[c].style[a]=l[c],i.push(a),l[c]=0),n=getComputedStyle(this[c]),i.forEach(e=>l[c]-=parseFloat(n[e]))),this[c].style[a]=l[c]+(isNaN(l[c])?"":"px")'
+			],
+			[
+				'input' => 'var foo = {
+					true: true,
+					false: false,
+					var: bar,
+					let: bar,
+					do: bar,
+					while: bar,
+					for: bar,
+					if: bar,
+					else: bar
+				};',
+				'output' => 'var foo={true:!0,false:!1,var:bar,let:bar,do:bar,while:bar,for:bar,if:bar,else:bar}'
 			]
 		];
 		$this->compareMinify($tests);
 	}
 
-	public function testCnaInsertAutomaticSemicolons() {
+	public function testCanInsertAutomaticSemicolons() {
 		$tests = [
 			[
 				'input' => 'var foo = 1
@@ -465,7 +523,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			[
 				'input' => 'return
       				"something";',
-				'output' => 'return;"something"'
+				'output' => 'return;"something";'
 			],
 			[
 				'input' => 'a = b
@@ -475,23 +533,23 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			[
 				'input' => 'break
 				var i = 0;',
-				'output' => 'break;var i=0'
+				'output' => 'break;var i=0;'
 			],
 			[
 				'input' => 'throw
 				var i = 0;',
-				'output' => 'throw;var i=0'
+				'output' => 'throw;var i=0;'
 			],
 			[
 				'input' => 'continue
 				var i = 0;',
-				'output' => 'continue;var i=0'
+				'output' => 'continue;var i=0;'
 			],
 			[
 				'input' => 'const bar = "bar"
 					const foo
-					["foo", "bar"].foreach(item => console.log(item));',
-				'output' => 'const bar="bar";const foo["foo","bar"].foreach(item=>console.log(item))'
+					["foo", "bar"].forEach(item => console.log(item));',
+				'output' => 'const bar="bar";const foo["foo","bar"].forEach(item=>console.log(item));'
 			],
 			[
 				'input' => 'const a = 1
@@ -507,7 +565,15 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 							color: "white"
 						}
 					})()',
-				'output' => '(()=>{return;{color:"white"}})()'
+				'output' => '(()=>{return;{color:"white"};})()'
+			],
+			[
+				'input' => '(() => {
+						return {
+							color: "white"
+						}
+					})()',
+				'output' => '(()=>{return{color:"white"};})()'
 			],
 			[
 				'input' => '1 + 1
@@ -515,7 +581,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'output' => '1+1-1+1===0?alert(0):alert(2)'
 			]
 		];
-		$this->compareMinify($tests);
+		$this->compareMinify($tests, ['semicolons' => false]);
 	}
 
 	protected function compareMinify(array $tests, array $minify = []) {

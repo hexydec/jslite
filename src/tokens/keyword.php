@@ -25,10 +25,23 @@ class keyword {
 	/**
 	 * Minifies the internal representation of the document
 	 *
+	 * @param array $minify An array indicating which minification operations to perform, this is merged with htmldoc::$config['minify']
 	 * @return void
 	 */
-	public function minify() : void {
-
+	public function minify(array $minify = []) : void {
+		if ($minify['lowerkeywords']) {
+			$this->content = \strtolower($this->content);
+		}
+		if ($minify['booleans']) {
+			switch ($this->content) {
+				case 'true':
+					$this->content = '!0';
+					break;
+				case 'false':
+					$this->content = '!1';
+					break;
+			}
+		}
 	}
 
 	/**

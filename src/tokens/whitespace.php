@@ -6,17 +6,17 @@ use \hexydec\tokens\tokenise;
 class whitespace {
 
 	public const significant = false;
-	protected $root;
+	protected $parent;
 	protected $content;
 
 	/**
 	 * Constructs the comment object
 	 *
-	 * @param jslite $root The parent jslite object
+	 * @param expression $parent The parent expression object
 	 * @param array $scopes An array of variables that are available in this scope, where the key is the variable name and the value is the scope object
 	 */
-	public function __construct(expression $root) {
-		$this->root = $root;
+	public function __construct(expression $parent) {
+		$this->parent = $parent;
 	}
 
 	/**
@@ -41,9 +41,10 @@ class whitespace {
 	 */
 	public function minify(array $minify = []) : void {
 		if ($minify['whitespace']) {
-			$commands = $this->root->commands;
-			$eol = $this->root->eol;
+			$commands = $this->parent->commands;
+			$eol = $this->parent->eol;
 			$prev = null;
+			$beforeprev = null;
 			$count = \count($commands);
 			$not = ['whitespace', 'comment'];
 
@@ -80,7 +81,15 @@ class whitespace {
 
 							// terminate any statements that are not terminated
 							if (!$eol && mb_strpos($this->content, "\n") !== false) {
-								$this->root->eol = ';';
+
+								// always terminate return
+								if ($prevtype === $key && !strcasecmp($prev->content, 'return')) {
+									$this->parent->eol = ';';
+
+								// only terminate if not object
+								} elseif ($this->parent->bracket !== 'curly' || empty($beforeprev->content) || $beforeprev->content !== ':') {
+									$this->parent->eol = ';';
+								}
 							}
 							$this->content = '';
 
@@ -107,6 +116,7 @@ class whitespace {
 					}
 					break;
 				} elseif ($item::significant) {
+					$beforeprev = $prev;
 					$prev = $item;
 				}
 			}

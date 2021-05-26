@@ -8,6 +8,11 @@ class expression {
 	public const significant = true;
 	public $commands = [];
 	public $eol;
+	public $bracket = null;
+
+	public function __construct(?string $bracket = null) {
+		$this->bracket = $bracket;
+	}
 
 	/**
 	 * Parses an array of tokens
@@ -42,11 +47,13 @@ class expression {
 						}
 						break;
 					case 'keyword':
-						$obj = new keyword($this);
-						if ($obj->parse($tokens)) {
-							$commands[] = $obj;
+						if ($this->isKeyword($last, $tokens)) {
+							$obj = new keyword($this);
+							if ($obj->parse($tokens)) {
+								$commands[] = $obj;
+							}
+							break;
 						}
-						break;
 					case 'variable':
 						$obj = new variable($this);
 						if ($obj->parse($tokens)) {
@@ -130,6 +137,18 @@ class expression {
 		}
 		$this->commands = $commands;
 		return $commands || $this->eol;
+	}
+
+	protected function isKeyword($last, tokenise $tokens) {
+		if (($next = $tokens->next(null, false)) !== null) {
+			$tokens->prev();
+			if (mb_strpos($next['value'], ':') === 0 || $next['value'] === '.') {
+				return false;
+			}
+		} elseif ($last && get_class($last) === __NAMESPACE__.'\\operator' && $last->content === '.') {
+			return false;
+		}
+		return true;
 	}
 
 	/**

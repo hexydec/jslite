@@ -6,7 +6,7 @@ use \hexydec\tokens\tokenise;
 class jsstring {
 
 	public const significant = true;
-	protected $content;
+	public $content;
 	protected $quote = '"';
 	protected $process = false;
 

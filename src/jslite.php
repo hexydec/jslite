@@ -22,7 +22,7 @@ class jslite {
 		'increment' => '\\+\\+|--',
 
 		// keywords number and variables
-		'keyword' => '\\b(?:let|break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield|null|async|await)\\b',
+		'keyword' => '\\b(?:(?i)let|break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield|null|async|await|true|false)\\b',
 		'variable' => '[\\p{L}\\p{Nl}$_][\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}$_]*+',
 		'number' => '(?:0[bB][01_]++n?|0[oO][0-7_]++n?|0[xX][a-f0-9_]|[0-9][0-9_]*+(?:\\.[0-9_]++)?(?:e[+-]?[1-9][0-9]*+)?)',
 
@@ -51,8 +51,10 @@ class jslite {
 		'minify' => [
 			'whitespace' => true, // strip whitespace around javascript
 			'comments' => true, // strip comments
-			'eol' => true, // remove end of line semi-colons where possible
-			'quotestyle' => '"' // convert quotes to the specified character, null or false not to convert
+			'semicolons' => true, // remove end of line semi-colons where possible
+			'quotestyle' => '"', // convert quotes to the specified character, null or false not to convert
+			'lowerkeywords' => true, // lowercase keywords
+			'booleans' => true, // shorten booleans
 		]
 	];
 	protected $expressions = null;
@@ -131,7 +133,7 @@ class jslite {
 	protected function parse(tokenise $tokens) : ?array {
 		$expressions = [];
 		while (($token = $tokens->next()) !== null) {
-			$obj = new expression($this);
+			$obj = new expression();
 			if ($obj->parse($tokens)) {
 				$expressions[] = $obj;
 			}
@@ -157,7 +159,7 @@ class jslite {
 			$item->minify($minify);
 
 			// get last expression if it contains significant code
-			if ($minify['eol']) {
+			if ($minify['semicolons']) {
 				foreach ($item->commands AS $comm) {
 					if ($comm::significant) {
 						$last = $item;

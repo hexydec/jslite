@@ -31,7 +31,7 @@ class brackets {
 			$this->bracket = \mb_substr($token['type'], 4);
 			while (($token = $tokens->next()) !== null) {
 				if ($token['type'] !== 'comma') {
-					$obj = new expression();
+					$obj = new expression($this->bracket);
 					if ($obj->parse($tokens)) {
 						$this->expressions[] = $obj;
 					}
@@ -59,7 +59,7 @@ class brackets {
 			$item->minify($minify);
 
 			// get last expression if it contains significant code
-			if ($minify['eol']) {
+			if ($minify['semicolons']) {
 				foreach ($item->commands AS $comm) {
 					if ($comm::significant) {
 						$last = $item;
@@ -70,7 +70,7 @@ class brackets {
 		}
 
 		// must not remove eol if for loop
-		if ($minify['eol']) {
+		if ($minify['semicolons']) {
 			$commands = $this->root->commands;
 			$prev = null;
 			foreach ($commands AS $i => $item) {
