@@ -142,10 +142,10 @@ class expression {
 	protected function isKeyword($last, tokenise $tokens) {
 		if (($next = $tokens->next(null, false)) !== null) {
 			$tokens->prev();
-			if (mb_strpos($next['value'], ':') === 0 || $next['value'] === '.') {
+			if (\mb_strpos($next['value'], ':') === 0 || $next['value'] === '.') {
 				return false;
 			}
-		} elseif ($last && get_class($last) === __NAMESPACE__.'\\operator' && $last->content === '.') {
+		} elseif ($last && \get_class($last) === __NAMESPACE__.'\\operator' && $last->content === '.') {
 			return false;
 		}
 		return true;
@@ -158,10 +158,10 @@ class expression {
 		$key = __NAMESPACE__.'\\keyword';
 		$bra = __NAMESPACE__.'\\brackets';
 		$op = __NAMESPACE__.'\\operator';
-		$prevclass = get_class($prev);
+		$prevclass = \get_class($prev);
 
 		// previous object is an operator or keyword, or the previous object is brackets and the one before that is keyword
-		return in_array($prevclass, [$op, $key]) || ($beforeprev && $prevclass === $bra && get_class($beforeprev) === $key);
+		return \in_array($prevclass, [$op, $key]) || ($beforeprev && $prevclass === $bra && \get_class($beforeprev) === $key);
 	}
 
 	/**

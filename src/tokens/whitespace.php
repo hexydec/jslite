@@ -80,7 +80,7 @@ class whitespace {
 						if (!$next) {
 
 							// terminate any statements that are not terminated
-							if (!$eol && mb_strpos($this->content, "\n") !== false) {
+							if (!$eol && \mb_strpos($this->content, "\n") !== false) {
 
 								// always terminate return
 								if ($prevtype === $key && !strcasecmp($prev->content, 'return')) {
