@@ -29,9 +29,6 @@ class keyword {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
-		if ($minify['lowerkeywords']) {
-			$this->content = \strtolower($this->content);
-		}
 		if ($minify['booleans']) {
 			switch ($this->content) {
 				case 'true':

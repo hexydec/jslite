@@ -367,7 +367,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 		$this->compareMinify($tests);
 	}
 
-	public function testCanLowercaseKeywords() {
+	/*public function testCanLowercaseKeywords() {
 		$tests = [
 			[
 				'input' => 'VAR item = TRUE;',
@@ -389,7 +389,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			],
 		];
 		$this->compareMinify($tests);
-	}
+	}*/
 
 	public function testCanConvertBooleans() {
 		$tests = [

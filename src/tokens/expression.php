@@ -186,7 +186,7 @@ class expression {
 		if ($prevtype === $key && \in_array($prev->content, $keywords, true)) {
 			return true;
 
-		// special case for keyword followed by brcket
+		// special case for keyword followed by bracket
 		} elseif ($prevtype === $bra && $beforeprev && $beforeprevtype === $key) {
 			return false;
 
@@ -199,7 +199,7 @@ class expression {
 			return false;
 
 		// next expression starts with a semi-colon
-		} elseif ($next['type'] === 'keyword') {
+		} elseif ($prevtype !== $op && $next['type'] === 'keyword') {
 			return true;
 
 		// next value starts with a ~

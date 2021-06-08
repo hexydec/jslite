@@ -53,7 +53,6 @@ class jslite {
 			'comments' => true, // strip comments
 			'semicolons' => true, // remove end of line semi-colons where possible
 			'quotestyle' => '"', // convert quotes to the specified character, null or false not to convert
-			'lowerkeywords' => true, // lowercase keywords
 			'booleans' => true, // shorten booleans
 		]
 	];
