@@ -271,13 +271,12 @@ class expression {
 	/**
 	 * Compile as Javascript
 	 *
-	 * @param array $options An array indicating output options
 	 * @return string The compiled HTML
 	 */
-	public function compile(array $options = []) : string {
+	public function compile() : string {
 		$js = '';
 		foreach ($this->commands AS $item) {
-			$js .= $item->compile($options);
+			$js .= $item->compile();
 		}
 		return $js.$this->eol;
 	}

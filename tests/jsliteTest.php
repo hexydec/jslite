@@ -125,51 +125,51 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 		$tests = [
 			[
 				'input' => 'var   item = "test  this"   ;   // this is single line comment',
-				'output' => 'var item="test  this"'
+				'output' => 'var item="test  this";'
 			],
 			[
-				'input' => 'export function   ( item1  , item2  )
+				'input' => 'export default function   ( item1  , item2  )
 				{ //remove "this"
 					return item1  *  item2;// this "should be removed
-				}
+				};
 
 				// remove this',
-				'output' => 'export function(item1,item2){return item1*item2}'
+				'output' => 'export default function(item1,item2){return item1*item2;};'
 			],
 			[
 				'input' => 'var item = "https://this-is-not-a-comment.com/";',
-				'output' => 'var item="https://this-is-not-a-comment.com/"'
+				'output' => 'var item="https://this-is-not-a-comment.com/";'
 			],
 		];
-		$this->compareMinify($tests, ['semicolon' => false]);
+		$this->compareMinify($tests, ['semicolons' => false]);
 	}
 
 	public function testCanProtectQuotedStrings() {
 		$tests = [
 			[
 				'input' => 'var   item = "test  this"   ;   ',
-				'output' => 'var item="test  this"'
+				'output' => 'var item="test  this";'
 			],
 			[
 				'input' => 'var   item = "test \" this"   ;   ',
-				'output' => 'var item="test \" this"'
+				'output' => 'var item="test \" this";'
 			],
 			[
 				'input' => 'let item = "  the answer" + " is   42" ; ',
-				'output' => 'let item="  the answer"+" is   42"'
+				'output' => 'let item="  the answer"+" is   42";'
 			],
 			[
 				'input' => 'let item = "  the answer"
 								+ " is   42" ; ',
-				'output' => 'let item="  the answer"+" is   42"'
+				'output' => 'let item="  the answer"+" is   42";'
 			],
 			[
 				'input' => 'let item = "  the answer"
 								+ " is 42" ; ',
-				'output' => 'let item="  the answer"+" is 42"'
+				'output' => 'let item="  the answer"+" is 42";'
 			],
 		];
-		$this->compareMinify($tests, ['semicolon' => false]);
+		$this->compareMinify($tests, ['semicolons' => false]);
 	}
 
 	public function testCanProtectTemplateLiterals() {
@@ -180,60 +180,60 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				the answer is ${item2}`; ',
 				'output' => 'let item=`this
 					is a template literal
-				the answer is ${item2}`'
+				the answer is ${item2}`;'
 			]
 		];
-		$this->compareMinify($tests, ['semicolon' => false]);
+		$this->compareMinify($tests, ['semicolons' => false]);
 	}
 
 	public function testCanProtectRegexpPatterns() {
 		$tests = [
 			[
 				'input' => 'var regexp = /^-?\d{1,3}(?:\.\d{1,19})?,-?\d{1,3}(?:\.\d{1,19})?$/;',
-				'output' => 'var regexp=/^-?\d{1,3}(?:\.\d{1,19})?,-?\d{1,3}(?:\.\d{1,19})?$/'
+				'output' => 'var regexp=/^-?\d{1,3}(?:\.\d{1,19})?,-?\d{1,3}(?:\.\d{1,19})?$/;'
 			],
 			[
 				'input' => 'var regexp = /^-?\d{1,3}(?:\.\d{1,19})?,-?\d{1,3}(?:\.\d{1,19})?$/.test();',
-				'output' => 'var regexp=/^-?\d{1,3}(?:\.\d{1,19})?,-?\d{1,3}(?:\.\d{1,19})?$/.test()'
+				'output' => 'var regexp=/^-?\d{1,3}(?:\.\d{1,19})?,-?\d{1,3}(?:\.\d{1,19})?$/.test();'
 			],
 			[
 				'input' => 'string.replace(/[.*+\-?^${}()|[\]\\]/g, \'\\$&\');',
-				'output' => 'string.replace(/[.*+\-?^${}()|[\]\\]/g,"\\$&")'
+				'output' => 'string.replace(/[.*+\-?^${}()|[\]\\]/g,"\\$&");'
 			],
 			[
 				'input' => 'var item = 42
 					/[9-0]+/.test( item );',
-				'output' => 'var item=42;/[9-0]+/.test(item)'
+				'output' => 'var item=42;/[9-0]+/.test(item);'
 			],
 			[
 				'input' => '/[9-0]+/
 					.test( item );',
-				'output' => '/[9-0]+/.test(item)'
+				'output' => '/[9-0]+/.test(item);'
 			],
 			[
 				'input' => 'item = 26 / 42 / 60;',
-				'output' => 'item=26/42/60'
+				'output' => 'item=26/42/60;'
 			],
 			[
 				'input' => 'item = (item)/ 42;
 					var item2 = item / 42;',
-				'output' => 'item=(item)/42;var item2=item/42'
+				'output' => 'item=(item)/42;var item2=item/42;'
 			],
 			[
 				'input' => 'e.replace(/\'/g,"%27"); item = "\'";',
-				'output' => 'e.replace(/\'/g,"%27");item="\'"'
+				'output' => 'e.replace(/\'/g,"%27");item="\'";'
 			],
 			[ // javascrupt regexp can contain a forward slash in a character class
 				'input' => 'var re = /[+/-]*/g;',
-				'output' => 'var re=/[+/-]*/g'
+				'output' => 'var re=/[+/-]*/g;'
 			],
 			[
 				'input' => 'var re = /[+/-]*/g,
 								foo = "bar";',
-				'output' => 'var re=/[+/-]*/g,foo="bar"'
+				'output' => 'var re=/[+/-]*/g,foo="bar";'
 			]
 		];
-		$this->compareMinify($tests, ['semicolon' => false]);
+		$this->compareMinify($tests, ['semicolons' => false]);
 	}
 
 	public function testCanStripWhitespaceAroundControlChars() {
@@ -340,7 +340,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'output' => 'var item=42>1?test1:test2'
 			],
 		];
-		$this->compareMinify($tests, ['semicolon' => false]);
+		$this->compareMinify($tests);
 	}
 
 	public function testCanRemoveSemicolons() {
@@ -367,30 +367,6 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 		$this->compareMinify($tests);
 	}
 
-	/*public function testCanLowercaseKeywords() {
-		$tests = [
-			[
-				'input' => 'VAR item = TRUE;',
-				'output' => 'var item=!0'
-			],
-			[
-				'input' => 'FOR (VAR i = 0; i < TEST; i++) {
-					IF (i) {
-						LET foo = "bar";
-					}
-				}',
-				'output' => 'for(var i=0;i<TEST;i++){if(i){let foo="bar"}}'
-			],
-			[
-				'input' => 'dO {
-					something++;
-				} wHiLe (foo);',
-				'output' => 'do{something++}while(foo)'
-			],
-		];
-		$this->compareMinify($tests);
-	}*/
-
 	public function testCanConvertBooleans() {
 		$tests = [
 			[
@@ -409,6 +385,42 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			],
 		];
 		$this->compareMinify($tests);
+	}
+
+	public function testCanConvertUndefined() {
+		$tests = [
+			[
+				'input' => 'var item = undefined;',
+				'output' => 'var item=void 0;'
+			],
+			[
+				'input' => 'if (item === undefined) {
+					var item = 0;
+				}',
+				'output' => 'if(item===void 0){var item=0;}'
+			],
+			[
+				'input' => 'if (typeof item === "undefined") {
+					var item = 0;
+				}',
+				'output' => 'if(typeof item==="undefined"){var item=0;}'
+			]
+		];
+		$this->compareMinify($tests, ['semicolons' => false]);
+	}
+
+	public function testCanShortenNumbers() {
+		$tests = [
+			[
+				'input' => 'var item = 1_234_567;',
+				'output' => 'var item=1234567;'
+			],
+			[
+				'input' => 'var item = 1_234_567.890_123;',
+				'output' => 'var item=1234567.890123;'
+			]
+		];
+		$this->compareMinify($tests, ['semicolons' => false]);
 	}
 
 	public function testHandleDifficultJavascript() {
@@ -476,6 +488,10 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 					else: bar
 				};',
 				'output' => 'var foo={true:!0,false:!1,var:bar,let:bar,do:bar,while:bar,for:bar,if:bar,else:bar}'
+			],
+			[
+				'input' => '[ , , , item1, item2] = json;',
+				'output' => '[,,,item1,item2]=json'
 			]
 		];
 		$this->compareMinify($tests);

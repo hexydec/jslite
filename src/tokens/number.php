@@ -6,7 +6,7 @@ use \hexydec\tokens\tokenise;
 class number {
 
 	public const significant = true;
-	protected $content;
+	protected $content = '';
 
 	/**
 	 * Parses an array of tokens
@@ -25,19 +25,21 @@ class number {
 	/**
 	 * Minifies the internal representation of the document
 	 *
+	 * @param array $minify An array indicating which minification operations to perform, this is merged with htmldoc::$config['minify']
 	 * @return void
 	 */
-	public function minify() : void {
-
+	public function minify(array $minify = []) : void {
+		if ($minify['numbers'] && strpos($this->content, '_') !== false) {
+			$this->content = str_replace('_', '', $this->content);
+		}
 	}
 
 	/**
 	 * Compile as Javascript
 	 *
-	 * @param array $options An array indicating output options
 	 * @return string The compiled HTML
 	 */
-	public function compile(array $options = []) : string {
-		return (string) $this->content;
+	public function compile() : string {
+		return $this->content;
 	}
 }

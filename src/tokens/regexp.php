@@ -6,7 +6,7 @@ use \hexydec\tokens\tokenise;
 class regexp {
 
 	public const significant = true;
-	protected $content;
+	protected $content = '';
 
 	/**
 	 * Parses an array of tokens
@@ -39,10 +39,9 @@ class regexp {
 	/**
 	 * Compile as Javascript
 	 *
-	 * @param array $options An array indicating output options
 	 * @return string The compiled HTML
 	 */
-	public function compile(array $options = []) : string {
+	public function compile() : string {
 		return $this->content;
 	}
 }

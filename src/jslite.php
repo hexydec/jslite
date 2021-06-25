@@ -22,7 +22,7 @@ class jslite {
 		'increment' => '\\+\\+|--',
 
 		// keywords number and variables
-		'keyword' => '\\b(?:(?i)let|break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield|null|async|await|true|false)\\b',
+		'keyword' => '\\b(?:(?i)let|break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield|null|async|await|true|false|undefined)\\b',
 		'variable' => '[\\p{L}\\p{Nl}$_][\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}$_]*+',
 		'number' => '(?:0[bB][01_]++n?|0[oO][0-7_]++n?|0[xX][a-f0-9_]|[0-9][0-9_]*+(?:\\.[0-9_]++)?(?:e[+-]?[1-9][0-9]*+)?)',
 
@@ -54,6 +54,8 @@ class jslite {
 			'semicolons' => true, // remove end of line semi-colons where possible
 			'quotestyle' => '"', // convert quotes to the specified character, null or false not to convert
 			'booleans' => true, // shorten booleans
+			'undefined' => true, // convert undefined to void 0
+			'numbers' => true, // remove underscores from numbers
 		]
 	];
 	protected $expressions = null;
@@ -65,21 +67,18 @@ class jslite {
 	}
 
 	/**
-	 * Retrieves the requested value of the object configuration
+	 * Calculates the length property
 	 *
-	 * @param string ...$key One or more array keys indicating the configuration value to retrieve
-	 * @return mixed The value requested, or null if the value doesn't exist
+	 * @param string $var The name of the property to retrieve, currently 'length' and output
+	 * @return mixed The number of children in the object for length, the output config, or null if the parameter doesn't exist
 	 */
-	public function getConfig(string ...$keys) {
-		$config = $this->config;
-		foreach ($keys AS $item) {
-			if (isset($config[$item])) {
-				$config = $config[$item];
-			} else {
-				return null;
-			}
+	public function __get(string $var) {
+		if ($var === 'config') {
+			return $this->config;
+		} elseif ($var === 'length') {
+			return \count($this->expressions);
 		}
-		return $config;
+		return null;
 	}
 
 	/**
@@ -177,13 +176,12 @@ class jslite {
 	/**
 	 * Compile the document as an HTML string
 	 *
-	 * @param array $options An array indicating output options, this is merged with htmldoc::$output
 	 * @return string The compiled Javascript
 	 */
-	public function compile(array $options = []) : string {
+	public function compile() : string {
 		$js = '';
 		foreach ($this->expressions AS $item) {
-			$js .= $item->compile($options);
+			$js .= $item->compile();
 		}
 		return $js;
 	}

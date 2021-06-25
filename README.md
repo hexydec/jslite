@@ -1,5 +1,5 @@
 # JSlite: PHP Javascript Minifier
-A simplistic Javascript minifier designed for compressing inline scripts on the fly, written in PHP.
+A Javascript compiler designed for minifying inline scripts, written in PHP.
 
 ![Licence: MIT](https://img.shields.io/badge/Licence-MIT-lightgrey.svg)
 ![Status: Beta](https://img.shields.io/badge/Status-Beta-Yellow.svg)
@@ -10,9 +10,9 @@ A simplistic Javascript minifier designed for compressing inline scripts on the 
 
 ## Description
 
-Designed to compliment [HTMLdoc](http://githubcom/hexydec/htmldoc), this program is capable of performing very simple and fast minification of Javascript, and is aimed at removing whitespace and comments from inline Javascripts within an HTML file.
+Designed to compliment [HTMLdoc](http://github.com/hexydec/htmldoc), JSlite is a Javascript compiler and minifier, designed for minifying inline Javascript on the fly. It can also be used for compressing larger documents.
 
-The software is implemented as a compiler to make sure it is reliable, and comes with a full test suite.
+The software is implemented as a compiler to ensure reliable, and comes with a full test suite.
 
 ## Usage
 
@@ -33,19 +33,37 @@ if ($doc->load($javascript) {
 	echo $doc->compile();
 }
 ```
-## Minification
 
-No code is rewritten, only whitespace and comments are removed, plus other minor code optimisations. The following optimisations are performed:
+You can test out the minifier online at [https://hexydec.com/jslite/](https://hexydec.com/jslite/), or run the supplied `index.php` file after installation.
 
-- Whitespace stripped from beginning and end of string
-- Multiline comments removed
-- Single line comments removed
-- Whitespace removed around control characters
-- Whitespace collapsed between expressions
-- Whitespace around increments/decrements are handled correctly
-- Trailing semi-colons removed
-- Quotes are preserved
-- Regular Expressions are preserved
+## Installation
+
+The easiest way to get up and running is to use composer:
+
+```
+$ composer install hexydec/htmldoc
+```
+
+## Test Suite
+
+You can run the test suite like this:
+
+### Linux
+```
+$ vendor/bin/phpunit
+```
+### Windows
+```
+> vendor\bin\phpunit
+```
+
+## Support
+
+JSlite supports PHP version 7.3+.
+
+## Documentation
+
+- [API Reference](docs/api/readme.md)
 
 ## Contributing
 

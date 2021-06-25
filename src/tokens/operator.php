@@ -9,7 +9,7 @@ class operator {
 	/**
 	 * @var string The text content of this object
 	 */
-	public $content = null;
+	public $content = '';
 
 	/**
 	 * Parses an array of tokens
@@ -37,10 +37,9 @@ class operator {
 	/**
 	 * Compile as Javascript
 	 *
-	 * @param array $options An array indicating output options
 	 * @return string The compiled Javascript
 	 */
-	public function compile(array $options = []) : string {
+	public function compile() : string {
 		return $this->content;
 	}
 }

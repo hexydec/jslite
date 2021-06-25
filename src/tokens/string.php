@@ -6,7 +6,7 @@ use \hexydec\tokens\tokenise;
 class jsstring {
 
 	public const significant = true;
-	public $content;
+	public $content = '';
 	protected $quote = '"';
 	protected $process = false;
 
@@ -44,10 +44,9 @@ class jsstring {
 	/**
 	 * Compile as Javascript
 	 *
-	 * @param array $options An array indicating output options
 	 * @return string The compiled HTML
 	 */
-	public function compile(array $options = []) : string {
+	public function compile() : string {
 		if ($this->process) {
 			$quote = $this->quote;
 			return $quote.\str_replace($quote, '\\'.$quote, $this->content).$quote;

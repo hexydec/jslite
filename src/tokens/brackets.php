@@ -28,16 +28,14 @@ class brackets {
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== false) {
-			$this->bracket = \mb_substr($token['type'], 4);
+			$bracket = $this->bracket = \mb_substr($token['type'], 4);
 			while (($token = $tokens->next()) !== null) {
-				if ($token['type'] !== 'comma') {
-					$obj = new expression($this->bracket);
-					if ($obj->parse($tokens)) {
-						$this->expressions[] = $obj;
-					}
-					if (($token = $tokens->current()) !== null && $token['type'] === 'close'.$this->bracket) {
-						return true;
-					}
+				$obj = new expression($this->bracket);
+				if ($obj->parse($tokens)) {
+					$this->expressions[] = $obj;
+				}
+				if (($token = $tokens->current()) !== null && $token['type'] === 'close'.$bracket) {
+					return true;
 				}
 			}
 		}
@@ -104,22 +102,23 @@ class brackets {
 	/**
 	 * Compile as Javascript
 	 *
-	 * @param array $options An array indicating output options
 	 * @return string The compiled HTML
 	 */
-	public function compile(array $options = []) : string {
+	public function compile() : string {
+
+		// compile child expressions
+		$js = '';
+		foreach ($this->expressions AS $key => $item) {
+			$js .= $item->compile();
+		}
+
+		// wrap in brackets
 		$brackets = [
 			'square' => ['[', ']'],
 			'bracket' => ['(', ')'],
 			'curly' => ['{', '}'],
 		];
 		$bracket = $brackets[$this->bracket];
-		$js = '';
-		if ($this->expressions) {
-			foreach ($this->expressions AS $key => $item) {
-				$js .= $item->compile($options);
-			}
-		}
 		return $bracket[0].$js.$bracket[1];
 	}
 }

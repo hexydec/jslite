@@ -6,7 +6,7 @@ use \hexydec\tokens\tokenise;
 class keyword {
 
 	public const significant = true;
-	public $content;
+	public $content = '';
 
 	/**
 	 * Parses an array of tokens
@@ -29,25 +29,31 @@ class keyword {
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
-		if ($minify['booleans']) {
-			switch ($this->content) {
-				case 'true':
+		switch ($this->content) {
+			case 'true':
+				if ($minify['booleans']) {
 					$this->content = '!0';
-					break;
-				case 'false':
+				}
+				break;
+			case 'false':
+				if ($minify['booleans']) {
 					$this->content = '!1';
-					break;
-			}
+				}
+				break;
+			case 'undefined':
+				if ($minify['undefined']) {
+					$this->content = 'void 0';
+				}
+				break;
 		}
 	}
 
 	/**
 	 * Compile as Javascript
 	 *
-	 * @param array $options An array indicating output options
 	 * @return string The compiled HTML
 	 */
-	public function compile(array $options = []) : string {
+	public function compile() : string {
 		return $this->content;
 	}
 }

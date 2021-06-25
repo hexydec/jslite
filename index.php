@@ -12,7 +12,7 @@ $mem = Array(
 
 // create object and retrieve config
 $obj = new \hexydec\jslite\jslite();
-$options = $obj->getConfig('minify');
+$options = $obj->config['minify'];
 
 // process form submmission
 if (!empty($_POST['action'])) {

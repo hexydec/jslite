@@ -42,10 +42,9 @@ class comment {
 	/**
 	 * Compile as Javascript
 	 *
-	 * @param array $options An array indicating output options
 	 * @return string The compiled Javascript
 	 */
-	public function compile(array $options = []) : string {
+	public function compile() : string {
 		if ($this->content === null) {
 			return '';
 		} elseif ($this->multi) {
