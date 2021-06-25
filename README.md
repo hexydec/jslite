@@ -41,7 +41,7 @@ You can test out the minifier online at [https://hexydec.com/jslite/](https://he
 The easiest way to get up and running is to use composer:
 
 ```
-$ composer install hexydec/htmldoc
+$ composer install hexydec/jslite
 ```
 
 ## Test Suite
