@@ -161,7 +161,7 @@ class expression {
 		$prevclass = \get_class($prev);
 
 		// previous object is an operator or keyword, or the previous object is brackets and the one before that is keyword
-		return \in_array($prevclass, [$op, $key]) || ($beforeprev && $prevclass === $bra && \get_class($beforeprev) === $key);
+		return \in_array($prevclass, [$op, $key], true) || ($beforeprev && $prevclass === $bra && \get_class($beforeprev) === $key);
 	}
 
 	/**
@@ -221,7 +221,7 @@ class expression {
 				'increment' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment']
 			];
 			foreach ($end AS $key => $item) {
-				if ('hexydec\\jslite\\'.$key == $prevtype && \in_array($next['type'], $item)) {
+				if ('hexydec\\jslite\\'.$key === $prevtype && \in_array($next['type'], $item, true)) {
 					return true;
 				}
 			}
@@ -243,7 +243,7 @@ class expression {
 		$ignore = ['whitespace', 'commentsingle', 'commentmulti'];
 		while (($token = $tokens->next(null, false)) !== null) {
 			$rewind++;
-			if (!\in_array($token['type'], $ignore)) {
+			if (!\in_array($token['type'], $ignore, true)) {
 				$next = $token;
 				break;
 			}

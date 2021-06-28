@@ -98,7 +98,7 @@ class whitespace {
 							$this->content = ' ';
 
 						// handled + + and - -
-						} elseif ($prevtype == $op && $nexttype === $op && $prev->content === $next->content) {
+						} elseif ($prevtype === $op && $nexttype === $op && $prev->content === $next->content) {
 							$this->content = ' ';
 
 						// keyword not followed by bracket
