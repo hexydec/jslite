@@ -4,10 +4,10 @@ require(__DIR__.'/vendor/autoload.php');
 $input = '';
 $output = '';
 $timing = Array(
-	'start' => microtime(true)
+	'start' => \microtime(true)
 );
 $mem = Array(
-	'start' => memory_get_peak_usage()
+	'start' => \memory_get_peak_usage()
 );
 
 // create object and retrieve config
@@ -16,32 +16,32 @@ $options = $obj->config['minify'];
 
 // process form submmission
 if (!empty($_POST['action'])) {
-	$timing['fetch'] = microtime(true);
-	$mem['fetch'] = memory_get_peak_usage();
+	$timing['fetch'] = \microtime(true);
+	$mem['fetch'] = \memory_get_peak_usage();
 
 	// handle a URL
 	if (!empty($_POST['url'])) {
 
 		// parse the URL
-		if (($url = parse_url($_POST['url'])) === false) {
-			trigger_error('Could not parse URL: The URL is not valid', E_USER_WARNING);
+		if (($url = \parse_url($_POST['url'])) === false) {
+			\trigger_error('Could not parse URL: The URL is not valid', E_USER_WARNING);
 
 		// check the host name
 		} elseif (!isset($url['host'])) {
-			trigger_error('Could not parse URL: No host was supplied', E_USER_WARNING);
+			\trigger_error('Could not parse URL: No host was supplied', E_USER_WARNING);
 
 		// open the document
-		} elseif (($input = $obj->open($_POST['url'], $error)) === false) {
-			trigger_error('Could not load Javascript: '.$error, E_USER_WARNING);
+		} elseif (($input = $obj->open($_POST['url'], null, $error)) === false) {
+			\trigger_error('Could not load Javascript: '.$error, E_USER_WARNING);
 		}
 
 	// handle directly entered source code
 	} elseif (empty($_POST['source'])) {
-		trigger_error('No URL or Javascript source was posted', E_USER_WARNING);
+		\trigger_error('No URL or Javascript source was posted', E_USER_WARNING);
 
 	// load the source code
 	} elseif (!$obj->load($_POST['source'], $error)) {
-		trigger_error('Could not parse Javascript: '.$error, E_USER_WARNING);
+		\trigger_error('Could not parse Javascript: '.$error, E_USER_WARNING);
 
 	// record the HTML
 	} else {
@@ -50,17 +50,17 @@ if (!empty($_POST['action'])) {
 
 	// if there is some input
 	if ($input) {
-		$timing['parse'] = microtime(true);
-		$mem['parse'] = memory_get_peak_usage();
+		$timing['parse'] = \microtime(true);
+		$mem['parse'] = \memory_get_peak_usage();
 
 		// retrieve the user posted options
-		$isset = isset($_POST['minify']) && is_array($_POST['minify']);
+		$isset = isset($_POST['minify']) && \is_array($_POST['minify']);
 		foreach ($options AS $key => $item) {
 			if ($key != 'elements') {
-				$minify[$key] = $isset && in_array($key, $_POST['minify']) ? (is_array($item) ? [] : (is_bool($options[$key]) ? true : $options[$key])) : false;
-				if (is_array($item)) {
+				$minify[$key] = $isset && \in_array($key, $_POST['minify']) ? (\is_array($item) ? [] : (\is_bool($options[$key]) ? true : $options[$key])) : false;
+				if (\is_array($item)) {
 					foreach ($item AS $sub => $value) {
-						if ($minify[$key] !== false && isset($_POST['minify'][$key]) && is_array($_POST['minify'][$key]) && in_array($sub, $_POST['minify'][$key])) {
+						if ($minify[$key] !== false && isset($_POST['minify'][$key]) && \is_array($_POST['minify'][$key]) && \in_array($sub, $_POST['minify'][$key])) {
 							$minify[$key][$sub] = true;
 						} elseif ($minify[$key]) {
 							$minify[$key][$sub] = false;
@@ -84,6 +84,8 @@ if (!empty($_POST['action'])) {
 		$timing['output'] = microtime(true);
 		$mem['output'] = memory_get_peak_usage();
 	}
+} else {
+	$minify = $options;
 }
 ?>
 <!DOCTYPE html>

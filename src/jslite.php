@@ -90,8 +90,16 @@ class jslite {
 	 * @return mixed The loaded Javascript, or false on error
 	 */
 	public function open(string $url, $context = null, string &$error = null) {
-		if (($js = \file_get_contents($url, false, $context)) === false) {
+
+		// check resource
+		if ($context !== null && !\is_resource($context)) {
+			$error = 'The supplied context is not a valid resource';
+
+		// get the file
+		} elseif (($js = \file_get_contents($url, false, $context)) === false) {
 			$error = 'Could not open file "'.$url.'"';
+
+		// load the javascript
 		} elseif ($this->load($js)) {
 			return $js;
 		}
@@ -108,17 +116,10 @@ class jslite {
 	public function load(string $js, string &$error = null) : bool {
 
 		// reset the document
-		$this->children = [];
-
-		// tokenise the input Javascript
-		$tokens = new tokenise(self::$tokens, $js);
-		// while (($token = $tokens->next()) !== null) {
-		// 	var_dump($token);
-		// }
-		// exit();
+		$this->expressions = [];
 
 		// parse the document
-		if (($this->expressions = $this->parse($tokens)) === null) {
+		if (($this->expressions = $this->parse($js)) === null) {
 			$error = 'Input is not valid';
 
 		// success
@@ -128,7 +129,16 @@ class jslite {
 		return false;
 	}
 
-	protected function parse(tokenise $tokens) : ?array {
+	protected function parse(string $js) : ?array {
+
+		// tokenise the input Javascript
+		$tokens = new tokenise(self::$tokens, $js);
+		// while (($token = $tokens->next()) !== null) {
+		// 	var_dump($token);
+		// }
+		// exit();
+
+		// generate expressions
 		$expressions = [];
 		while (($token = $tokens->next()) !== null) {
 			$obj = new expression();
