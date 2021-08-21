@@ -160,8 +160,15 @@ class expression {
 		$op = __NAMESPACE__.'\\operator';
 		$prevclass = \get_class($prev);
 
-		// previous object is an operator or keyword, or the previous object is brackets and the one before that is keyword
-		return \in_array($prevclass, [$op, $key], true) || ($beforeprev && $prevclass === $bra && \get_class($beforeprev) === $key);
+		// previous object is an operator or keyword
+		if (\in_array($prevclass, [$op, $key], true)) {
+			return true;
+
+		//, or the previous object is brackets and the one before that is keyword
+		} elseif ($beforeprev && $prevclass === $bra && $prev->bracket === 'bracket' && \get_class($beforeprev) === $key && $beforeprev->content !== 'return') {
+			return true;
+		}
+		return false;
 	}
 
 	/**

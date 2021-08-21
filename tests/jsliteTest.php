@@ -231,6 +231,10 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'input' => 'var re = /[+/-]*/g,
 								foo = "bar";',
 				'output' => 'var re=/[+/-]*/g,foo="bar";'
+			],
+			[ // not q regexp
+				'input' => 'return ((test*5))/2; var test2 = 25/g;',
+				'output' => 'return((test*5))/2;var test2=25/g;'
 			]
 		];
 		$this->compareMinify($tests, ['semicolons' => false]);
