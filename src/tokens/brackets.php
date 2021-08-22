@@ -56,7 +56,7 @@ class brackets {
 		foreach ($expressions AS $item) {
 			$item->minify($minify);
 
-			// get last expression if it contains significant code
+			// get last expression that contains significant code
 			if ($minify['semicolons']) {
 				foreach ($item->commands AS $comm) {
 					if ($comm::significant) {
@@ -67,13 +67,29 @@ class brackets {
 			}
 		}
 
-		// must not remove eol if for loop
-		if ($minify['semicolons']) {
-			$commands = $this->root->commands;
+		// other checks before we remove semi-colon
+		if ($last && $minify['semicolons']) {
+			$key = 'hexydec\\jslite\\keyword';
+			$bra = 'hexydec\\jslite\\brackets';
+
+			// don't remove semi-colon from keyword + brackets with no following commands
+			if ($this->bracket === 'curly') {
+				$sigcomms = [];
+				foreach ($last->commands AS $comm) {
+					if ($comm::significant) {
+						$sigcomms[] = $comm;
+					}
+				}
+				if (count($sigcomms) === 2 && \get_class($sigcomms[0]) === $key && $sigcomms[0]->content !== 'return' && \get_class($sigcomms[1]) === $bra && $sigcomms[1]->bracket === 'bracket') {
+					return;
+				}
+			}
+
+			// must not remove eol if for loop
 			$prev = null;
-			foreach ($commands AS $i => $item) {
+			foreach ($this->root->commands AS $i => $item) {
 				if ($item === $this) {
-					if ($prev && \get_class($prev) === 'hexydec\\jslite\\keyword' && $prev->content === 'for') {
+					if ($prev && \get_class($prev) === $key && $prev->content === 'for') {
 
 						// count expressions where the EOL is ; (Could be comma)
 						$count = 0;

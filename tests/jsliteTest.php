@@ -366,6 +366,12 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			[
 				'input' => 'var item = " ;) ";',
 				'output' => 'var item=" ;) "'
+			],
+			[
+				'input' => 'try {
+					for (var i = 0; i < func(i); i++);
+				}',
+				'output' => 'try{for(var i=0;i<func(i);i++);}'
 			]
 		];
 		$this->compareMinify($tests);
@@ -477,7 +483,7 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 						i.forEach(e => l[c] -= parseFloat(n[e]))
 					),
 					this[c].style[a] = l[c] + (isNaN(l[c]) ? "" : "px");',
-				'output' => 'var A=e=>{for(;o<r&&(s=t(e/a[o]),!(s&&(l+=n[o],e%=a[o])));o+=1)};(isNaN(l[c])&&-1===l[c].indexOf("px")&&(this[c].style[a]=l[c],i.push(a),l[c]=0),n=getComputedStyle(this[c]),i.forEach(e=>l[c]-=parseFloat(n[e]))),this[c].style[a]=l[c]+(isNaN(l[c])?"":"px")'
+				'output' => 'var A=e=>{for(;o<r&&(s=t(e/a[o]),!(s&&(l+=n[o],e%=a[o])));o+=1);};(isNaN(l[c])&&-1===l[c].indexOf("px")&&(this[c].style[a]=l[c],i.push(a),l[c]=0),n=getComputedStyle(this[c]),i.forEach(e=>l[c]-=parseFloat(n[e]))),this[c].style[a]=l[c]+(isNaN(l[c])?"":"px")'
 			],
 			[
 				'input' => 'var foo = {

@@ -550,7 +550,7 @@ $.fn.alert.Constructor = Alert',
         );
         $tests[] = array(
             'if(1){for(i=1;i<2;i++);}',
-            'if(1){for(i=1;i<2;i++)}',
+            'if(1){for(i=1;i<2;i++);}',
         );
         $tests[] = array(
             'for(i in list);',
@@ -558,7 +558,7 @@ $.fn.alert.Constructor = Alert',
         );
         $tests[] = array(
             'if(1){for(i in list);}',
-            'if(1){for(i in list)}',
+            'if(1){for(i in list);}',
         );
 
         // https://github.com/matthiasmullie/minify/issues/43
@@ -1084,7 +1084,7 @@ a = \'b\';',
 } else {
   while(this.rm(name, check, false));
 }',
-            'if(last){for(i=1;i<3;i++)}else if(first){for(i in list)}else{while(this.rm(name,check,!1))}',
+            'if(last){for(i=1;i<3;i++);}else if(first){for(i in list);}else{while(this.rm(name,check,!1));}',
         );
         $tests[] = array(
             'if(0){do{}while(1)}',
