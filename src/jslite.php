@@ -35,7 +35,7 @@ class jslite {
 		'commentsingle' => '\\/\\/[^\\n]*+',
 
 		// remove multiline comments
-		'commentmulti' => '\\/\\*(?:[^*]++|\\*[^\\/])*+\\*\\/',
+		'commentmulti' => '\\/\\*(?:[^*]++|\\*(?!\\/))*+\\*\\/',
 
 		// capture regular expressions, this won't always get it right as you need to know what comes before, but the parser will sort it out
 		'regexp' => '\\/(?![\\/*])(?:\\\\.|\\[(?:\\\\.|[^\\n\\r\\]])+\\]|[^\\\\\\/\\n\\r\\[])++\\/[dgimsuy]*+',

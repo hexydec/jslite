@@ -116,6 +116,13 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'input' => 'item = (item)/ 42;
 					var item2 = item / 42;',
 				'output' => 'item=(item)/42;var item2=item/42'
+			],
+			[
+				'input' => 'item = (item)/ 42;
+					/** comment1 */
+					var item2 = item / 42;
+					/** comment2 */',
+				'output' => 'item=(item)/42;var item2=item/42'
 			]
 		];
 		$this->compareMinify($tests, ['semicolon' => false]);
