@@ -27,10 +27,10 @@ class brackets {
 	 * @return void
 	 */
 	public function parse(tokenise $tokens) : bool {
-		if (($token = $tokens->current()) !== false) {
+		if (($token = $tokens->current()) !== null) {
 			$bracket = $this->bracket = \mb_substr($token['type'], 4);
 			while (($token = $tokens->next()) !== null) {
-				$obj = new expression($this->bracket);
+				$obj = new expression($bracket);
 				if ($obj->parse($tokens)) {
 					$this->expressions[] = $obj;
 				}
@@ -69,8 +69,8 @@ class brackets {
 
 		// other checks before we remove semi-colon
 		if ($last && $minify['semicolons']) {
-			$key = 'hexydec\\jslite\\keyword';
-			$bra = 'hexydec\\jslite\\brackets';
+			$key = __NAMESPACE__.'\\keyword';
+			$bra = __NAMESPACE__.'\\brackets';
 
 			// don't remove semi-colon from keyword + brackets with no following commands
 			if ($this->bracket === 'curly') {
