@@ -55,6 +55,9 @@ class whitespace {
 			$bra = __NAMESPACE__.'\\brackets';
 
 			// loop through commands
+			$json = false;
+			$assignment = false;
+			$return = false;
 			foreach ($commands AS $i => $item) {
 				if ($item === $this) {
 
@@ -83,11 +86,11 @@ class whitespace {
 							if (!$eol && \mb_strpos($this->content, "\n") !== false) {
 
 								// always terminate return
-								if ($prevtype === $key && !strcasecmp($prev->content, 'return')) {
+								if ($return) {
 									$this->parent->eol = ';';
 
 								// only terminate if not object
-								} elseif ($this->parent->bracket !== 'curly' || empty($beforeprev->content) || $beforeprev->content !== ':') {
+								} elseif (!\in_array($this->parent->bracket, ['square', 'bracket'], true) && ($this->parent->bracket !== 'curly' || !$json)) {
 									$this->parent->eol = ';';
 								}
 							}
@@ -109,15 +112,34 @@ class whitespace {
 						} elseif ($prevtype === $bra && $nexttype === $key && $prev->bracket === 'square') {
 							$this->content = ' ';
 
+						// special case for when return true is converted to return !0, causes the whitespace to flip
+						} elseif ($prevtype === $key && \mb_strpos($next->compile(), '!') === 0) {
+							$this->content = ' ';
+
 						// remove whitespace
 						} else {
 							$this->content = '';
 						}
 					}
 					break;
+
+				// record the previous significant objects
 				} elseif ($item::significant) {
 					$beforeprev = $prev;
 					$prev = $item;
+
+					// return statement
+					if (($item->content ?? null) === 'return') {
+						$return = true;
+
+					// track assignemt types
+					} elseif (($item->content ?? null) === '?') {
+						$assignment = true;
+
+					// not allowed if already assigned - ternary
+					} elseif (!$assignment && ($item->content ?? null) === ':') {
+						$json = true;
+					}
 				}
 			}
 		}

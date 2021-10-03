@@ -350,6 +350,10 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'input' => 'var   item = 42 > 1 ?	test1  :  test2  ;   ',
 				'output' => 'var item=42>1?test1:test2'
 			],
+			[
+				'input' => 'return !0;',
+				'output' => 'return !0'
+			],
 		];
 		$this->compareMinify($tests);
 	}
@@ -421,6 +425,37 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 					var item = 0;
 				}',
 				'output' => 'if(typeof item==="undefined"){var item=0;}'
+			],
+			[
+				'input' => 'var undefined;', //  some apps do this to make sure undefined is undefined
+				'output' => 'var undefined;'
+			],
+			[
+				'input' => 'var undefined = "hi";', // never do this
+				'output' => 'var undefined="hi";'
+			],
+			[
+				'input' => 'let undefined = "hi";', // never do this
+				'output' => 'let undefined="hi";'
+			],
+			[
+				'input' => 'const undefined = "hi";', // never do this
+				'output' => 'const undefined="hi";'
+			],
+			[
+				'input' => 'var something = "value", undefined;',
+				'output' => 'var something="value",undefined;'
+			],
+			[
+				'input' => 'var something = "value",
+					undefined;',
+				'output' => 'var something="value",undefined;'
+			],
+			[
+				'input' => 'var something = "value",
+					undefined ,
+					test = "hello world";',
+				'output' => 'var something="value",undefined,test="hello world";'
 			]
 		];
 		$this->compareMinify($tests, ['semicolons' => false]);
@@ -442,20 +477,6 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 
 	public function testHandleDifficultJavascript() {
 		$tests = [
-			[
-				'input' => 'var   item = "test  this"
-					var item2 = 42
-					',
-				'output' => 'var item="test  this";var item2=42'
-			],
-			[
-				'input' => 'var   item = "test  this"
-
-				;
-					var item2 = 42
-					',
-				'output' => 'var item="test  this";var item2=42'
-			],
 			[
 				'input' => 'var item = "/*" + "*/";',
 				'output' => 'var item="/*"+"*/"'
@@ -612,6 +633,83 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'input' => '1 + 1
 					-1 + 1 === 0 ? alert(0) : alert(2)',
 				'output' => '1+1-1+1===0?alert(0):alert(2)'
+			],
+			[
+				'input' => 'var test = false
+					test = true',
+				'output' => 'var test=!1;test=!0'
+			],
+			[
+				'input' => 'var test = "hello world"
+					var test2 = "hi there"',
+				'output' => 'var test="hello world";var test2="hi there"'
+			],
+			[
+				'input' => 'var   item = "test  this"
+					var item2 = 42
+					',
+				'output' => 'var item="test  this";var item2=42;'
+			],
+			[
+				'input' => 'var   item = "test  this"
+
+				;
+					var item2 = 42
+					',
+				'output' => 'var item="test  this";var item2=42;'
+			],
+			[
+				'input' => 'var test = this
+					$(test).attr("value", "")',
+				'output' => 'var test=this;$(test).attr("value","")'
+			],
+			[
+				'input' => 'var callback = function () {return true;}
+					setTimeout(callback, 1000);',
+				'output' => 'var callback=function(){return !0;};setTimeout(callback,1000);'
+			],
+			[
+				'input' => 'var callback = function ()
+					{
+						return true
+					}',
+				'output' => 'var callback=function(){return !0;}'
+			],
+			[
+				'input' => 'var json = {
+					callback: function ()
+					{
+						return true
+					}
+				};',
+				'output' => 'var json={callback:function(){return !0;}};'
+			],
+			[
+				'input' => 'var ternary = val ? "hey" : "ho"
+					var test = true;',
+				'output' => 'var ternary=val?"hey":"ho";var test=!0;'
+			],
+			[
+				'input' => 'if (test) return (test=1)
+					var test2 = "new";',
+				'output' => 'if(test)return(test=1);var test2="new";'
+			],
+			[
+				'input' => 'var item = func()[
+						this.options.html ? (typeof content == "string" ? "html" : "append") : "text"
+					];',
+				'output' => 'var item=func()[this.options.html?(typeof content=="string"?"html":"append"):"text"];'
+			],
+			[
+				'input' => 'func(
+					test,
+					500,
+					"string",
+					function () {
+						return "watevz";
+					}
+				);',
+				'output' => 'func(test,500,"string",function(){return "watevz";});'
 			]
 		];
 		$this->compareMinify($tests, ['semicolons' => false]);

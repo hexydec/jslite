@@ -25,6 +25,7 @@ class expression {
 		if (($token = $tokens->current()) !== null) {
 			$beforelast = null;
 			$last = null;
+			$assignment = false;
 			do {
 				switch ($token['type']) {
 					case 'commentsingle':
@@ -38,6 +39,9 @@ class expression {
 						$obj = new operator($this);
 						if ($obj->parse($tokens)) {
 							$commands[] = $obj;
+							if ($token['value'] === '=') {
+								$assignment = true;
+							}
 						}
 						break;
 					case 'increment':
@@ -47,7 +51,7 @@ class expression {
 						}
 						break;
 					case 'keyword':
-						if ($this->isKeyword($last, $tokens)) {
+						if ($this->isKeyword($last, $token, $tokens)) {
 							$obj = new keyword($this);
 							if ($obj->parse($tokens)) {
 								$commands[] = $obj;
@@ -89,7 +93,7 @@ class expression {
 						} else {
 
 							// rewind the tokeniser to start the next parse loop from after the divide
-							$tokens->rewind(mb_strlen($token['value'])-1, 'operator');
+							$tokens->rewind(\mb_strlen($token['value'])-1, 'operator');
 							$tokens->prev(); // move the token pointer back so the operator can be parsed by the normal process
 						}
 						break;
@@ -98,7 +102,7 @@ class expression {
 
 						// catch un-terminated line endings
 						if ($last && \mb_strpos($token['value'], "\n") !== false) {
-							$end = $this->isEol($tokens, $last, $beforelast, $commands);
+							$end = $this->isEol($tokens, $last, $beforelast, $assignment);
 						}
 
 						// create whitespace object
@@ -139,13 +143,29 @@ class expression {
 		return $commands || $this->eol;
 	}
 
-	protected function isKeyword($last, tokenise $tokens) {
-		if (($next = $tokens->next(null, false)) !== null) {
-			$tokens->prev();
+	/**
+	 * Works out whether a keyword is legal in the current context
+	 */
+	protected function isKeyword($prev, array $current, tokenise $tokens) {
+		if (($next = $this->getNextSignificantToken($tokens)) !== null) {
+
+			// property name
 			if (\mb_strpos($next['value'], ':') === 0 || $next['value'] === '.') {
 				return false;
+
+			// var undefined
+			} elseif ($current['value'] === 'undefined') {
+
+				// is a variable definition
+				if ($prev && \in_array($prev->content, ['const', 'let', 'var'])) {
+					return false;
+
+				// followed by an assignment, comma, or EOL
+				} elseif (!$prev && \in_array($next['value'], ['=', ',', ';'])) {
+					return false;
+				}
 			}
-		} elseif ($last && \get_class($last) === __NAMESPACE__.'\\operator' && $last->content === '.') {
+		} elseif ($prev && \get_class($prev) === __NAMESPACE__.'\\operator' && $prev->content === '.') {
 			return false;
 		}
 		return true;
@@ -179,7 +199,7 @@ class expression {
 	 * @param mixed $beforeprev The command object before the previous command object
 	 * @return bool Whether the expression should end at the previous command
 	 */
-	protected function isEol(tokenise $tokens, $prev = null, $beforeprev = null) : bool {
+	protected function isEol(tokenise $tokens, $prev = null, $beforeprev = null, bool $assignment = false) : bool {
 		$prevtype = \get_class($prev);
 		$beforeprevtype = $beforeprev ? \get_class($beforeprev) : null;
 
@@ -194,18 +214,22 @@ class expression {
 			return true;
 
 		// special case for keyword followed by bracket
-		} elseif ($prevtype === $bra && $beforeprev && $beforeprevtype === $key) {
+		} elseif ($prevtype === $bra && $beforeprevtype === $key && !\in_array($beforeprev->content, $keywords, true)) {
 			return false;
 
 		// if prev is curly then expression will have already ended
 		} elseif ($prevtype === $bra && $prev->bracket === 'curly' && $beforeprevtype !== $op) {
-			return false;
+			return $assignment;
 
 		// get next token
 		} elseif (($next = $this->getNextSignificantToken($tokens)) === null) {
 			return false;
 
-		// next expression starts with a semi-colon
+		// if the previous expression is an operator, like + or =, then the expression must end if next not an operator
+		} elseif ($beforeprevtype === $op && !\in_array($next['type'], ['operator', 'openbracket', 'eol'])) {
+			return true;
+
+		// next expression starts with a keyword
 		} elseif ($prevtype !== $op && $next['type'] === 'keyword') {
 			return true;
 
