@@ -40,11 +40,11 @@ class keyword {
 					$this->content = '!1';
 				}
 				break;
-			case 'undefined':
-				if ($minify['undefined']) {
-					$this->content = 'void 0';
-				}
-				break;
+			// case 'undefined':
+			// 	if ($minify['undefined']) {
+			// 		$this->content = 'void 0';
+			// 	}
+			// 	break;
 		}
 	}
 

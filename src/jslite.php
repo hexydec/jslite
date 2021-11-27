@@ -54,7 +54,7 @@ class jslite {
 			'semicolons' => true, // remove end of line semi-colons where possible
 			'quotestyle' => '"', // convert quotes to the specified character, null or false not to convert
 			'booleans' => true, // shorten booleans
-			'undefined' => true, // convert undefined to void 0
+			// 'undefined' => true, // convert undefined to void 0
 			'numbers' => true, // remove underscores from numbers
 		]
 	];

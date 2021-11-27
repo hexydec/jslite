@@ -154,16 +154,16 @@ class expression {
 				return false;
 
 			// var undefined
-			} elseif ($current['value'] === 'undefined') {
-
-				// is a variable definition
-				if ($prev && \in_array($prev->content, ['const', 'let', 'var'])) {
-					return false;
-
-				// followed by an assignment, comma, or EOL
-				} elseif (!$prev && \in_array($next['value'], ['=', ',', ';'])) {
-					return false;
-				}
+			// } elseif ($current['value'] === 'undefined') {
+			//
+			// 	// is a variable definition
+			// 	if ($prev && \in_array($prev->content, ['const', 'let', 'var'])) {
+			// 		return false;
+			//
+			// 	// followed by an assignment, comma, or EOL
+			// 	} elseif (!$prev && \in_array($next['value'], ['=', ',', ';'])) {
+			// 		return false;
+			// 	}
 			}
 		} elseif ($prev && \get_class($prev) === __NAMESPACE__.'\\operator' && $prev->content === '.') {
 			return false;
