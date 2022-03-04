@@ -6,8 +6,8 @@ use \hexydec\tokens\tokenise;
 class whitespace {
 
 	public const significant = false;
-	protected $parent;
-	protected $content;
+	protected expression $parent;
+	protected string $content;
 
 	/**
 	 * Constructs the comment object

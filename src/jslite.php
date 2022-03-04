@@ -8,7 +8,7 @@ class jslite {
 	/**
 	 * @var array $tokens Regexp components keyed by their corresponding codename for tokenising HTML
 	 */
-	protected static $tokens = [
+	protected static array $tokens = [
 
 		// capture the easy stuff first
 		'eol' => ';',
@@ -47,7 +47,7 @@ class jslite {
 		'other' => '.'
 	];
 
-	protected $config = [
+	protected array $config = [
 		'minify' => [
 			'whitespace' => true, // strip whitespace around javascript
 			'comments' => true, // strip comments
@@ -58,7 +58,7 @@ class jslite {
 			'numbers' => true, // remove underscores from numbers
 		]
 	];
-	protected $expressions = null;
+	protected ?array $expressions = null;
 
 	public function __construct(array $config = []) {
 		if ($config) {

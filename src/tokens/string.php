@@ -6,9 +6,9 @@ use \hexydec\tokens\tokenise;
 class jsstring {
 
 	public const significant = true;
-	public $content = '';
-	protected $quote = '"';
-	protected $process = false;
+	public string $content = '';
+	protected string $quote = '"';
+	protected bool $process = false;
 
 	/**
 	 * Parses an array of tokens

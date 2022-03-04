@@ -6,7 +6,7 @@ use \hexydec\tokens\tokenise;
 class variable {
 
 	public const significant = true;
-	public $content = '';
+	public string $content = '';
 
 	/**
 	 * Parses an array of tokens

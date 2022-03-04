@@ -9,8 +9,8 @@ class comment {
 	/**
 	 * @var string The text content of this object
 	 */
-	protected $content = null;
-	protected $multi = false;
+	protected ?string $content = null;
+	protected bool $multi = false;
 
 	/**
 	 * Parses an array of tokens

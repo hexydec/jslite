@@ -6,9 +6,9 @@ use \hexydec\tokens\tokenise;
 class expression {
 
 	public const significant = true;
-	public $commands = [];
-	public $eol;
-	public $bracket = null;
+	public array $commands = [];
+	public ?string $eol = null;
+	public ?string $bracket = null;
 
 	public function __construct(?string $bracket = null) {
 		$this->bracket = $bracket;

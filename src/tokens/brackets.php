@@ -6,9 +6,9 @@ use \hexydec\tokens\tokenise;
 class brackets {
 
 	public const significant = true;
-	protected $root;
-	protected $expressions = [];
-	public $bracket = 'bracket'; // square or bracket or curly
+	protected expression $root;
+	protected array $expressions = [];
+	public string $bracket = 'bracket'; // square or bracket or curly
 
 	/**
 	 * Constructs the comment object

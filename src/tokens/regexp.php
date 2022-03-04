@@ -6,7 +6,7 @@ use \hexydec\tokens\tokenise;
 class regexp {
 
 	public const significant = true;
-	protected $content = '';
+	protected string $content = '';
 
 	/**
 	 * Parses an array of tokens
