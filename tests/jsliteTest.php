@@ -747,4 +747,21 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			$this->assertEquals($item['output'], $obj->compile());
 		}
 	}
+
+	public function testCanSaveDocument() {
+		$js = 'function helloworld() {
+			alert("hello world");
+		}';
+		$doc = new jslite();
+		if ($doc->load($js)) {
+			$file = \dirname(__DIR__).'/save.js';
+			if (\file_exists($file)) {
+				\unlink($file);
+			}
+			$this->assertEquals($js, $doc->save($file), 'Can save document');
+			$this->assertEquals(true, \file_exists($file), 'Saved document ecists');
+			$this->assertEquals($js, \file_get_contents($file), 'Saved document has the correct content');
+			\unlink($file);
+		}
+	}
 }

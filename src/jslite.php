@@ -184,15 +184,36 @@ class jslite {
 	}
 
 	/**
-	 * Compile the document as an HTML string
+	 * Compile the document to a string
 	 *
-	 * @return string The compiled Javascript
+	 * @param array $options An array indicating output options
+	 * @return void
 	 */
-	public function compile() : string {
+	public function compile(array $options = []) : string {
 		$js = '';
 		foreach ($this->expressions AS $item) {
-			$js .= $item->compile();
+			$js .= $item->compile($options);
 		}
+		return $js;
+	}
+
+	/**
+	 * Compile the document and save it to the specified location
+	 *
+	 * @param string|null $file The file location to save the document to, or null to just return the compiled code
+	 * @param array $options An array indicating output options
+	 * @return string|bool The compiled Javascript, or false if the file could not be saved
+	 */
+	public function save(string $file = null, array $options = []) {
+		$js = $this->compile($options);
+
+		// save file
+		if ($file && \file_put_contents($file, $js) === false) {
+			\trigger_error('File could not be written', E_USER_WARNING);
+			return false;
+		}
+
+		// send back as string
 		return $js;
 	}
 }
