@@ -72,6 +72,7 @@ class jslite {
 	 * @param string $var The name of the property to retrieve, currently 'length' and output
 	 * @return mixed The number of children in the object for length, the output config, or null if the parameter doesn't exist
 	 */
+	#[\ReturnTypeWillChange]
 	public function __get(string $var) {
 		if ($var === 'config') {
 			return $this->config;
@@ -87,7 +88,7 @@ class jslite {
 	 * @param string $url The address of the Javascript file to retrieve
 	 * @param resource $context A resource object made with stream_context_create()
 	 * @param string &$error A reference to any user error that is generated
-	 * @return mixed The loaded Javascript, or false on error
+	 * @return string|false The loaded Javascript, or false on error
 	 */
 	public function open(string $url, $context = null, string &$error = null) {
 

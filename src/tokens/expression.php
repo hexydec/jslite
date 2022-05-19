@@ -17,7 +17,7 @@ class expression {
 	/**
 	 * Parses an array of tokens
 	 *
-	 * @param array &$tokens A tokenise object
+	 * @param tokenise &$tokens A tokenise object
 	 * @return bool Whether any commands or an EOL was captured
 	 */
 	public function parse(tokenise $tokens) : bool {
