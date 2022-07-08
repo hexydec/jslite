@@ -87,10 +87,10 @@ class jslite {
 	 *
 	 * @param string $url The address of the Javascript file to retrieve
 	 * @param resource $context A resource object made with stream_context_create()
-	 * @param string &$error A reference to any user error that is generated
+	 * @param ? A reference to any user error that is generated
 	 * @return string|false The loaded Javascript, or false on error
 	 */
-	public function open(string $url, $context = null, string &$error = null) {
+	public function open(string $url, $context = null, ?string &$error = null) {
 
 		// check resource
 		if ($context !== null && !\is_resource($context)) {
@@ -111,10 +111,10 @@ class jslite {
 	 * Parse an Javascript string into the object
 	 *
 	 * @param string $js A string containing valid Javascript
-	 * @param string &$error A reference to any user error that is generated
+	 * @param ?string &$error A reference to any user error that is generated
 	 * @return bool Whether the input HTML was parsed
 	 */
-	public function load(string $js, string &$error = null) : bool {
+	public function load(string $js, ?string &$error = null) : bool {
 
 		// reset the document
 		$this->expressions = [];
