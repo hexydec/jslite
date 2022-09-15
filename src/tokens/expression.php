@@ -5,11 +5,31 @@ use \hexydec\tokens\tokenise;
 
 class expression {
 
+	/**
+	 * @var bool Denotes whether the class represents significant javascript
+	 */
 	public const significant = true;
+
+	/**
+	 * @var array An array of command objects stored within this expression
+	 */
 	public array $commands = [];
+
+	/**
+	 * @var ?string The end of line marker
+	 */
 	public ?string $eol = null;
+
+	/**
+	 * @var ?string The type of bracket of the parent
+	 */
 	public ?string $bracket = null;
 
+	/**
+	 * Constructs the expression object
+	 * 
+	 * @param ?string $bracket The type of bracket of the parent
+	 */
 	public function __construct(?string $bracket = null) {
 		$this->bracket = $bracket;
 	}
@@ -30,13 +50,13 @@ class expression {
 				switch ($token['type']) {
 					case 'commentsingle':
 					case 'commentmulti':
-						$obj = new comment($this);
+						$obj = new comment();
 						if ($obj->parse($tokens)) {
 							$commands[] = $obj;
 						}
 						break;
 					case 'operator':
-						$obj = new operator($this);
+						$obj = new operator();
 						if ($obj->parse($tokens)) {
 							$commands[] = $obj;
 							if ($token['value'] === '=') {
@@ -45,27 +65,27 @@ class expression {
 						}
 						break;
 					case 'increment':
-						$obj = new increment($this);
+						$obj = new increment();
 						if ($obj->parse($tokens)) {
 							$commands[] = $obj;
 						}
 						break;
 					case 'keyword':
 						if ($this->isKeyword($last, $token, $tokens)) {
-							$obj = new keyword($this);
+							$obj = new keyword();
 							if ($obj->parse($tokens)) {
 								$commands[] = $obj;
 							}
 							break;
 						}
 					case 'variable':
-						$obj = new variable($this);
+						$obj = new variable();
 						if ($obj->parse($tokens)) {
 							$commands[] = $obj;
 						}
 						break;
 					case 'number':
-						$obj = new number($this);
+						$obj = new number();
 						if ($obj->parse($tokens)) {
 							$commands[] = $obj;
 						}
@@ -73,7 +93,7 @@ class expression {
 					case 'doublequotes':
 					case 'singlequotes':
 					case 'templateliterals':
-						$obj = new jsstring($this);
+						$obj = new jsstring();
 						if ($obj->parse($tokens)) {
 							$commands[] = $obj;
 						}
@@ -84,7 +104,7 @@ class expression {
 						if (!$last || $this->isRegexpAllowed($last, $beforelast)) {
 
 							// create regexp object
-							$obj = new regexp($this);
+							$obj = new regexp();
 							if ($obj->parse($tokens)) {
 								$commands[] = $obj;
 							}

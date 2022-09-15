@@ -87,7 +87,7 @@ class jslite {
 	 *
 	 * @param string $url The address of the Javascript file to retrieve
 	 * @param resource $context A resource object made with stream_context_create()
-	 * @param ? A reference to any user error that is generated
+	 * @param ?string &$error A reference to any user error that is generated
 	 * @return string|false The loaded Javascript, or false on error
 	 */
 	public function open(string $url, $context = null, ?string &$error = null) {
@@ -188,7 +188,7 @@ class jslite {
 	 * Compile the document to a string
 	 *
 	 * @param array $options An array indicating output options
-	 * @return void
+	 * @return string The compiled Javascript
 	 */
 	public function compile(array $options = []) : string {
 		$js = '';

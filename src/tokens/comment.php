@@ -5,18 +5,26 @@ use \hexydec\tokens\tokenise;
 
 class comment {
 
+	/**
+	 * @var bool Denotes whether the class represents significant javascript
+	 */
 	public const significant = false;
+
 	/**
 	 * @var string The text content of this object
 	 */
 	protected ?string $content = null;
+
+	/**
+	 * @var bool Denotes whether the comment object represents a single or multi-line comment
+	 */
 	protected bool $multi = false;
 
 	/**
 	 * Parses an array of tokens
 	 *
-	 * @param array &$tokens A tokenise object
-	 * @return void
+	 * @param tokenise $tokens A tokenise object
+	 * @return bool Whether there were any tokens to parse
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {

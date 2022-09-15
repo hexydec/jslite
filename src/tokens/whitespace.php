@@ -5,15 +5,25 @@ use \hexydec\tokens\tokenise;
 
 class whitespace {
 
+	/**
+	 * @var bool Denotes whether the class represents significant javascript
+	 */
 	public const significant = false;
+
+	/**
+	 * @var expression The parent expression object
+	 */
 	protected expression $parent;
+
+	/**
+	 * @var string The captured whitespace
+	 */
 	protected string $content;
 
 	/**
 	 * Constructs the comment object
 	 *
 	 * @param expression $parent The parent expression object
-	 * @param array $scopes An array of variables that are available in this scope, where the key is the variable name and the value is the scope object
 	 */
 	public function __construct(expression $parent) {
 		$this->parent = $parent;
@@ -22,8 +32,8 @@ class whitespace {
 	/**
 	 * Parses an array of tokens
 	 *
-	 * @param array &$tokens A tokenise object
-	 * @return void
+	 * @param tokenise $tokens A tokenise object
+	 * @return bool Whether any tokens were parsed
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {

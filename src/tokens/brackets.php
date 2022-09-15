@@ -5,16 +5,30 @@ use \hexydec\tokens\tokenise;
 
 class brackets {
 
+	/**
+	 * @var bool Denotes whether the class represents significant javascript
+	 */
 	public const significant = true;
+
+	/**
+	 * @var expression The parent expression object
+	 */
 	protected expression $root;
+
+	/**
+	 * @var array An array of child expression objects
+	 */
 	protected array $expressions = [];
+
+	/**
+	 * @var string The type of bracket this object represents, bracket|square|curly
+	 */
 	public string $bracket = 'bracket'; // square or bracket or curly
 
 	/**
 	 * Constructs the comment object
 	 *
-	 * @param jslite $root The parent jslite object
-	 * @param array $scopes An array of variables that are available in this scope, where the key is the variable name and the value is the scope object
+	 * @param expression $root The parent expression object
 	 */
 	public function __construct(expression $root) {
 		$this->root = $root;
@@ -23,8 +37,8 @@ class brackets {
 	/**
 	 * Parses an array of tokens
 	 *
-	 * @param array &$tokens A tokenise object
-	 * @return void
+	 * @param tokenise $tokens A tokenise object
+	 * @return bool Whether any tokens were parsed
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {

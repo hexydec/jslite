@@ -5,16 +5,31 @@ use \hexydec\tokens\tokenise;
 
 class jsstring {
 
+	/**
+	 * @var bool Denotes whether the class represents significant javascript
+	 */
 	public const significant = true;
+
+	/**
+	 * @var string The captured string
+	 */
 	public string $content = '';
+
+	/**
+	 * @var string The quote character used to encapsulate the string
+	 */
 	protected string $quote = '"';
+
+	/**
+	 * @var bool Whether the string has been de-encapsulated and processed
+	 */
 	protected bool $process = false;
 
 	/**
 	 * Parses an array of tokens
 	 *
-	 * @param array &$tokens A tokenise object
-	 * @return void
+	 * @param tokenise $tokens A tokenise object
+	 * @return bool Whether any tokens were parsed
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {

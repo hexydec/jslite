@@ -5,14 +5,21 @@ use \hexydec\tokens\tokenise;
 
 class regexp {
 
+	/**
+	 * @var bool Denotes whether the class represents significant javascript
+	 */
 	public const significant = true;
+
+	/**
+	 * @var string The captured regexp pattern
+	 */
 	protected string $content = '';
 
 	/**
 	 * Parses an array of tokens
 	 *
-	 * @param array &$tokens A tokenise object
-	 * @return void
+	 * @param tokenise $tokens A tokenise object
+	 * @return bool Whether any tokens were parsed
 	 */
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {

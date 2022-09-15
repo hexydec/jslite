@@ -1,5 +1,5 @@
 <?php
-spl_autoload_register(function (string $class) : bool {
+\spl_autoload_register(function (string $class) : void {
 	$classes = [
 		'hexydec\\jslite\\jslite' => __DIR__.'/jslite.php',
 		'hexydec\\jslite\\whitespace' => __DIR__.'/tokens/whitespace.php',
@@ -15,7 +15,6 @@ spl_autoload_register(function (string $class) : bool {
 		'hexydec\\jslite\\brackets' => __DIR__.'/tokens/brackets.php'
 	];
 	if (isset($classes[$class])) {
-		return (bool) require($classes[$class]);
+		require($classes[$class]);
 	}
-	return false;
 });
