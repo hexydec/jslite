@@ -13,7 +13,7 @@
     "minimum-stability": "beta",
     "require": {
         "php": ">=7.4",
-		"hexydec/tokenise": "1.0.0"
+		"hexydec/tokenise": "1.0.1"
 	},
 	"autoload": {
 		"classmap": ["src/"]
