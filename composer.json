@@ -3,13 +3,15 @@
     "description": "A token based Javascript parser/minifier designed for compressing inline scripts on the fly, written in PHP",
     "type": "library",
     "license": "MIT",
+	"homepage": "https://github.com/hexydec/jslite",
     "authors": [
         {
             "name": "Will Earp",
             "email": "will@hexydec.com",
-			"homepage": "https://github.com/hexydec/jslite"
+			"homepage": "https://github.com/hexydec"
         }
     ],
+	"keywords": ["js", "javascript", "minifier", "minify", "parser", "compiler"],
     "minimum-stability": "beta",
     "require": {
         "php": ">=7.4",
