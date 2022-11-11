@@ -175,6 +175,10 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 								+ " is 42" ; ',
 				'output' => 'let item="  the answer"+" is 42";'
 			],
+			[
+				'input' => "const multiline = \"line 1 \\nline 2 \\nline 3\";",
+				'output' => "const multiline=\"line 1 \\nline 2 \\nline 3\";"
+			]
 		];
 		$this->compareMinify($tests, ['semicolons' => false]);
 	}

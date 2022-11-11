@@ -27,8 +27,8 @@ class jslite {
 		'number' => '(?:0[bB][01_]++n?|0[oO][0-7_]++n?|0[xX][a-f0-9_]|[0-9][0-9_]*+(?:\\.[0-9_]++)?+(?:e[+-]?[1-9][0-9]*+)?+)',
 
 		// consume strings in quotes, check for escaped quotes
-		'doublequotes' => '"(?:\\\\[^\\n\\r]|[^\\\\"\\n\\r])*+"',
-		'singlequotes' => "'(?:\\\\[^\\n\\r]|[^\\\\'\\n\\r])*+'",
+		'doublequotes' => '"(?:\\\\.|[^\\\\"])*+"',
+		'singlequotes' => "'(?:\\\\.|[^\\\\'])*+'",
 		'templateliterals' => '`(?:\\\\.|[^\\\\`])*+`',
 
 		// capture single line comments after quotes incase it contains //
