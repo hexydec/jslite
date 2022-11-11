@@ -542,6 +542,12 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 			[
 				'input' => '[ , , , item1, item2] = json;',
 				'output' => '[,,,item1,item2]=json'
+			],
+			[
+				'input' => 'for (const[t, n] of this.formData) {
+					//do something
+				 }',
+				 'output' => 'for(const[t,n] of this.formData){}'
 			]
 		];
 		$this->compareMinify($tests);
