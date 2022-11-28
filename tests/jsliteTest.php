@@ -732,6 +732,27 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 					}
 				);',
 				'output' => 'func(test,500,"string",function(){return "watevz";});'
+			],
+			[ // don't insert semi-colon
+				'input' => 's.crossDomain = originAnchor.protocol + "//" + originAnchor.host !==
+						urlAnchor.protocol + "//" + urlAnchor.host;',
+				'output' => 's.crossDomain=originAnchor.protocol+"//"+originAnchor.host!==urlAnchor.protocol+"//"+urlAnchor.host;'
+			],
+			[
+				'input' => 'var val = 5 +
+				6;',
+				'output' => 'var val=5+6;'
+			],
+			[
+				'input' => 'var val = 5
+				 + 6;',
+				'output' => 'var val=5+6;'
+			],
+			[
+				'input' => 'var val = 5
+				 +
+				 6;',
+				'output' => 'var val=5+6;'
 			]
 		];
 		$this->compareMinify($tests, ['semicolons' => false]);

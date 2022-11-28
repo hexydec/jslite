@@ -246,7 +246,7 @@ class expression {
 			return false;
 
 		// if the previous expression is an operator, like + or =, then the expression must end if next not an operator
-		} elseif ($beforeprevtype === $op && !\in_array($next['type'], ['operator', 'openbracket', 'eol'])) {
+		} elseif ($beforeprevtype === $op && $prevtype !== $op && !\in_array($next['type'], ['operator', 'openbracket', 'eol'])) {
 			return true;
 
 		// next expression starts with a keyword
