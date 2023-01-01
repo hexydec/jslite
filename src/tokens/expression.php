@@ -193,8 +193,12 @@ class expression {
 
 	/**
 	 * Works out whether a regular expression is legal in the current context
+	 * 
+	 * @param object $prev The previous object
+	 * @param ?object $beforeprev The bject before the previous object
+	 * @return bool Whether RegExp is allowed in the current position
 	 */
-	protected function isRegexpAllowed($prev, $beforeprev = null) : bool {
+	protected function isRegexpAllowed(object $prev, ?object $beforeprev = null) : bool {
 		$key = __NAMESPACE__.'\\keyword';
 		$bra = __NAMESPACE__.'\\brackets';
 		$op = __NAMESPACE__.'\\operator';
@@ -215,11 +219,11 @@ class expression {
 	 * Determines if an expression should be ended when there is a line break between two commands
 	 *
 	 * @param tokenise $tokens A tokenise object to get the next tokens from
-	 * @param mixed $prev The previous command object
-	 * @param mixed $beforeprev The command object before the previous command object
+	 * @param object $prev The previous command object
+	 * @param object $beforeprev The command object before the previous command object
 	 * @return bool Whether the expression should end at the previous command
 	 */
-	protected function isEol(tokenise $tokens, $prev = null, $beforeprev = null, bool $assignment = false) : bool {
+	protected function isEol(tokenise $tokens, object $prev = null, object $beforeprev = null, bool $assignment = false) : bool {
 		$prevtype = \get_class($prev);
 		$beforeprevtype = $beforeprev ? \get_class($beforeprev) : null;
 
@@ -308,7 +312,7 @@ class expression {
 	/**
 	 * Minifies the internal representation of the document
 	 *
-	 * @param array $minify An array indicating which minification operations to perform, this is merged with htmldoc::$config['minify']
+	 * @param array $minify An array indicating which minification operations to perform
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
@@ -322,7 +326,7 @@ class expression {
 	/**
 	 * Compile as Javascript
 	 *
-	 * @return string The compiled HTML
+	 * @return string The compiled Javascript
 	 */
 	public function compile() : string {
 		$js = '';

@@ -59,7 +59,7 @@ $ vendor/bin/phpunit
 
 ## Support
 
-JSlite supports PHP version 7.4+.
+JSlite supports PHP version 8.0+.
 
 ## Documentation
 

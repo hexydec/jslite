@@ -32,7 +32,7 @@ class keyword {
 	/**
 	 * Minifies the internal representation of the document
 	 *
-	 * @param array $minify An array indicating which minification operations to perform, this is merged with htmldoc::$config['minify']
+	 * @param array $minify An array indicating which minification operations to perform
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
@@ -58,7 +58,7 @@ class keyword {
 	/**
 	 * Compile as Javascript
 	 *
-	 * @return string The compiled HTML
+	 * @return string The compiled Javascript
 	 */
 	public function compile() : string {
 		return $this->content;

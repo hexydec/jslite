@@ -6,7 +6,7 @@ use \hexydec\tokens\tokenise;
 class jslite {
 
 	/**
-	 * @var array $tokens Regexp components keyed by their corresponding codename for tokenising HTML
+	 * @var array $tokens Regexp components keyed by their corresponding codename for tokenising Javascript
 	 */
 	protected static array $tokens = [
 
@@ -72,8 +72,7 @@ class jslite {
 	 * @param string $var The name of the property to retrieve, currently 'length' and output
 	 * @return mixed The number of children in the object for length, the output config, or null if the parameter doesn't exist
 	 */
-	#[\ReturnTypeWillChange]
-	public function __get(string $var) {
+	public function __get(string $var) : mixed {
 		if ($var === 'config') {
 			return $this->config;
 		} elseif ($var === 'length') {
@@ -90,7 +89,7 @@ class jslite {
 	 * @param ?string &$error A reference to any user error that is generated
 	 * @return string|false The loaded Javascript, or false on error
 	 */
-	public function open(string $url, $context = null, ?string &$error = null) {
+	public function open(string $url, $context = null, ?string &$error = null) : string|false {
 
 		// check resource
 		if ($context !== null && !\is_resource($context)) {
@@ -112,7 +111,7 @@ class jslite {
 	 *
 	 * @param string $js A string containing valid Javascript
 	 * @param ?string &$error A reference to any user error that is generated
-	 * @return bool Whether the input HTML was parsed
+	 * @return bool Whether the input Javascript was parsed
 	 */
 	public function load(string $js, ?string &$error = null) : bool {
 
@@ -153,7 +152,7 @@ class jslite {
 	/**
 	 * Minifies the internal representation of the document
 	 *
-	 * @param array $minify An array indicating which minification operations to perform, this is merged with htmldoc::$config['minify']
+	 * @param array $minify An array indicating which minification operations to perform, this is merged with self::$config['minify']
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
@@ -203,9 +202,9 @@ class jslite {
 	 *
 	 * @param string|null $file The file location to save the document to, or null to just return the compiled code
 	 * @param array $options An array indicating output options
-	 * @return string|bool The compiled Javascript, or false if the file could not be saved
+	 * @return string|false The compiled Javascript, or false if the file could not be saved
 	 */
-	public function save(string $file = null, array $options = []) {
+	public function save(string $file = null, array $options = []) : string|false {
 		$js = $this->compile($options);
 
 		// save file
