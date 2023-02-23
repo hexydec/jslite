@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "47c071c8b5e43f4002006eb2ed439ebd",
+    "content-hash": "f927eaf906f9fbb22ae35ec5a8bfd0d0",
     "packages": [
         {
             "name": "hexydec/tokenise",
@@ -1785,7 +1785,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.4"
+        "php": ">=8.0"
     },
     "platform-dev": [],
     "plugin-api-version": "2.2.0"
