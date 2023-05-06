@@ -552,6 +552,18 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 					//do something
 				 }',
 				 'output' => 'for(const[t,n] of this.formData){}'
+			],
+			[
+				'input' => 'class ClassWithStaticMethod {
+					static staticProperty = "someValue";
+					static staticMethod() {
+					  return "static method has been called.";
+					}
+					static {
+					  console.log("Class static initialization block called");
+					}
+				}',
+				'output' => 'class ClassWithStaticMethod{static staticProperty="someValue";static staticMethod(){return "static method has been called."}static{console.log("Class static initialization block called")}}'
 			]
 		];
 		$this->compareMinify($tests);
