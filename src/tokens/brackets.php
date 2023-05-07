@@ -43,7 +43,7 @@ class brackets {
 	public function parse(tokenise $tokens) : bool {
 		if (($token = $tokens->current()) !== null) {
 			$bracket = $this->bracket = \mb_substr($token['type'], 4);
-			while (($token = $tokens->next()) !== null) {
+			while ($tokens->next() !== null) {
 				$obj = new expression($bracket);
 				if ($obj->parse($tokens)) {
 					$this->expressions[] = $obj;
@@ -81,52 +81,69 @@ class brackets {
 			}
 		}
 
-		// other checks before we remove semi-colon
-		if ($last && $minify['semicolons']) {
-			$key = __NAMESPACE__.'\\keyword';
-			$bra = __NAMESPACE__.'\\brackets';
+		// remove last eol if not keyword-bracket or in for loop
+		if ($last !== null && !$this->isKeywordBracket($last) && !$this->isInForLoop($expressions)) {
+			$last->eol = null;
+		}
+	}
 
-			// don't remove semi-colon from keyword + brackets with no following commands
-			if ($this->bracket === 'curly') {
-				$sigcomms = [];
-				foreach ($last->commands AS $comm) {
-					if ($comm::significant) {
-						$sigcomms[] = $comm;
-					}
-				}
-				if (count($sigcomms) === 2 && \get_class($sigcomms[0]) === $key && $sigcomms[0]->content !== 'return' && \get_class($sigcomms[1]) === $bra && $sigcomms[1]->bracket === 'bracket') {
-					return;
-				}
-			}
+	/**
+	 * Checks to see if the last expression is a keyword followed by brackets, with no other commands - semi-colon must not be removed
+	 * 
+	 * @param object $last The last JSlite object that is being checked for semi-colon removal
+	 * @return bool Whether the object contains a keyword-bracket expression
+	 */
+	protected function isKeywordBracket(object $last) : bool {
+		$key = __NAMESPACE__.'\\keyword';
+		$bra = __NAMESPACE__.'\\brackets';
 
-			// must not remove eol if for loop
-			$prev = null;
-			foreach ($this->root->commands AS $i => $item) {
-				if ($item === $this) {
-					if ($prev && \get_class($prev) === $key && $prev->content === 'for') {
-
-						// count expressions where the EOL is ; (Could be comma)
-						$count = 0;
-						foreach ($expressions AS $expr) {
-							if ($expr->eol === ';') {
-								$count++;
-							}
-						}
-						if ($count !== 3) {
-							$last = null;
-						}
-					}
-					break;
-				} elseif ($item::significant) {
-					$prev = $item;
+		// don't remove semi-colon from keyword + brackets with no following commands
+		if ($this->bracket === 'curly') {
+			$sigcomms = [];
+			foreach ($last->commands AS $comm) {
+				if ($comm::significant) {
+					$sigcomms[] = $comm;
 				}
 			}
-
-			// remove last eol
-			if ($last) {
-				$last->eol = null;
+			if (\count($sigcomms) === 2 && \get_class($sigcomms[0]) === $key && $sigcomms[0]->content !== 'return' && \get_class($sigcomms[1]) === $bra && $sigcomms[1]->bracket === 'bracket') {
+				return true;
 			}
 		}
+		return false;
+	}
+
+	/**
+	 * Analyses the cirrent expression set to see if it is contained within a for loop with a specific pattern of semi-colons, where the final one should not be removed
+	 * 
+	 * @param array $expressions An array containing the current expressesion set
+	 * @return bool WHether the current expresiion set is wrapped in a for loop
+	 */
+	protected function isInForLoop(array $expressions) : bool {
+		$key = __NAMESPACE__.'\\keyword';
+
+		// must not remove eol if for loop
+		$prev = null;
+		foreach ($this->root->commands AS $item) {
+			if ($item === $this) {
+				if (\is_object($prev) && \get_class($prev) === $key && $prev->content === 'for') {
+
+					// count expressions where the EOL is ; (Could be comma)
+					$count = 0;
+					foreach ($expressions AS $expr) {
+						if ($expr->eol === ';') {
+							$count++;
+						}
+					}
+					if ($count !== 3) {
+						return true;
+					}
+				}
+				break;
+			} elseif ($item::significant) {
+				$prev = $item;
+			}
+		}
+		return false;
 	}
 
 	/**

@@ -101,7 +101,7 @@ class expression {
 					case 'regexp':
 
 						// regexp is extremely awkward to capture, and because we only look ahead in the regexp, sometimes it can get it wrong
-						if (!$last || $this->isRegexpAllowed($last, $beforelast)) {
+						if (!\is_object($last) || $this->isRegexpAllowed($last, $beforelast)) {
 
 							// create regexp object
 							$obj = new regexp();
@@ -121,7 +121,7 @@ class expression {
 						$end = false;
 
 						// catch un-terminated line endings
-						if ($last && \mb_strpos($token['value'], "\n") !== false) {
+						if (\is_object($last) && \mb_strpos($token['value'], "\n") !== false) {
 							$end = $this->isEol($tokens, $last, $beforelast, $assignment);
 						}
 

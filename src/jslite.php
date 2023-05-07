@@ -58,10 +58,10 @@ class jslite {
 			'numbers' => true, // remove underscores from numbers
 		]
 	];
-	protected ?array $expressions = null;
+	protected array $expressions = [];
 
 	public function __construct(array $config = []) {
-		if ($config) {
+		if (!empty($config)) {
 			$this->config = \array_replace_recursive($this->config, $config);
 		}
 	}
@@ -140,7 +140,7 @@ class jslite {
 
 		// generate expressions
 		$expressions = [];
-		while (($token = $tokens->next()) !== null) {
+		while ($tokens->next() !== null) {
 			$obj = new expression();
 			if ($obj->parse($tokens)) {
 				$expressions[] = $obj;
@@ -162,7 +162,6 @@ class jslite {
 
 		// minify expressions
 		$last = null;
-		$not = ['whitespace', 'comment'];
 		foreach ($this->expressions AS $item) {
 			$item->minify($minify);
 
