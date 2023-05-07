@@ -110,7 +110,7 @@ class expression {
 						$end = false;
 
 						// catch un-terminated line endings
-						if (\is_object($last) && \mb_strpos($token['value'], "\n") !== false) {
+						if (\is_object($last) && \str_contains($token['value'], "\n")) {
 							$end = $this->isEol($tokens, $last, $beforelast, $assignment);
 						}
 
@@ -233,7 +233,6 @@ class expression {
 
 		// special case for keyword followed by bracket
 		} elseif ($prevtype === $bra && $beforeprevtype === $key && !\in_array($beforeprev->content, $keywords, true)) {
-			return false;
 
 		// if prev is curly then expression will have already ended
 		} elseif ($prevtype === $bra && $prev->bracket === 'curly' && $beforeprevtype !== $op) {
@@ -241,7 +240,6 @@ class expression {
 
 		// get next token
 		} elseif (($next = $this->getNextSignificantToken($tokens)) === null) {
-			return false;
 
 		// if the previous expression is an operator, like + or =, then the expression must end if next not an operator
 		} elseif ($beforeprevtype === $op && $prevtype !== $op && !\in_array($next['type'], ['operator', 'openbracket', 'eol'])) {

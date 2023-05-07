@@ -54,9 +54,7 @@ class whitespace {
 			$commands = $this->parent->commands;
 			$eol = $this->parent->eol;
 			$prev = null;
-			$beforeprev = null;
 			$count = \count($commands);
-			$not = ['whitespace', 'comment'];
 
 			// specify class names
 			$op = __NAMESPACE__.'\\operator';
@@ -72,7 +70,7 @@ class whitespace {
 				if ($item === $this) {
 
 					// first item
-					if (!$i || !$prev) {
+					if (!$i || $prev === null) {
 						$this->content = '';
 
 					} else {
@@ -93,7 +91,7 @@ class whitespace {
 						if (!$next) {
 
 							// terminate any statements that are not terminated
-							if (!$eol && \mb_strpos($this->content, "\n") !== false) {
+							if (!$eol && \str_contains($this->content, "\n")) {
 
 								// always terminate return
 								if ($return) {
@@ -107,7 +105,7 @@ class whitespace {
 							$this->content = '';
 
 						// handle operators next to an increment
-						} elseif ($prevtype === $op && $nexttype === $inc && \mb_strpos($next->compile(), $prev->compile()) !== false) {
+						} elseif ($prevtype === $op && $nexttype === $inc && \str_contains($next->compile(), $prev->compile())) {
 							$this->content = ' ';
 
 						// handled + + and - -
@@ -135,7 +133,6 @@ class whitespace {
 
 				// record the previous significant objects
 				} elseif ($item::significant) {
-					$beforeprev = $prev;
 					$prev = $item;
 
 					// return statement
