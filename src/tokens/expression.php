@@ -48,13 +48,14 @@ class expression {
 			$assignment = false;
 			do {
 				switch ($token['type']) {
+
+					// comments
 					case 'commentsingle':
 					case 'commentmulti':
-						$obj = new comment();
-						if ($obj->parse($tokens)) {
-							$commands[] = $obj;
-						}
+						$commands = $this->getCommand('comment', $tokens, $commands);
 						break;
+
+					// operators
 					case 'operator':
 						$obj = new operator();
 						if ($obj->parse($tokens)) {
@@ -64,50 +65,36 @@ class expression {
 							}
 						}
 						break;
-					case 'increment':
-						$obj = new increment();
-						if ($obj->parse($tokens)) {
-							$commands[] = $obj;
-						}
-						break;
-					case 'keyword':
-						if ($this->isKeyword($last, $token, $tokens)) {
-							$obj = new keyword();
-							if ($obj->parse($tokens)) {
-								$commands[] = $obj;
-							}
-							break;
-						}
+
+					// variables, numbers, and increment
 					case 'variable':
-						$obj = new variable();
-						if ($obj->parse($tokens)) {
-							$commands[] = $obj;
-						}
-						break;
 					case 'number':
-						$obj = new number();
-						if ($obj->parse($tokens)) {
-							$commands[] = $obj;
-						}
+					case 'increment':
+						$commands = $this->getCommand($token['type'], $tokens, $commands);
 						break;
+
+					// keywords
+					case 'keyword':
+						if ($this->isKeyword($last, $tokens)) {
+							$commands = $this->getCommand('keyword', $tokens, $commands);
+							break; // if not keyword then variable
+						}
+
+					// quoted strings
 					case 'doublequotes':
 					case 'singlequotes':
 					case 'templateliterals':
-						$obj = new jsstring();
-						if ($obj->parse($tokens)) {
-							$commands[] = $obj;
-						}
+						$commands = $this->getCommand('jsstring', $tokens, $commands);
 						break;
+
+					// regular expressions
 					case 'regexp':
 
 						// regexp is extremely awkward to capture, and because we only look ahead in the regexp, sometimes it can get it wrong
 						if (!\is_object($last) || $this->isRegexpAllowed($last, $beforelast)) {
 
 							// create regexp object
-							$obj = new regexp();
-							if ($obj->parse($tokens)) {
-								$commands[] = $obj;
-							}
+							$commands = $this->getCommand('regexp', $tokens, $commands);
 
 						// if we have got it wrong then the first character will be a divide
 						} else {
@@ -117,6 +104,8 @@ class expression {
 							$tokens->prev(); // move the token pointer back so the operator can be parsed by the normal process
 						}
 						break;
+
+					// whitespace
 					case 'whitespace':
 						$end = false;
 
@@ -126,26 +115,26 @@ class expression {
 						}
 
 						// create whitespace object
-						$obj = new whitespace($this);
-						if ($obj->parse($tokens)) {
-							$commands[] = $obj;
-						}
+						$commands = $this->getCommand('whitespace', $tokens, $commands);
 						if ($end) {
 							break 2;
 						} else {
 							break;
 						}
+
+					// brackets
 					case 'openbracket':
 					case 'opensquare':
 					case 'opencurly':
-						$obj = new brackets($this);
-						if ($obj->parse($tokens)) {
-							$commands[] = $obj;
-						}
+						$commands = $this->getCommand('brackets', $tokens, $commands);
 						break;
+
+					// end of lines
 					case 'eol':
 					case 'comma':
 						$this->eol = $token['value'];
+
+					// close brackets
 					case 'closebracket':
 					case 'closesquare':
 					case 'closecurly':
@@ -164,28 +153,33 @@ class expression {
 	}
 
 	/**
+	 * Create a token object and parse some tokens
+	 * 
+	 * @param string $obj The name of the token object to create
+	 * @param tokenise $tokens A tokenise object conaining th etokens to ve parsed
+	 * @param array $commands The current array of commands
+	 * @return array The input $commands, with the command object pushed on if anything was parsed
+	 */
+	protected function getCommand(string $obj, tokenise $tokens, array $commands) : array {
+		$cls = __NAMESPACE__.'\\'.$obj;
+		$obj = new $cls($this);
+		if ($obj->parse($tokens)) {
+			$commands[] = $obj;
+		}
+		return $commands;
+	}
+
+	/**
 	 * Works out whether a keyword is legal in the current context
 	 */
-	protected function isKeyword($prev, array $current, tokenise $tokens) {
+	protected function isKeyword(?object $prev, tokenise $tokens) {
 		if (($next = $this->getNextSignificantToken($tokens)) !== null) {
 
 			// property name
-			if (\mb_strpos($next['value'], ':') === 0 || $next['value'] === '.') {
-				return false;
+			return \mb_strpos($next['value'], ':') !== 0 && $next['value'] !== '.';
 
-			// var undefined
-			// } elseif ($current['value'] === 'undefined') {
-			//
-			// 	// is a variable definition
-			// 	if ($prev && \in_array($prev->content, ['const', 'let', 'var'])) {
-			// 		return false;
-			//
-			// 	// followed by an assignment, comma, or EOL
-			// 	} elseif (!$prev && \in_array($next['value'], ['=', ',', ';'])) {
-			// 		return false;
-			// 	}
-			}
-		} elseif ($prev && \get_class($prev) === __NAMESPACE__.'\\operator' && $prev->content === '.') {
+		// previous object is .
+		} elseif (\is_object($prev) && \get_class($prev) === __NAMESPACE__.'\\operator' && $prev->content === '.') {
 			return false;
 		}
 		return true;
@@ -223,7 +217,7 @@ class expression {
 	 * @param object $beforeprev The command object before the previous command object
 	 * @return bool Whether the expression should end at the previous command
 	 */
-	protected function isEol(tokenise $tokens, object $prev = null, object $beforeprev = null, bool $assignment = false) : bool {
+	protected function isEol(tokenise $tokens, object $prev, ?object $beforeprev = null, bool $assignment = false) : bool {
 		$prevtype = \get_class($prev);
 		$beforeprevtype = $beforeprev ? \get_class($beforeprev) : null;
 
@@ -267,18 +261,23 @@ class expression {
 
 		// see if the statement needs to be terminated
 		} else {
-			$end = [ // previous type => [next types]
-				'brackets' => ['variable', 'number', 'string', 'increment'],
-				'variable' => ['variable', 'string', 'number', 'regexp', 'opencurly', 'increment'],
-				'number' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment'],
-				'string' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment'],
-				'regexp' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment'],
-				'increment' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment']
-			];
-			foreach ($end AS $key => $item) {
-				if ('hexydec\\jslite\\'.$key === $prevtype && \in_array($next['type'], $item, true)) {
-					return true;
-				}
+			return $this->matchesEolPattern($prevtype, $next['type']);
+		}
+		return false;
+	}
+
+	protected function matchesEolPattern(string $prevtype, string $nexttype) : bool {
+		$end = [ // previous type => [next types]
+			'brackets' => ['variable', 'number', 'string', 'increment'],
+			'variable' => ['variable', 'string', 'number', 'regexp', 'opencurly', 'increment'],
+			'number' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment'],
+			'string' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment'],
+			'regexp' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment'],
+			'increment' => ['variable', 'number', 'string', 'regexp', 'openbracket', 'opensquare', 'opencurly', 'increment']
+		];
+		foreach ($end AS $key => $item) {
+			if ('hexydec\\jslite\\'.$key === $prevtype && \in_array($nexttype, $item, true)) {
+				return true;
 			}
 		}
 		return false;
