@@ -3,6 +3,10 @@ declare(strict_types = 1);
 namespace hexydec\jslite;
 use \hexydec\tokens\tokenise;
 
+/**
+ * @property-read mixed Either the config array, or the length property
+ */
+
 class jslite {
 
 	/**

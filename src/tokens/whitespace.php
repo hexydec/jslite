@@ -88,7 +88,7 @@ class whitespace {
 						}
 
 						// remove whitespace if last in the parent expression
-						if (!$next) {
+						if ($next === null) {
 
 							// terminate any statements that are not terminated
 							if (!$eol && \str_contains($this->content, "\n")) {
