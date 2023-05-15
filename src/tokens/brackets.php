@@ -155,7 +155,7 @@ class brackets {
 
 		// compile child expressions
 		$js = '';
-		foreach ($this->expressions AS $key => $item) {
+		foreach ($this->expressions AS $item) {
 			$js .= $item->compile();
 		}
 

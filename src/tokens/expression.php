@@ -172,7 +172,7 @@ class expression {
 	/**
 	 * Works out whether a keyword is legal in the current context
 	 */
-	protected function isKeyword(?object $prev, tokenise $tokens) {
+	protected function isKeyword(?object $prev, tokenise $tokens) : bool {
 		if (($next = $this->getNextSignificantToken($tokens)) !== null) {
 
 			// property name
