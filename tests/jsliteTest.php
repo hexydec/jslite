@@ -564,6 +564,26 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 					}
 				}',
 				'output' => 'class ClassWithStaticMethod{static staticProperty="someValue";static staticMethod(){return "static method has been called."}static{console.log("Class static initialization block called")}}'
+			],
+			[
+				'input' => 'class ClassWithGetSet {
+					#msg = "hello world";
+					get msg() {
+					  return this.#msg;
+					}
+					set msg(x) {
+					  this.#msg = `hello ${x}`;
+					}
+				}',
+				'output' => 'class ClassWithGetSet{#msg="hello world";get msg(){return this.#msg}set msg(x){this.#msg=`hello ${x}`}}'
+			],
+			[
+				'input' => 'var get = "foo";
+					function get(val) {
+						return val + 1;
+					}
+					get(5);',
+				'output' => 'var get="foo";function get(val){return val+1}get(5)'
 			]
 		];
 		$this->compareMinify($tests);
