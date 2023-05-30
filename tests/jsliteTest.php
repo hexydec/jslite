@@ -584,6 +584,11 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 					}
 					get(5);',
 				'output' => 'var get="foo";function get(val){return val+1}get(5)'
+			],
+			[
+				'input' => 'const $ = selector => new $(selector);
+					export {$ as default};',
+				'output' => 'const $=selector=>new $(selector);export{$ as default}'
 			]
 		];
 		$this->compareMinify($tests);
