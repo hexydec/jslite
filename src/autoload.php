@@ -15,6 +15,6 @@
 		'hexydec\\jslite\\brackets' => __DIR__.'/tokens/brackets.php'
 	];
 	if (isset($classes[$class])) {
-		require($classes[$class]);
+		require $classes[$class];
 	}
 });
