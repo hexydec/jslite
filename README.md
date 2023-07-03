@@ -8,7 +8,7 @@ A Javascript compiler designed for minifying inline scripts, written in PHP.
 
 ## Description
 
-Designed to compliment [HTMLdoc](http://github.com/hexydec/htmldoc), JSlite is a Javascript compiler and minifier, designed for minifying inline Javascript on the fly. It can also be used for compressing larger documents.
+Designed to complement [HTMLdoc](http://github.com/hexydec/htmldoc), JSlite is a Javascript compiler and minifier, designed for minifying inline Javascript on the fly. It can also be used for compressing larger documents.
 
 The software is implemented as a compiler to ensure reliable, and comes with a full test suite.
 
