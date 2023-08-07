@@ -2,3 +2,4 @@
 /tools
 /coverage
 /vendor
+/.phpunit.cache
