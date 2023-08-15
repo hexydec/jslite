@@ -32,7 +32,7 @@ if ($doc->load($javascript) {
 }
 ```
 
-You can test out the minifier online at [https://hexydec.com/jslite/](https://hexydec.com/jslite/), or run the supplied `index.php` file after installation.
+You can test out the minifier online at [https://hexydec.com/apps/minify-js/](https://hexydec.com/apps/minify-js/), or run the supplied `index.php` file after installation.
 
 ## Installation
 
