@@ -578,6 +578,21 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				'output' => 'class ClassWithGetSet{#msg="hello world";get msg(){return this.#msg}set msg(x){this.#msg=`hello ${x}`}}'
 			],
 			[
+				'input' => 'class TypicalClass 
+				{
+					constructor() {
+						this.msg = "Typical";
+					}
+					get msg() {
+					  return this.msg;
+					}
+					update(newmsg) {
+					  this.msg = newmsg;
+					}
+				}',
+				'output' => 'class TypicalClass{constructor(){this.msg="Typical"}get msg(){return this.msg}update(newmsg){this.msg=newmsg}}'
+			],
+			[
 				'input' => 'var get = "foo";
 					function get(val) {
 						return val + 1;
@@ -790,6 +805,13 @@ final class jsliteTest extends \PHPUnit\Framework\TestCase {
 				 +
 				 6;',
 				'output' => 'var val=5+6;'
+			],
+			[
+				'input' => 'class MyClass
+				{
+					
+				}',
+				'output' => 'class MyClass{}'
 			]
 		];
 		$this->compareMinify($tests, ['semicolons' => false]);

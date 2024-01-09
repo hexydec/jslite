@@ -225,6 +225,7 @@ class expression {
 		$key = __NAMESPACE__.'\\keyword';
 		$bra = __NAMESPACE__.'\\brackets';
 		$op = __NAMESPACE__.'\\operator';
+		$var = __NAMESPACE__.'\\variable';
 
 		// check for kewords
 		$keywords = ['debugger', 'continue', 'break', 'throw', 'return'];
@@ -237,6 +238,9 @@ class expression {
 		// if prev is curly then expression will have already ended
 		} elseif ($prevtype === $bra && $prev->bracket === 'curly' && $beforeprevtype !== $op) {
 			return $assignment;
+
+		// if class declaration
+		} elseif ($beforeprevtype === $key && $prevtype === $var && $beforeprev->content === 'class') {
 
 		// get next token
 		} elseif (($next = $this->getNextSignificantToken($tokens)) === null) {
