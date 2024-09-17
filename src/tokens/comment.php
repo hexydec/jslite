@@ -38,7 +38,7 @@ class comment {
 	/**
 	 * Minifies the internal representation of the comment
 	 *
-	 * @param array $minify An array of minification options controlling which operations are performed
+	 * @param array<string,mixed> $minify An array indicating which minification operations to perform
 	 * @return void
 	 */
 	public function minify(array $minify) : void {
