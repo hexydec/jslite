@@ -93,10 +93,13 @@ if (!empty($_POST['action'])) {
 	<head>
 		<title>Hexydec JSLite Minifier</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+		<link rel="shortcut icon" type="image/svg" href="docs/jslite.svg" />
 		<style>
 			html, body {
 				margin: 0;
-				font-family: Segoe UI;
+			}
+			body, input {
+				font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
 			}
 			.minify__form {
 				height: 100vh;
@@ -110,6 +113,9 @@ if (!empty($_POST['action'])) {
 			.minify__form-heading {
 				margin: 10px 10px 0 10px;
 				flex: 0 0 auto;
+				display: flex;
+				align-items: center;
+				gap: 0 10px;
 			}
 			.minify__form-input {
 				flex: 1 1 auto;
@@ -163,7 +169,10 @@ if (!empty($_POST['action'])) {
 	<body>
 		<form action="<?= \htmlspecialchars($_SERVER['REQUEST_URI']); ?>" method="post" accept-charset="<?= \mb_internal_encoding(); ?>" class="minify__form">
 			<div class="minify__form-wrap">
-				<h1 class="minify__form-heading">Javascript Minifier</h1>
+				<h1 class="minify__form-heading">
+					<img src="docs/jslite.svg" alt="JSlite" height="50" />
+					Javascript Minifier
+				</h1>
 				<div class="minify__form-input">
 					<label for="source">Paste Javascript:</label>
 					<textarea name="source" id="source" class="minify__form-input-box"><?= \htmlspecialchars($input); ?></textarea>

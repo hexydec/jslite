@@ -32,7 +32,7 @@ class regexp {
 	/**
 	 * Minifies the internal representation of the document
 	 *
-	 * @param array $minify An array indicating which minification operations to perform
+	 * @param array<string,mixed> $minify An array indicating which minification operations to perform
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {

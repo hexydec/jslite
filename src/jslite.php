@@ -4,13 +4,14 @@ namespace hexydec\jslite;
 use \hexydec\tokens\tokenise;
 
 /**
- * @property-read mixed Either the config array, or the length property
+ * @property-read array $config The config array
+ * @property-read int $length The number of expressions contained within the root of the object
  */
 
 class jslite {
 
 	/**
-	 * @var array $tokens Regexp components keyed by their corresponding codename for tokenising Javascript
+	 * @var array<string, string> $tokens Regexp components keyed by their corresponding codename for tokenising Javascript
 	 */
 	protected static array $tokens = [
 
@@ -51,6 +52,9 @@ class jslite {
 		'other' => '.'
 	];
 
+	/**
+	 * @var array<string, array> $config A configuration array defining minification options
+	 */
 	protected array $config = [
 		'minify' => [
 			'whitespace' => true, // strip whitespace around javascript
@@ -62,8 +66,17 @@ class jslite {
 			'numbers' => true, // remove underscores from numbers
 		]
 	];
+
+	/**
+	 * @var array<expression> $expressions An array of expression objects
+	 */
 	protected array $expressions = [];
 
+	/**
+	 * Constructs a jslite object
+	 * 
+	 * @param array<string, array> $config An array of configuration 
+	 */
 	public function __construct(array $config = []) {
 		if (!empty($config)) {
 			$this->config = \array_replace_recursive($this->config, $config);
