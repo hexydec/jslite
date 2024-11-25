@@ -207,7 +207,7 @@ class jslite {
 	 * @param array $options An array indicating output options
 	 * @return string|false The compiled Javascript, or false if the file could not be saved
 	 */
-	public function save(string $file = null, array $options = []) : string|false {
+	public function save(?string $file = null, array $options = []) : string|false {
 		$js = $this->compile($options);
 
 		// save file
