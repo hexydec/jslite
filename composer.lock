@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "502a626946560d99e4f3037891c8f52a",
+    "content-hash": "894a06d84a8b0a8ce790717742f9dc45",
     "packages": [
         {
             "name": "hexydec/tokenise",
@@ -1748,7 +1748,7 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "beta",
+    "minimum-stability": "stable",
     "stability-flags": {
         "hexydec/tokenise": 20
     },
