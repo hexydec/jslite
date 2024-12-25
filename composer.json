@@ -12,7 +12,7 @@
         }
     ],
 	"keywords": ["js", "javascript", "minifier", "minify", "parser", "compiler"],
-    "minimum-stability": "beta",
+    "minimum-stability": "stable",
     "require": {
         "php": ">=8.1",
 		"hexydec/tokenise": "1.0.2"
