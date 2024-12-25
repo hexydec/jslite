@@ -3,7 +3,7 @@ declare(strict_types = 1);
 namespace hexydec\jslite;
 use \hexydec\tokens\tokenise;
 
-class whitespace {
+class whitespace implements command {
 
 	/**
 	 * @var bool Denotes whether the class represents significant javascript

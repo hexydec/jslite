@@ -12,10 +12,10 @@
         }
     ],
 	"keywords": ["js", "javascript", "minifier", "minify", "parser", "compiler"],
-    "minimum-stability": "stable",
+    "minimum-stability": "beta",
     "require": {
-        "php": ">=8.0",
-		"hexydec/tokenise": "dev-master"
+        "php": ">=8.1",
+		"hexydec/tokenise": "1.0.2"
 	},
 	"autoload": {
 		"classmap": ["src/"]
