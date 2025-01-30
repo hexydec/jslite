@@ -13,7 +13,7 @@
 		'hexydec\\jslite\\regexp' => __DIR__.'/tokens/regexp.php',
 		'hexydec\\jslite\\expression' => __DIR__.'/tokens/expression.php',
 		'hexydec\\jslite\\brackets' => __DIR__.'/tokens/brackets.php',
-		'hexydec\\jslite\\command' => __DIR__.'/interface/command.php'
+		'hexydec\\jslite\\command' => __DIR__.'/interfaces/command.php'
 	];
 	if (isset($classes[$class])) {
 		require $classes[$class];
