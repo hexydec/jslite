@@ -3,31 +3,19 @@ declare(strict_types = 1);
 namespace hexydec\jslite;
 use \hexydec\tokens\tokenise;
 
-class number implements command {
+interface command {
 
 	/**
 	 * @var bool Denotes whether the class represents significant javascript
 	 */
-	public const significant = true;
-
-	/**
-	 * @var string The captured number
-	 */
-	protected string $content = '';
-
+	public const significant = false;
 	/**
 	 * Parses an array of tokens
 	 *
 	 * @param tokenise $tokens A tokenise object
 	 * @return bool Whether any tokens were parsed
 	 */
-	public function parse(tokenise $tokens) : bool {
-		if (($token = $tokens->current()) !== null) {
-			$this->content = $token['value'];
-			return true;
-		}
-		return false;
-	}
+	public function parse(tokenise $tokens) : bool;
 
 	/**
 	 * Minifies the internal representation of the document
@@ -35,18 +23,12 @@ class number implements command {
 	 * @param array<string,mixed> $minify An array indicating which minification operations to perform
 	 * @return void
 	 */
-	public function minify(array $minify = []) : void {
-		if ($minify['numbers'] && strpos($this->content, '_') !== false) {
-			$this->content = str_replace('_', '', $this->content);
-		}
-	}
+	public function minify(array $minify = []) : void;
 
 	/**
 	 * Compile as Javascript
 	 *
 	 * @return string The compiled Javascript
 	 */
-	public function compile() : string {
-		return $this->content;
-	}
+	public function compile() : string;
 }

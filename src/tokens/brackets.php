@@ -3,7 +3,7 @@ declare(strict_types = 1);
 namespace hexydec\jslite;
 use \hexydec\tokens\tokenise;
 
-class brackets {
+class brackets implements command {
 
 	/**
 	 * @var bool Denotes whether the class represents significant javascript
@@ -16,7 +16,7 @@ class brackets {
 	protected expression $root;
 
 	/**
-	 * @var array An array of child expression objects
+	 * @var array<expression> An array of child expression objects
 	 */
 	protected array $expressions = [];
 
@@ -90,10 +90,10 @@ class brackets {
 	/**
 	 * Checks to see if the last expression is a keyword followed by brackets, with no other commands - semi-colon must not be removed
 	 * 
-	 * @param object $last The last JSlite object that is being checked for semi-colon removal
+	 * @param expression $last The last JSlite object that is being checked for semi-colon removal
 	 * @return bool Whether the object contains a keyword-bracket expression
 	 */
-	protected function isKeywordBracket(object $last) : bool {
+	protected function isKeywordBracket(expression $last) : bool {
 		$key = __NAMESPACE__.'\\keyword';
 		$bra = __NAMESPACE__.'\\brackets';
 
@@ -115,7 +115,7 @@ class brackets {
 	/**
 	 * Analyses the cirrent expression set to see if it is contained within a for loop with a specific pattern of semi-colons, where the final one should not be removed
 	 * 
-	 * @param array $expressions An array containing the current expressesion set
+	 * @param array<expression> $expressions An array containing the current expressesion set
 	 * @return bool WHether the current expresiion set is wrapped in a for loop
 	 */
 	protected function isInForLoop(array $expressions) : bool {

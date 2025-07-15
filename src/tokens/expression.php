@@ -3,7 +3,7 @@ declare(strict_types = 1);
 namespace hexydec\jslite;
 use \hexydec\tokens\tokenise;
 
-class expression {
+class expression implements command {
 
 	/**
 	 * @var bool Denotes whether the class represents significant javascript
@@ -11,7 +11,7 @@ class expression {
 	public const significant = true;
 
 	/**
-	 * @var array An array of command objects stored within this expression
+	 * @var array<command> An array of command objects stored within this expression
 	 */
 	public array $commands = [];
 
@@ -155,13 +155,13 @@ class expression {
 	/**
 	 * Create a token object and parse some tokens
 	 * 
-	 * @param string $obj The name of the token object to create
+	 * @param string $cls The name of the token object to create
 	 * @param tokenise $tokens A tokenise object conaining th etokens to ve parsed
-	 * @param array $commands The current array of commands
-	 * @return array The input $commands, with the command object pushed on if anything was parsed
+	 * @param array<command> $commands The current array of commands
+	 * @return array<command> The input $commands, with the command object pushed on if anything was parsed
 	 */
-	protected function getCommand(string $obj, tokenise $tokens, array $commands) : array {
-		$cls = __NAMESPACE__.'\\'.$obj;
+	protected function getCommand(string $cls, tokenise $tokens, array $commands) : array {
+		$cls = __NAMESPACE__.'\\'.$cls;
 		$obj = new $cls($this);
 		if ($obj->parse($tokens)) {
 			$commands[] = $obj;
@@ -289,7 +289,7 @@ class expression {
 	 * Retrieve the next significant token, leaving the pointer at the current position
 	 *
 	 * @param tokenise $tokens A tokenise object to get the next tokens from
-	 * @return ?array An array containing the next token or null if there is no next significant token
+	 * @return ?array<string,string> An array containing the next token or null if there is no next significant token
 	 */
 	protected function getNextSignificantToken(tokenise $tokens) : ?array {
 

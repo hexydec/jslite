@@ -3,7 +3,7 @@ declare(strict_types = 1);
 namespace hexydec\jslite;
 use \hexydec\tokens\tokenise;
 
-class jsstring {
+class jsstring implements command {
 
 	/**
 	 * @var bool Denotes whether the class represents significant javascript
@@ -47,7 +47,7 @@ class jsstring {
 	/**
 	 * Minifies the internal representation of the document
 	 *
-	 * @param array<string,mixed> $minify An array indicating which minification operations to perform
+	 * @param array<string> $minify An array indicating which minification operations to perform
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {

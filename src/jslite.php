@@ -11,7 +11,7 @@ use \hexydec\tokens\tokenise;
 class jslite {
 
 	/**
-	 * @var array<string, string> $tokens Regexp components keyed by their corresponding codename for tokenising Javascript
+	 * @var array<string,string> $tokens Regexp components keyed by their corresponding codename for tokenising Javascript
 	 */
 	protected static array $tokens = [
 
@@ -53,7 +53,7 @@ class jslite {
 	];
 
 	/**
-	 * @var array<string, array> $config A configuration array defining minification options
+	 * @var array<string,array<string,mixed>> $config A configuration array defining minification options
 	 */
 	protected array $config = [
 		'minify' => [
@@ -75,7 +75,7 @@ class jslite {
 	/**
 	 * Constructs a jslite object
 	 * 
-	 * @param array<string, array> $config An array of configuration 
+	 * @param array<string,array<string,mixed>> $config An array of configuration 
 	 */
 	public function __construct(array $config = []) {
 		if (!empty($config)) {
@@ -136,24 +136,27 @@ class jslite {
 		$this->expressions = [];
 
 		// parse the document
-		if (($this->expressions = $this->parse($js)) === null) {
+		if (($expressions = $this->parse($js)) === null) {
 			$error = 'Input is not valid';
 
 		// success
 		} else {
+			$this->expressions = $expressions;
 			return true;
 		}
 		return false;
 	}
 
+	/**
+	 * Parse a Javascript string into an internal representation
+	 * 
+	 * @param string $js A string containing javascript to parse
+	 * @return ?array<expression> An array of expression objects or null if the string was not parsable
+	 */
 	protected function parse(string $js) : ?array {
 
 		// tokenise the input Javascript
 		$tokens = new tokenise(self::$tokens, $js);
-		// while (($token = $tokens->next()) !== null) {
-		// 	var_dump($token);
-		// }
-		// exit();
 
 		// generate expressions
 		$expressions = [];
@@ -169,7 +172,7 @@ class jslite {
 	/**
 	 * Minifies the internal representation of the document
 	 *
-	 * @param array $minify An array indicating which minification operations to perform, this is merged with self::$config['minify']
+	 * @param array<string,bool> $minify An array indicating which minification operations to perform, this is merged with self::$config['minify']
 	 * @return void
 	 */
 	public function minify(array $minify = []) : void {
@@ -202,13 +205,12 @@ class jslite {
 	/**
 	 * Compile the document to a string
 	 *
-	 * @param array $options An array indicating output options
 	 * @return string The compiled Javascript
 	 */
-	public function compile(array $options = []) : string {
+	public function compile() : string {
 		$js = '';
 		foreach ($this->expressions AS $item) {
-			$js .= $item->compile($options);
+			$js .= $item->compile();
 		}
 		return $js;
 	}
@@ -217,7 +219,6 @@ class jslite {
 	 * Compile the document and save it to the specified location
 	 *
 	 * @param string|null $file The file location to save the document to, or null to just return the compiled code
-	 * @param array $options An array indicating output options
 	 * @return string|false The compiled Javascript, or false if the file could not be saved
 	 */
 	public function save(?string $file = null, array $options = []) : string|false {

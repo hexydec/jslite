@@ -3,7 +3,7 @@ declare(strict_types = 1);
 namespace hexydec\jslite;
 use \hexydec\tokens\tokenise;
 
-class comment {
+class comment implements command {
 
 	/**
 	 * @var bool Denotes whether the class represents significant javascript
@@ -19,7 +19,7 @@ class comment {
 	 * @var bool Denotes whether the comment object represents a single or multi-line comment
 	 */
 	protected bool $multi = false;
-
+	
 	/**
 	 * Parses an array of tokens
 	 *
@@ -41,8 +41,8 @@ class comment {
 	 * @param array<string,mixed> $minify An array indicating which minification operations to perform
 	 * @return void
 	 */
-	public function minify(array $minify) : void {
-		if ($minify['comments']) {
+	public function minify(array $minify = []) : void {
+		if (!empty($minify['comments'])) {
 			$this->content = null;
 		}
 	}

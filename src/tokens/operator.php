@@ -3,7 +3,7 @@ declare(strict_types = 1);
 namespace hexydec\jslite;
 use \hexydec\tokens\tokenise;
 
-class operator {
+class operator implements command {
 
 	/**
 	 * @var bool Denotes whether the class represents significant javascript
@@ -34,7 +34,7 @@ class operator {
 	 *
 	 * @return void
 	 */
-	public function minify() : void {
+	public function minify(array $minify = []) : void {
 
 	}
 
