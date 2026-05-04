@@ -109,7 +109,7 @@ class whitespace implements command {
 							$this->content = ' ';
 
 						// handled + + and - -
-						} elseif ($prevtype === $op && $nexttype === $op && $prev->content === $next->content) {
+						} elseif ($prevtype === $op && $nexttype === $op && $prev instanceof operator && $next instanceof operator && $prev->content === $next->content) {
 							$this->content = ' ';
 
 						// keyword not followed by bracket
@@ -117,7 +117,7 @@ class whitespace implements command {
 							$this->content = ' ';
 
 						// sqaure bracket next to keyword, leave a space
-						} elseif ($prevtype === $bra && $nexttype === $key && $prev->bracket === 'square') {
+						} elseif ($prevtype === $bra && $nexttype === $key && $prev instanceof brackets && $prev->bracket === 'square') {
 							$this->content = ' ';
 
 						// special case for when return true is converted to return !0, causes the whitespace to flip
