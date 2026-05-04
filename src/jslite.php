@@ -221,8 +221,8 @@ class jslite {
 	 * @param string|null $file The file location to save the document to, or null to just return the compiled code
 	 * @return string|false The compiled Javascript, or false if the file could not be saved
 	 */
-	public function save(?string $file = null, array $options = []) : string|false {
-		$js = $this->compile($options);
+	public function save(?string $file = null) : string|false {
+		$js = $this->compile();
 
 		// save file
 		if ($file && \file_put_contents($file, $js) === false) {
